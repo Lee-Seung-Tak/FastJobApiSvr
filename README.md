@@ -6,3 +6,11 @@
 
 - **Domain-Driven Design (DDD)**
 - **RESTful API**
+
+## Versioning
+
+- **GitFlow**
+
+## Naming Convention
+
+- **Camel Case**
