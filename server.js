@@ -20,7 +20,7 @@ if (cluster.isMaster){
         cluster.fork();
 } else {
     app.listen(port,()=>{
-        console.log(`[LOG] - FastJobApiSvr Start at Port: ${port}`);
+        console.log(`[LOG] - FastJobApiSvr Start at Port: ${port}\n`);
     });
 }
 
