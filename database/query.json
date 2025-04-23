@@ -1,0 +1,5 @@
+
+{
+    "description" : "함수명을 key로 가지고, value는 함수에서 사용하는 쿼리를 작성하여 관리하는 구조",
+    "login" : "SELECT * FROM users.user WHERE email = $1"
+}
