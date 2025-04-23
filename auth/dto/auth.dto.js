@@ -11,6 +11,8 @@ class LoginDTO{
         // email, password 데이터 유무 확인
         if (!email || !password)
             throw new Error('Email and password are required');
+        
+        return new LoginDTO( email, password );
     }
 
 }
