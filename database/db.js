@@ -1,6 +1,6 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
-import pool from '../database/db'
+
 dotenv.config(); // 가장 먼저 호출해야 함
 
 const { Pool } = pg;
