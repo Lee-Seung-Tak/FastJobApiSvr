@@ -16,4 +16,16 @@ const pool = new Pool({
     connectionTimeoutMillis: 2000,
   });
   
+  const testConnection = async () => {
+    try {
+      const result = await pool.query('SELECT NOW()');
+      console.log('[LOG]- testConnection / success time', result.rows[0].now,'\n');
+    } catch (err) {
+      console.error('[LOG]- testConnection / failed time', err.message,'\n');
+    }
+    await pool.end();
+  };
+  
+  testConnection();
+  
   export default pool;
