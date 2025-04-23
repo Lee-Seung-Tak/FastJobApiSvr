@@ -1,6 +1,14 @@
 {
   "dependencies": {
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "module-alias": "^2.2.3",
+    "pg": "^8.15.1"
+  },
+  "_moduleAliases": {
+    "@db": "./database/db",
+    "@query": "./database/query.json",
+    "@auth_service": "./auth/service/auth.service",
+    "@auth_controller": "./auth/controller/auth.controller"
   }
 }
