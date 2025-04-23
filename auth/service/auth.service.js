@@ -1,4 +1,8 @@
 
-const login = async( email, password ) =>{
-    const result = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+const pool    = require('@db')
+const query   = require('@query')
+
+exports.login = async( email, password ) => {
+    
+    const result = await pool.query( query.login, [email]);
 }
