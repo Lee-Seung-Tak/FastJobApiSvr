@@ -4,15 +4,17 @@ const express = require('express');
 const app     = express();
 const port    = 4000
 
+const middleWare = require('@middleware')
+
 const cluster = require('cluster');
 const os      = require('os');
 const CPU     = 2;
 
 
-const authRouter = require('./auth/auth.router')
+const authRouter = require('@auth_router')
 
 app.use( express.json() );
-
+app.use( middleWare.verifyToken );
 app.use( '/auth', authRouter );
 
 if (cluster.isMaster){
