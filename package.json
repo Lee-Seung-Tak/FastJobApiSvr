@@ -2,13 +2,17 @@
   "dependencies": {
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
     "pg": "^8.15.1"
   },
   "_moduleAliases": {
-    "@db": "./database/db",
+    "@db": "./database/db.js",
     "@query": "./database/query.json",
-    "@auth_service": "./auth/service/auth.service",
-    "@auth_controller": "./auth/controller/auth.controller"
+    "@auth_service": "./auth/service/auth.service.js",
+    "@auth_controller": "./auth/controller/auth.controller.js",
+    "@auth_router":"./auth/auth.router.js",
+    "@middleware":"./middleware/middleware.js",
+    "@auth_dto":"./auth/dto/auth.dto.js"
   }
 }
