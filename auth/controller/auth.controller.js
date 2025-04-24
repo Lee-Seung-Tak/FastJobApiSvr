@@ -1,12 +1,12 @@
 const authService = require('@auth_service');
-const LoginDTO   = require('../dto/auth.dto')
+const authDTO     = require('@auth_dto')
 
 
 exports.login = async ( req, res ) => {
     try {
         const { email, password } = req.body;
 
-        const loginDTO = LoginDTO.isValid( { email, password } );
+        const loginDTO = authDTO.loginDTO.isValid( { email, password } );
         authService.login()
     } catch( error ) {
         if (error.message === 'Email and password are required')
