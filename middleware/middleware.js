@@ -1,5 +1,10 @@
 
 exports.verifyToken = ( req, res, next ) => {
-    console.log("[LOG] - middleware test");
+    
+    if( req.path === '/auth/login')
+    {
+        return next();
+    }
+    console.log("[LOG] - middleware here");
     next();
 }
