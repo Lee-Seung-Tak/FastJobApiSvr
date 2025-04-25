@@ -14,9 +14,12 @@ const CPU     = 2;
 const authRouter = require('@auth_router')
 
 app.use( express.json() );
-app.use( middleWare.verifyToken );
 app.use( '/auth', authRouter );
-
+//app.use( middleWare.verifyToken );
+app.use( ( req, res, next ) => {
+    if (req.path === '/auth/login' ) return next();
+    middleWare.verifyToken( req, res, next );
+})
 if (cluster.isMaster){
     for (let i = 0; i< CPU; i++)
         cluster.fork();
