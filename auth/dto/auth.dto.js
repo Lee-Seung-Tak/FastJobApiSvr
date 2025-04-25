@@ -1,18 +1,22 @@
 class LoginDTO{
     // 객체의 email, password 초기화
-    constructor( email, password ){
-        this.email    = email;
+    constructor( userId, password ) {
+        this.userId   = userId;
         this.password = password;
     }
 
-    static isValid( loginData ){
-        const { email, password } = loginData;
+    static isValid( loginData ) {
+        try {
 
-        // email, password 데이터 유무 확인
-        if (!email || !password)
-            throw new Error('Email and password are required');
-        
-        return new LoginDTO( email, password );
+            const { userId, password } = loginData;
+            if (!userId || !password)
+                throw new Error('user_id and password are required');
+            
+            return new LoginDTO( userId, password );
+            
+        } catch ( error ) {
+            throw new Error('user_id and password are required');
+        }
     }
 
 }
