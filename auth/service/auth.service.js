@@ -17,12 +17,28 @@ const makeRefreshToken = async ( userId ) => {
 
 exports.login = async( userId, password ) => {
     try {
+        // DB에서 userId값이 있는지 조회
         let queryResult = await db.query( queryJson.login, [ userId ] );
         queryResult     = queryResult.rows[0];
         
-        if(queryResult === undefined) throw new Error('user not found')
-            
+        // 없다면 Error
+        if ( queryResult === undefined ) throw new Error('user not found')
+        
+        // 비밀번호 검증
+        if ( queryResult.password === password ) {
+
+            // token 생성 동시 시작 
+            const [ accessToken, refreshToken ] = await Promise.all ( [ makeAccessToken(userId), makeRefreshToken(userId) ] );
+            const updateDate                    = new Date();
+
+            // db에 token 및 현재 시간 update
+            await db.query( queryJson.loginSuccess, [ accessToken, refreshToken, updateDate, userId ] );
+
+            // token return
+            return { "access_token : " : accessToken , "refresh_token" : refreshToken };
+        }
+        
     } catch ( error ) {
-        console.log('[ERROR] - auth.service.login / error message : ', error);
+        throw new Error('user not found')
     }
 }

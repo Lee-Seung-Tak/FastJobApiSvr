@@ -1,24 +1,23 @@
 const authService = require('@auth_service');
 const authDTO     = require('@auth_dto');
 
-const userNotFound   = 'user not found';
-const reqBodyRequire = 'userId is not defined';
 exports.login = async ( req, res ) => {
     try {
-
-        // const { userId, password } = req.body;
-
+        
         const loginDTO = authDTO.isValid( req.body );
         
         try {
-            const serviceResult = await authService.login( userId, password );
+
+            const serviceResult = await authService.login( loginDTO.userId, loginDTO.password );
             return res.status(201).json( serviceResult );
+
         } catch ( error ) {
-            if ( error.message === userNotFound || error.message === reqBodyRequire)        
-                return res.status(400).json( { "message" : "user not found" } );
+            // userId에 or password의 유효성 검사에 걸리는 exceptiond / http status : 401
+            return res.status(401).json( { "message" : "check your id or password" } );
         }
 
     } catch ( error ) {
-        console.log('[ERROR] - auth.controller.login / error message : ', error.message);
+        // authDTO.isValid( req.body ); 데이터 유무 포함 유효성 검사에 걸리는 exception / http status : 400
+        return res.status(400).json( { "message" : "Bad Request" } );
     }
 }
