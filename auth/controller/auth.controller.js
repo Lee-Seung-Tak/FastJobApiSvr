@@ -1,14 +1,17 @@
 const authService = require('@auth_service');
 const authDTO     = require('@auth_dto');
 
+const loginDTO    = authDTO.LoginDTO;
+const signUpDTO   = authDTO.SignUpDTO;
+
 exports.login = async ( req, res ) => {
     try {
-        
-        const loginDTO = authDTO.isValid( req.body );
-        
+
+        const userData = loginDTO.isValid( req.body );
+
         try {
 
-            const serviceResult = await authService.login( loginDTO.userId, loginDTO.password );
+            const serviceResult = await authService.login( userData.userId, userData.password );
             return res.status(201).json( serviceResult );
 
         } catch ( error ) {
@@ -17,7 +20,16 @@ exports.login = async ( req, res ) => {
         }
 
     } catch ( error ) {
+        console.log(error)
         // authDTO.isValid( req.body ); 데이터 유무 포함 유효성 검사에 걸리는 exception / http status : 400
         return res.status(400).json( { "message" : "Bad Request" } );
+    }
+}
+
+exports.signUp = async ( req, res ) => {
+    try {
+
+    } catch ( error ) {
+        console.log(error)
     }
 }
