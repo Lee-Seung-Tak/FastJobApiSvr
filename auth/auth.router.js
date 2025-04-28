@@ -2,9 +2,11 @@
 const express        = require('express')
 const router         = express.Router();
 const authController = require('@auth_controller');
-const middleWare     = require('@middleware')
-// EndPoint
-// router.post('/login', middleWare.verifyToken, authController.login);
+
+
+const multer         = require('multer');
+const userData       = multer( { dest: 'uploads/'} );
+
 router.post('/login',  authController.login);
-router.post('/signup', authController.signUp);
+router.post('/signup', userData.any(), authController.signUp);
 module.exports = router;
