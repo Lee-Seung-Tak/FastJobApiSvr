@@ -42,3 +42,7 @@ exports.login = async( userId, password ) => {
         throw new Error('user not found')
     }
 }
+
+exports.signUp = async ( userData ) => {
+    
+}
