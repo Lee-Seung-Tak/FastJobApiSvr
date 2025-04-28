@@ -4,6 +4,8 @@ const authDTO     = require('@auth_dto');
 const loginDTO    = authDTO.LoginDTO;
 const signUpDTO   = authDTO.SignUpDTO;
 
+
+
 exports.login = async ( req, res ) => {
     try {
 
@@ -28,7 +30,8 @@ exports.login = async ( req, res ) => {
 
 exports.signUp = async ( req, res ) => {
     try {
-
+        console.log('signUp : ', req.body)
+        console.log('file : ', req.files)
     } catch ( error ) {
         console.log(error)
     }
