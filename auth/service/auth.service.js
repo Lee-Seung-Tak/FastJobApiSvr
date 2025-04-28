@@ -4,6 +4,7 @@ const queryJson               = require('@query');
 const jsonwebtoken            = require('jsonwebtoken');
 const { PG_UNIQUE_VIOLATION } = require('postgres-error-codes');
 const dotenv                  = require('dotenv')
+const nodemailer              = require('nodemailer');
 dotenv.config();
 
 
@@ -14,6 +15,34 @@ const makeAccessToken = async ( userId ) => {
 const makeRefreshToken = async ( userId ) => {
     return jwt.sign( { userId : userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
 }
+
+
+const transPorter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,  
+        pass: process.env.EMAIL_PASS   
+    }
+});
+
+// 이메일 발송 함수
+const sendEmail = async (to, subject, text) => {
+    const mailOptions = {
+        from: process.env.EMAIL_USER,  // 보내는 이메일 주소
+        to,                            // 받는 이메일 주소
+        subject,                       // 메일 제목
+        text                           // 메일 내용
+    };
+
+    try {
+        const info = await transPorter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+        return info.response;  // 이메일 발송 성공 메시지 반환
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw new Error('Failed to send email');  // 이메일 발송 실패 시 에러 발생
+    }
+};
 
 exports.login = async( userId, password ) => {
     try {
