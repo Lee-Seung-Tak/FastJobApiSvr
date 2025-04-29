@@ -30,9 +30,12 @@ exports.login = async ( req, res ) => {
 
 exports.signUp = async ( req, res ) => {
     try {
-        console.log('signUp : ', req.body)
+        const userData = signUpDTO.isValid( req.body );
+        console.log(userData)
         console.log('file : ', req.files)
     } catch ( error ) {
         console.log(error)
     }
 }
+
+//name, email, phone, user_id, password, category, resume, resume_url, self_intro, self_intro_url, carrer_desc, career_desc_url, portpolio_url
