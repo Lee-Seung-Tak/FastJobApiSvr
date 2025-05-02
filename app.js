@@ -9,15 +9,18 @@ const cluster    = require('cluster');
 const os         = require('os');
 const CPU        = 2;
 
+const swaggerUi   = require('swagger-ui-express');
+const swaggerSpec = require('./swagger'); 
 
-const authRouter = require('@auth_router')
+const authRouter  = require('@auth_router')
 
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use( express.json() );
 const multer = require('multer');
 
 app.use( '/auth', authRouter );
 app.use( ( req, res, next ) => {
-    if ( req.path === '/auth/login' || req.path === '/auth/signup') return next();
+    if ( req.pacth === '/auth/login' || req.path === '/auth/signup') return next();
     middleWare.verifyToken( req, res, next );
 })
 
