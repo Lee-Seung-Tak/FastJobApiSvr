@@ -1,5 +1,6 @@
 const authService = require('@auth_service');
 const authDTO     = require('@auth_dto');
+const { Pool } = require('pg');
 
 const loginDTO    = authDTO.LoginDTO;
 const signUpDTO   = authDTO.SignUpDTO;
@@ -8,13 +9,12 @@ const signUpDTO   = authDTO.SignUpDTO;
 
 exports.login = async ( req, res ) => {
     try {
-
         const userData = loginDTO.isValid( req.body );
 
         try {
 
             const serviceResult = await authService.login( userData.userId, userData.password );
-            return res.status(201).json( serviceResult );
+            return res.status(200).json( serviceResult );
 
         } catch ( error ) {
             // userId에 or password의 유효성 검사에 걸리는 exceptiond / http status : 401
@@ -30,11 +30,16 @@ exports.login = async ( req, res ) => {
 
 exports.signUp = async ( req, res ) => {
     try {
-        const userData = signUpDTO.isValid( req.body );
-        console.log(userData)
-        console.log('file : ', req.files)
+        const userData      = signUpDTO.isValid( req.body );
+        const userFiles     = req.body.fiels;
+
+        await authService.signUp( userData, userFiles );
+
+        return res.status(201).json( {"message" : "Once you have completed your email authentication, your account will be activated."} );
+
     } catch ( error ) {
         console.log(error)
+        return res.status(400).json( { "message" : "Bad Request" } );
     }
 }
 
