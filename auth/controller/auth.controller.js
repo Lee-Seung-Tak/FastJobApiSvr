@@ -28,6 +28,8 @@ exports.login = async ( req, res ) => {
     }
 }
 
+
+
 exports.signUp = async ( req, res ) => {
     try {
         const userData      = signUpDTO.isValid( req.body );
@@ -41,6 +43,12 @@ exports.signUp = async ( req, res ) => {
         console.log(error)
         return res.status(400).json( { "message" : "Bad Request" } );
     }
+}
+
+
+exports.signUpVerify = async ( req, res ) => {
+    console.log(req.query)
+
 }
 
 //name, email, phone, user_id, password, category, resume, resume_url, self_intro, self_intro_url, carrer_desc, career_desc_url, portpolio_url
