@@ -20,7 +20,7 @@ exports.login = async( userId, password ) => {
         // DB에서 userId값이 있는지 조회
         let queryResult = await db.query( queryJson.login, [ userId ] );
         queryResult     = queryResult.rows[0];
-        
+
         // 없다면 Error
         if ( queryResult === undefined ) throw new Error('user not found')
         
@@ -37,12 +37,24 @@ exports.login = async( userId, password ) => {
             // token return
             return { "access_token : " : accessToken , "refresh_token" : refreshToken };
         }
+        else throw new Error('user not found')
         
     } catch ( error ) {
         throw new Error('user not found')
     }
 }
 
-exports.signUp = async ( userData ) => {
-    
+exports.signUp = async ( userData, userFiles ) => {
+    try {
+        console.log(userFiles)
+        let queryResult = await db.query( queryJson.checkIdDuplicate, [ userData.userId ] );
+        queryResult     = queryResult.rows[0];
+        if (queryResult) throw new Error('user is duplicate');
+        console.log('userData : ', userData, 'userFiles:', userFiles)
+        //if
+        
+    } catch (error) {
+        throw new Error(error)
+
+    }
 }
