@@ -2,5 +2,8 @@
 {
     "description" : "함수명을 key로 가지고, value는 함수에서 사용하는 쿼리를 작성하여 관리하는 구조",
     "login" : "SELECT * FROM users.user_account WHERE user_id = $1",
-    "loginSuccess" : "UPDATE users.user_account SET access_token = $1, refresh_token = $2, updated_at = $3 WHERE user_id=$4"
+    "loginSuccess" : "UPDATE users.user_account SET access_token = $1, refresh_token = $2, updated_at = $3 WHERE user_id=$4;",
+    "checkIdDuplicate" : "SELECT * FROM users.user_account WHERE user_id = $1 LIMIT 1;"
+
+ 
 }
