@@ -174,5 +174,8 @@ router.post('/login',  authController.login);
 router.post('/signup', userData.any(), authController.signUp);
 
 
+router.get('/signup-verify', authController.signUpVerify)
+
 
 module.exports = router;
+
