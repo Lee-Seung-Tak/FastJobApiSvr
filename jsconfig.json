@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",  
+    "paths": {
+      "@auth_controller": ["auth/controller/auth.controller.js"],
+      "@auth_service": ["auth/service/auth.service.js"],
+      "@auth_router": ["auth/auth.router.js"],
+      "@auth_dto": ["auth/dto/auth.dto.js"],
+      "@db": ["database/db.js"],
+      "@query": ["database/query.json"],
+      "@middleware": ["middleware/middleware.js"]
+    }
+  },
+  "include": [
+    "auth/**/*",
+    "database/**/*",
+    "middleware/**/*",
+    "src/**/*"
+  ]
+}
