@@ -7,7 +7,9 @@
     "module-alias": "^2.2.3",
     "multer": "^1.4.5-lts.2",
     "pg": "^8.15.1",
-    "postgres-error-codes": "^0.0.3"
+    "postgres-error-codes": "^0.0.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "_moduleAliases": {
     "@db": "./database/db.js",
