@@ -38,7 +38,7 @@ class SignUpDTO {
           !userData.password ||
           !userData.category
         ) {
-          throw new Error('check uer data(name, email, phone, userId, password, category)');
+          throw new Error('check user data(name, email, phone, userId, password, category)');
         }
       
         return new SignUpDTO(userData);
