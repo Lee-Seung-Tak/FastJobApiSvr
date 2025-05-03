@@ -30,7 +30,7 @@ class SignUpDTO {
     }
     static isValid(userData) {
         if (
-          !userData ||
+          !userData          ||
           !userData.name     ||
           !userData.email    ||
           !userData.phone    ||
@@ -42,7 +42,20 @@ class SignUpDTO {
         }
       
         return new SignUpDTO(userData);
-      }
+    }
+
+    static fileIsVaild( userFiles ) {
+        userFiles.resume         = !userFiles.resume         ? userFiles.resume        : '';
+        userFiles.resumeUrl      = !userFiles.resumeUrl      ? userFiles.resumeUrl     : '';
+        userFiles.selfIntro      = !userFiles.selfIntro      ? userFiles.selfIntro     : '';
+        userFiles.selfIntroUrl   = !userFiles.selfIntroUrl   ? userFiles.selfIntroUrl  : '';
+        userFiles.carrerDesc     = !userFiles.carrerDesc     ? userFiles.carrerDesc    : '';
+        userFiles.careerDescUrl  = !userFiles.careerDescUrl  ? userFiles.careerDescUrl : '';
+        userFiles.portpolioUrl   = !userFiles.portpolioUrl   ? userFiles.portpolioUrl  : '';
+
+        return userFiles;
+    }
+    
 
 }
 module.exports = {
