@@ -14,8 +14,9 @@
   },
   "_moduleAliases": {
     "@db": "./database/db.js",
-    "@query": "./database/query.json",
+    "@query": "./database/query.js",
     "@auth_service": "./auth/service/auth.service.js",
+    "@auth_logic": "./auth/service/auth.service.js",
     "@auth_controller": "./auth/controller/auth.controller.js",
     "@auth_router": "./auth/auth.router.js",
     "@middleware": "./middleware/middleware.js",
