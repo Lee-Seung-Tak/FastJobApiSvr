@@ -32,8 +32,8 @@ exports.login = async ( req, res ) => {
 
 exports.signUp = async ( req, res ) => {
     try {
-        const userData      = signUpDTO.isValid( req.body );
-        const userFiles     = req.body.fiels;
+        const userData      = signUpDTO.isValid    ( req.body );
+        const userFiles     = signUpDTO.fileIsVaild( req.body.fiels) ;
 
         await authService.signUp( userData, userFiles );
 
