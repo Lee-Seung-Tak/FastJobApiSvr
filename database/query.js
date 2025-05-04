@@ -13,24 +13,24 @@ export const insertSignupData = ` INSERT INTO users.user_account (
     name,
     email,
     phone,
-    userId,
+    user_id,
     password,
     category,
-    acess_token,
+    access_token,
     role,
     resume,
     resume_url,
     self_intro,
     self_intro_url,
-    carrer_desc,
+    career_desc,
     career_desc_url,
     portpolio_url,
     created_at,
     updated_at
   ) VALUES (
     $1, $2, $3, $4, $5, $6, 
-    $7, 1, $9, $10, $11, 
-    $12, $13, $14, $15,NOW(), NOW()
+    $7, $8, $9, $10, $11, 
+    $12, $13, $14, $15, NOW(), NOW()
   );
 `;
 
