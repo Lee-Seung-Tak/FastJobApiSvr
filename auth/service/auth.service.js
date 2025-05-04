@@ -2,6 +2,7 @@
 
 const db           = require('@db');
 const serviceLogic = require('@auth_logic')
+const query        = require('@query')
 
 exports.login = async( userId, password ) => {
     try {
@@ -33,22 +34,23 @@ exports.login = async( userId, password ) => {
 }
 
 
-exports.signUp = async ( userData, userFiles ) => {
+exports.signUp = async ( userData ) => {
     try {
-
+        console.log("here")
         let queryResult = await db.query( query.checkIdDuplicate, [ userData.userId ] );
         queryResult     = queryResult.rows;
         if ( queryResult == [] ) throw new Error('user is duplicate');
 
         const signUpToken    = serviceLogic.makeSignUpToken  ( userData.email );
-        const sendMailStatus = serviceLogic.sendMailForSignUp( userData.email );
-
-        await insertUserData( userData, userFiles, signUpToken );
-        await sendMailStatus;
         
+        const insertStatus   = await serviceLogic.insertUserData( userData, await signUpToken );
+        if (insertStatus === true)
+            await serviceLogic.sendMailForSignUp( userData.email, signUpToken );
+
+        else throw new Error(error)
+
     } catch (error) {
         throw new Error(error)
-
     }
 }
 
