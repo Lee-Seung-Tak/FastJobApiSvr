@@ -9,10 +9,10 @@ const nodemailer              = require('nodemailer');
 dotenv.config();
 const jwt = require('jsonwebtoken');
 
-const makeAccessToken = async ( userId ) => {
+exports.makeAccessToken = async ( userId ) => {
     return jwt.sign( { userId : userId }, process.env.ACCESS_SECRET, { expiresIn: '1h' } );
 }
-const makeRefreshToken = async ( userId ) => {
+exports.makeRefreshToken = async ( userId ) => {
     return jwt.sign( { userId : userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
 }
 
@@ -29,18 +29,19 @@ const transPorter = nodemailer.createTransport({
     },
   });
 
-const mailOptions = {
-    from   : process.env.SYS_EMAIL,  
-    to     : email,                         
-    subject: '[회원가입 인증 메일]',                       
-    html   : mailBody                           
-};
 
-const sendMailForSignUp = async ( email , signUpToken ) => {
 
+exports.sendMailForSignUp = async ( email , signUpToken ) => {
     const filePath    = path.join(__dirname, 'index.html');
-    const mailBody    = fs.readFileSync(filePath, 'utf8');
-    mailBody          = mailBody.replace('{TOKEN}',signUpToken);
+    let mailBody      = fs.readFileSync(filePath, 'utf8');
+    mailBody          = mailBody.replace('{TOKEN}', await signUpToken);
+
+    const mailOptions = {
+        from   : process.env.SYS_EMAIL,  
+        to     : email,                         
+        subject: '[회원가입 인증 메일]',                       
+        html   : mailBody                           
+    };
 
     try {
         const info = await transPorter.sendMail(mailOptions);
@@ -53,26 +54,34 @@ const sendMailForSignUp = async ( email , signUpToken ) => {
     }
 };
 
-const insertUserData = async ( userData, userFiles, signUpToken ) => {
+exports.insertUserData = async ( userData, signUpToken ) => {
     const userRole = 1; //PENDING
-    await db.query( query.insertSignupData , [
-        userData.name,
-        userData,email,
-        userData.phone,
-        userData.userId,
-        userData.category,
-        signUpToken,
-        userRole,
-        userFiles.resume,
-        userFiles.resumeUrl,
-        userFiles.selfIntro,
-        userFiles.selfIntro_url,
-        userFiles.carrerDesc,
-        userFiles.careerDescUrl,
-        userFiles.portpolioUrl,   
-    ]);
+    try {
+        await db.query( query.insertSignupData , [
+            userData.name,
+            userData.email,
+            userData.phone,
+            userData.userId,
+            userData.password,
+            userData.category,
+            signUpToken,
+            userRole,
+            userData.resume,
+            userData.resumeUrl,
+            userData.selfIntro,
+            userData.selfIntro_url,
+            userData.carrerDesc,
+            userData.careerDescUrl,
+            userData.portpolioUrl,   
+        ]);
+        return true;
+        
+    } catch ( error ) {
+        return false
+    }
+   
 }
 
-const makeSignUpToken = async ( email ) => {
+exports.makeSignUpToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.SIGNUP_SECRET, { expiresIn: '5m' } );
 }
