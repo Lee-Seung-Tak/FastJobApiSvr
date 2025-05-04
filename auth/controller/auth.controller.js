@@ -32,15 +32,12 @@ exports.login = async ( req, res ) => {
 
 exports.signUp = async ( req, res ) => {
     try {
-        const userData      = signUpDTO.isValid    ( req.body );
-        const userFiles     = signUpDTO.fileIsVaild( req.body.fiels) ;
-
-        await authService.signUp( userData, userFiles );
+        const userData = signUpDTO.isValid    ( req.body, req.files );
+        await authService.signUp( userData );
 
         return res.status(201).json( {"message" : "Once you have completed your email authentication, your account will be activated."} );
 
     } catch ( error ) {
-        console.log(error)
         return res.status(400).json( { "message" : "Bad Request" } );
     }
 }
