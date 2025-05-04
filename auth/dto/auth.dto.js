@@ -1,3 +1,5 @@
+const { serveFiles } = require("swagger-ui-express");
+
 class LoginDTO { 
     // 객체의 email, password 초기화
     constructor( userId, password ) {
@@ -18,17 +20,44 @@ class LoginDTO {
 }
 
 class SignUpDTO {
-    constructor ( userData ) {
+    constructor ( userData, userFiles) {
         //name, email, phone, user_id, password, category, 
         // resume, resume_url, self_intro, self_intro_url, carrer_desc, career_desc_url, portpolio_url
-        this.name     = userData.name;
-        this.email    = userData.email;
-        this.phone    = userData.phone;
-        this.userId   = userData.userId;
-        this.password = userData.password;
-        this.category = userData.category;
+        this.name          = userData.name;
+        this.email         = userData.email;
+        this.phone         = userData.phone;
+        this.userId        = userData.userId;
+        this.password      = userData.password;
+        this.category      = userData.category;
+        
+        const newUserFiles = userFiles.reduce( (acc, fileData ) => {
+            if ( fileData.portpolioUrl != '' )
+                acc[fileData.fieldname+'Url'] = fileData.path;
+            return acc;
+        }, {});
+  
+        userFiles.resume           = userFiles.resume           ?? '';
+        userFiles.selfIntro        = userFiles.selfIntro        ?? '';
+        userFiles.carrerDesc       = userFiles.carrerDesc       ?? '';
+        userFiles.portpolioUrl     = userFiles.portpolioUrl     ?? '';
+
+        newUserFiles.resumeUrl     = newUserFiles.resumeUrl     ?? '';
+        newUserFiles.selfIntroUrl  = newUserFiles.selfIntroUrl  ?? '';
+        newUserFiles.carrerDescUrl = newUserFiles.carrerDescUrl ?? '';
+        newUserFiles.portpolioUrl  = newUserFiles.portpolioUrl  ?? '';
+
+
+        this.resume                = userFiles.resume;
+        this.selfIntro             = userFiles.selfIntro;
+        this.carrerDesc            = userFiles.carrerDesc;
+        this.portpolioUrl          = userFiles.portpolioUrl;
+
+        this.resumeUrl             = newUserFiles.resumeUrl;     
+        this.selfIntroUrl          = newUserFiles.selfIntroUrl;
+        this.carrerDescUrl         = newUserFiles.carrerDescUrl; 
+
     }
-    static isValid(userData) {
+    static isValid( userData, userFiles) {
         if (
           !userData          ||
           !userData.name     ||
@@ -40,21 +69,18 @@ class SignUpDTO {
         ) {
           throw new Error('check user data(name, email, phone, userId, password, category)');
         }
-      
-        return new SignUpDTO(userData);
+        
+        // if( userFiles == [] )
+        // {
+        //     userFiles.resume    = '';
+        //     userFiles.selfIntro = '';
+        //     userFiles.carrerDesc = '';
+        //     userFiles.portpolioUrl = ''
+        // }
+        
+        return new SignUpDTO( userData, userFiles);
     }
 
-    static fileIsVaild( userFiles ) {
-        userFiles.resume         = !userFiles.resume         ? userFiles.resume        : '';
-        userFiles.resumeUrl      = !userFiles.resumeUrl      ? userFiles.resumeUrl     : '';
-        userFiles.selfIntro      = !userFiles.selfIntro      ? userFiles.selfIntro     : '';
-        userFiles.selfIntroUrl   = !userFiles.selfIntroUrl   ? userFiles.selfIntroUrl  : '';
-        userFiles.carrerDesc     = !userFiles.carrerDesc     ? userFiles.carrerDesc    : '';
-        userFiles.careerDescUrl  = !userFiles.careerDescUrl  ? userFiles.careerDescUrl : '';
-        userFiles.portpolioUrl   = !userFiles.portpolioUrl   ? userFiles.portpolioUrl  : '';
-
-        return userFiles;
-    }
     
 
 }
