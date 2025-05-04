@@ -16,7 +16,6 @@ const authRouter  = require('@auth_router')
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use( express.json() );
-const multer = require('multer');
 
 app.use( '/auth', authRouter );
 app.use( ( req, res, next ) => {
