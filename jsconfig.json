@@ -4,7 +4,7 @@
     "paths": {
       "@auth_controller": ["auth/controller/auth.controller.js"],
       "@auth_service": ["auth/service/auth.service.js"],
-      "@auth_logic": ["auth/service/auth.service.js"],
+      "@auth_logic": ["auth/service/auth.logic.js"],
       "@auth_router": ["auth/auth.router.js"],
       "@auth_dto": ["auth/dto/auth.dto.js"],
       "@db": ["database/db.js"],
