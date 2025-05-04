@@ -131,15 +131,15 @@ router.post('/login',  authController.login);
  *                 type: string
  *                 format: binary
  *                 description: Upload resume file (optional)
- *               resume_url:
+ *               resumeUrl:
  *                 type: string
  *                 description: External URL for resume (optional)
  *                 example: https://example.com/resume.pdf
- *               self_intro:
+ *               selfIntro:
  *                 type: string
  *                 format: binary
  *                 description: Upload self-introduction file (optional)
- *               self_intro_url:
+ *               selfIntroUrl:
  *                 type: string
  *                 description: External URL for self-introduction (optional)
  *                 example: https://example.com/intro.pdf
@@ -147,11 +147,11 @@ router.post('/login',  authController.login);
  *                 type: string
  *                 format: binary
  *                 description: Upload career description file (optional)
- *               career_desc_url:
+ *               careerDescUrl:
  *                 type: string
  *                 description: External URL for career description (optional)
  *                 example: https://example.com/career.pdf
- *               portpolio_url:
+ *               portpolioUrl:
  *                 type: string
  *                 description: External link to portfolio (optional)
  *                 example: https://portfolio.example.com
