@@ -34,3 +34,8 @@ export const insertSignupData = ` INSERT INTO users.user_account (
   );
 `;
 
+export const signupSuccess = `UPDATE users.user_account
+  SET role = 2 , access_token = null
+  WHERE email = $1
+`;
+
