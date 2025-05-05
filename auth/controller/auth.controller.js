@@ -1,10 +1,9 @@
 const authService = require('@auth_service');
 const authDTO     = require('@auth_dto');
-const { Pool } = require('pg');
+const path        = require('path');
 
 const loginDTO    = authDTO.LoginDTO;
 const signUpDTO   = authDTO.SignUpDTO;
-
 
 
 exports.login = async ( req, res ) => {
@@ -38,14 +37,16 @@ exports.signUp = async ( req, res ) => {
         return res.status(201).json( {"message" : "Once you have completed your email authentication, your account will be activated."} );
 
     } catch ( error ) {
+        console.log('[ERROR] - ', error)
         return res.status(400).json( { "message" : "Bad Request" } );
     }
 }
 
-
 exports.signUpVerify = async ( req, res ) => {
-    console.log(req.query)
+
+    const verifyStatus = await authService.signUpVerify( req.query.token );
+
+    if ( verifyStatus ) return res.sendFile( path.join(__dirname, 'signup-success.html'));
+    else                return res.sendFile( path.join(__dirname, 'token-error.html'   ));
 
 }
-
-//name, email, phone, user_id, password, category, resume, resume_url, self_intro, self_intro_url, carrer_desc, career_desc_url, portpolio_url
