@@ -47,13 +47,21 @@ exports.signUp = async ( userData ) => {
         if (insertStatus === true)
             await serviceLogic.sendMailForSignUp( userData.email, signUpToken );
 
-        else throw new Error(error)
+        else throw new Error(insertStatus)
 
     } catch (error) {
-        throw new Error(error)
+        throw new Error(error.message)
     }
 }
 
-exports.signUpVerify = async() => {
-
+exports.signUpVerify = async( signUpToken ) => {
+    try {
+        const decode = await serviceLogic.verifySignUpToken( signUpToken );
+        console.log('decode.email ::: ', decode.email)
+        await db.query ( query.signupSuccess, [decode.email] );
+        return true;
+    } catch ( error ) {
+        console.log(error)
+        return false;
+    }
 }

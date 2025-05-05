@@ -16,6 +16,10 @@ exports.makeRefreshToken = async ( userId ) => {
     return jwt.sign( { userId : userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
 }
 
+exports.verifySignUpToken = async ( signUpToken ) => {
+    return jwt.verify( signUpToken, process.env.SIGNUP_SECRET );
+}
+
 
 // 이메일 발송 함수 
 const transPorter = nodemailer.createTransport({
@@ -75,9 +79,9 @@ exports.insertUserData = async ( userData, signUpToken ) => {
             userData.portpolioUrl,   
         ]);
         return true;
-        
+
     } catch ( error ) {
-        return false
+        return error
     }
    
 }
