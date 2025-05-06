@@ -2,7 +2,8 @@
 
 const db           = require('@db');
 const serviceLogic = require('@auth_logic')
-const query        = require('@query')
+const query        = require('@query');
+const { sign } = require('jsonwebtoken');
 
 exports.login = async( userId, password ) => {
     try {
@@ -36,7 +37,6 @@ exports.login = async( userId, password ) => {
 
 exports.signUp = async ( userData ) => {
     try {
-        console.log("here")
         let queryResult = await db.query( query.checkIdDuplicate, [ userData.userId ] );
         queryResult     = queryResult.rows;
         if ( queryResult == [] ) throw new Error('user is duplicate');
@@ -56,10 +56,17 @@ exports.signUp = async ( userData ) => {
 
 exports.signUpVerify = async( signUpToken ) => {
     try {
-        const decode = await serviceLogic.verifySignUpToken( signUpToken );
-        console.log('decode.email ::: ', decode.email)
-        await db.query ( query.signupSuccess, [decode.email] );
-        return true;
+        const decode    = await serviceLogic.verifySignUpToken( signUpToken );
+        let queryResult = await db.query ( query.checkSignUpToken, [decode.email] );
+        queryResult     = queryResult.rows[0].access_token;
+
+        if ( signUpToken === queryResult )
+        {
+            await db.query ( query.signupSuccess, [decode.email] );
+            return true;
+
+        } else return false;
+
     } catch ( error ) {
         console.log(error)
         return false;
