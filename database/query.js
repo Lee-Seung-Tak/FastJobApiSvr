@@ -34,6 +34,12 @@ export const insertSignupData = ` INSERT INTO users.user_account (
   );
 `;
 
+export const checkSignUpToken = `SELECT access_token
+  FROM users.user_account
+  WHERE email = $1
+`;
+
+
 export const signupSuccess = `UPDATE users.user_account
   SET role = 2 , access_token = null
   WHERE email = $1
