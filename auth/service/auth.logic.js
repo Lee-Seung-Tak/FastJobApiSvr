@@ -15,7 +15,6 @@ exports.makeAccessToken = async ( userId ) => {
 exports.makeRefreshToken = async ( userId ) => {
     return jwt.sign( { userId : userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
 }
-
 exports.verifySignUpToken = async ( signUpToken ) => {
     return jwt.verify( signUpToken, process.env.SIGNUP_SECRET );
 }
