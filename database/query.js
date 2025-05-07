@@ -45,14 +45,19 @@ export const signupSuccess = `UPDATE users.user_account
   WHERE email = $1
 `;
 
-export const updatePassword = `UPDATE users.user_account
-SET password = $1
-WHERE user_id = $2
+export const getUserPassword = `SELECT password
+  FROM users.user_account
+  WHERE user_id = $1;
 `;
 
-export const updatePhone = `UPDATE users.user_account
-SET phone = $1 
-WHERE user_id = $2
+export const patchPassword = `UPDATE users.user_account
+  SET password = $1
+  WHERE user_id = $2
+`;
+
+export const patchPhoneNumber = `UPDATE users.user_account
+  SET phone = $1 
+  WHERE user_id = $2
 `;
 
 
