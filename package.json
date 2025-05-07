@@ -21,6 +21,9 @@
     "@auth_controller": "./auth/controller/auth.controller.js",
     "@auth_router": "./auth/auth.router.js",
     "@middleware": "./middleware/middleware.js",
-    "@auth_dto": "./auth/dto/auth.dto.js"
+    "@auth_dto": "./auth/dto/auth.dto.js",
+    "@users_router": "./users/users.router.js",
+    "@users_controller":"./users/controller/users.controller.js",
+    "@users_service":"./users/service/users.service.js"
   }
 }
