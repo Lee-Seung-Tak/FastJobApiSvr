@@ -12,11 +12,14 @@ const CPU        = 2;
 const swaggerUi   = require('swagger-ui-express');
 const swaggerSpec = require('./swagger'); 
 
-const authRouter  = require('@auth_router')
+const authRouter  = require('@auth_router');
+const swaggerJSDoc = require('swagger-jsdoc');
+const usersRouter = require('@users_router');
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use( express.json() );
 
+app.use( '/users', usersRouter );
 app.use( '/auth', authRouter );
 app.use( ( req, res, next ) => {
     if ( req.pacth === '/auth/login' || req.path === '/auth/signup') return next();
