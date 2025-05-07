@@ -9,7 +9,10 @@
       "@auth_dto": ["auth/dto/auth.dto.js"],
       "@db": ["database/db.js"],
       "@query": ["database/query.js"],
-      "@middleware": ["middleware/middleware.js"]
+      "@middleware": ["middleware/middleware.js"],
+      "@users_router": ["users/users.router.js"],
+      "@users_controller": ["users/controller/users.controller.js"],
+      "@users_service": ["users/service/users.service.js"],
     }
   },
   "include": [
