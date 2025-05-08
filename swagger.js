@@ -9,7 +9,7 @@ const options = {
       version: '1.0.0',
     },
   },
-  apis: ['./auth/*.js', './routes/*.js'],
+  apis: ['./auth/*.js', './routes/*.js', './users/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
