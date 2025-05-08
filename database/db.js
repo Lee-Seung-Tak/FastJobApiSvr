@@ -16,15 +16,15 @@ const pool = new Pool({
     connectionTimeoutMillis: 2000,
   });
   
-  const testConnection = async () => {
+  const connectionTest = async () => {
     try {
       const result = await pool.query('SELECT NOW()');
-      console.log('[LOG]- testConnection / success time', result.rows[0].now,'\n');
+      console.log('[LOG]- connectionTest / success time', result.rows[0].now,'\n');
     } catch (err) {
-      console.error('[LOG]- testConnection / failed :', err,'\n');
+      console.error('[LOG]- connectionTest / failed :', err,'\n');
     }
   };
   
-  testConnection();
+  connectionTest();
 
 export const query = (text, params) => pool.query(text, params);
