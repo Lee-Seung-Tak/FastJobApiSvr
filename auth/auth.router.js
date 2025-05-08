@@ -175,7 +175,10 @@ router.post('/signup', userData.any(), authController.signUp);
 
 
 router.get('/signup-verify', authController.signUpVerify)
-  
+
+router.get('/test', async (req,res)=>{
+  console.log(req.userId)
+})
 
 module.exports = router;
 
