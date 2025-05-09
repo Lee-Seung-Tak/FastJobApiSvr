@@ -49,11 +49,11 @@ exports.sendMailForSignUp = async ( email , signUpToken ) => {
     try {
         const info = await transPorter.sendMail(mailOptions);
         console.log('Email sent: ' + info.response);
-        return info.response;  // 이메일 발송 성공 메시지 반환
 
     } catch (error) {
-        console.error('Error sending email:', error);
-        throw new Error('Failed to send email');  // 이메일 발송 실패 시 에러 발생
+        console.error  ( 'Error sending email:', error );
+        await db.query ( query.sendEmailFalse, [email] );
+        throw new Error( 'Failed to send email' );  // 이메일 발송 실패 시 에러 발생
     }
 };
 
