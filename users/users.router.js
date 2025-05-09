@@ -72,8 +72,14 @@ const router             = express.Router();
  *                   type: string
  *                   example: Old password is incorrect
  */
+// 사용자 정보 수정
 router.patch('/user', usersController.patchUser);
 
+// 유저 본인 정보 조회
 router.get('/me', usersController.getUser);
+
+// TO Do - 1
+// 사용자 이력서 및 자기소개서, 경력 기술서, 포트폴리오 url 업데이트
+//router.update('/user')
 
 module.exports = router;
