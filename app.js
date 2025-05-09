@@ -24,8 +24,10 @@ app.use( ( req, res, next ) => {
     if ( req.path === '/auth/login' || req.path === '/auth/signup') return next();
     middleWare.verifyToken( req, res, next );
 })
+
 app.use( '/users', usersRouter );
 app.use( '/auth',  authRouter );
+
 if (cluster.isMaster) {
     for (let i = 0; i< CPU; i++)
         cluster.fork();
