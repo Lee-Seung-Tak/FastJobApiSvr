@@ -45,3 +45,8 @@ export const signupSuccess = `UPDATE users.user_account
   WHERE email = $1
 `;
 
+export const sendEmailFalse = `UPDATE users.user_account
+  SET role = 3
+  WHERE email = $1
+`;
+
