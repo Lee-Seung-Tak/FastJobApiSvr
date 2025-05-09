@@ -5,6 +5,10 @@ const serviceLogic = require('@auth_logic')
 const query        = require('@query');
 const { sign } = require('jsonwebtoken');
 
+const PENDING     = 1;
+const NORMAL      = 2;
+const EMAIL_FAILE = 3;
+
 exports.login = async( userId, password ) => {
     try {
         // DB에서 userId값이 있는지 조회
@@ -12,7 +16,10 @@ exports.login = async( userId, password ) => {
         queryResult     = queryResult.rows[0];
 
         // 없다면 Error
-        if ( queryResult === undefined ) throw new Error('user not found')
+        if ( queryResult === undefined   ) throw new Error('user not found')
+        
+        if ( queryResult.role !== NORMAL ) throw new Error('user not found')
+
         
         // 비밀번호 검증
         if ( queryResult.password === password ) {
@@ -45,7 +52,7 @@ exports.signUp = async ( userData ) => {
         
         const insertStatus   = await serviceLogic.insertUserData( userData, await signUpToken );
         if (insertStatus === true)
-            await serviceLogic.sendMailForSignUp( userData.email, signUpToken );
+            serviceLogic.sendMailForSignUp( userData.email, signUpToken );
 
         else throw new Error(insertStatus)
 
