@@ -50,3 +50,51 @@ export const sendEmailFalse = `UPDATE users.user_account
   WHERE email = $1
 `;
 
+export const getUserPassword = `SELECT password
+  FROM users.user_account
+  WHERE user_id = $1;
+`;
+
+export const patchPassword = `UPDATE users.user_account
+  SET password = $1
+  WHERE user_id = $2
+`;
+
+export const patchPhoneNumber = `UPDATE users.user_account
+  SET phone = $1 
+  WHERE user_id = $2
+`;
+
+export const getUserById = `
+  SELECT
+    id,
+    name,
+    email,
+    phone,
+    user_id,
+    role,
+    category,
+    resume,
+    resume_url,
+    self_intro,
+    self_intro_url,
+    career_desc,
+    career_desc_url,
+    portfolio_url,
+    access_token,
+    refresh_token,
+    created_at,
+    updated_at
+  FROM users.user_account
+  WHERE user_id = $1
+`;
+
+export const getUserData = `
+  SELECT
+    category,
+    resume,
+    self_intro,
+    career_desc
+  FROM users.user_account
+  WHERE user_id = $1
+`;

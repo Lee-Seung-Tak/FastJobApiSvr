@@ -12,20 +12,20 @@ const CPU        = 2;
 const swaggerUi   = require('swagger-ui-express');
 const swaggerSpec = require('./swagger'); 
 
-const authRouter  = require('@auth_router')
+const authRouter  = require('@auth_router');
+const swaggerJSDoc = require('swagger-jsdoc');
+const usersRouter = require('@users_router');
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use( express.json() );
 
+
 app.use( ( req, res, next ) => {
-    if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/auth/signup-verify') return next();
+    if ( req.path === '/auth/login' || req.path === '/auth/signup') return next();
     middleWare.verifyToken( req, res, next );
 })
-
-// lst add - router 경로 항상 미들웨어 밑으로
-app.use( '/auth', authRouter );
-
-
+app.use( '/users', usersRouter );
+app.use( '/auth',  authRouter );
 if (cluster.isMaster) {
     for (let i = 0; i< CPU; i++)
         cluster.fork();
