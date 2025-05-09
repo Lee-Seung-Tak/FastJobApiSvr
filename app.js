@@ -19,13 +19,13 @@ const usersRouter = require('@users_router');
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use( express.json() );
 
-app.use( '/users', usersRouter );
-app.use( '/auth', authRouter );
+
 app.use( ( req, res, next ) => {
-    if ( req.pacth === '/auth/login' || req.path === '/auth/signup') return next();
+    if ( req.path === '/auth/login' || req.path === '/auth/signup') return next();
     middleWare.verifyToken( req, res, next );
 })
-
+app.use( '/users', usersRouter );
+app.use( '/auth', authRouter );
 if (cluster.isMaster) {
     for (let i = 0; i< CPU; i++)
         cluster.fork();
