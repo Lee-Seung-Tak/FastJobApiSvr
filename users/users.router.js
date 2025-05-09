@@ -2,7 +2,7 @@ const express            = require('express');
 const usersController    = require('@users_controller');
 const multer             = require('multer');
 const path               = require('path');
-
+const router             = express.Router();
 
 /**
  * @swagger
@@ -73,5 +73,7 @@ const path               = require('path');
  *                   example: Old password is incorrect
  */
 router.patch('/user', usersController.patchUser);
+
+router.get('/me', usersController.getUser);
 
 module.exports = router;
