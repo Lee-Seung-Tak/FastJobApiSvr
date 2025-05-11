@@ -9,7 +9,7 @@ export const loginSuccess = "UPDATE users.user_account SET access_token = $1, re
 
 export const checkIdDuplicate = "SELECT * FROM users.user_account WHERE user_id = $1 LIMIT 1;";
 
-export const insertSignupData = ` INSERT INTO users.user_account (
+export const insertSignupData = `INSERT INTO users.user_account (
     name,
     email,
     phone,
@@ -98,3 +98,16 @@ export const getUserData = `
   FROM users.user_account
   WHERE user_id = $1
 `;
+
+export const updateResume = `UPDATE users.user_account
+  SET resume = $1,
+  WHERE userId = $2
+`;
+
+export const updateSelfIntro = `UPDATE users.user_account
+  SET self_intro = $1,
+  WHERE userId = $2`;
+
+export const updateCarrerDesc = `UPDATE users.user_account
+  SET career_desc = $1,
+  WHERE userId = $2`;
