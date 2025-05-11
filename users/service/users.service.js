@@ -46,16 +46,17 @@ exports.getUser = async ( userId ) => {
     err.statusCode = 400;
     throw err;
   }
-    // DB에서 유저 조회회
+    // DB에서 유저 조회
     let queryResult = await db.query( queryJson.getUserById, [userId] );
     queryResult = queryResult.row[0];
 
-    if (!user) {
+    if (!queryResult) {
       const err = new Error('User not found');
       err.statusCode = 404;
       throw err;
     }
-    // 비밀번호 정보는 제외하고 반환환
+    
+    // 비밀번호 정보는 제외하고 반환
     const { password, ...userInfo } = user;
     return userInfo;
 };
