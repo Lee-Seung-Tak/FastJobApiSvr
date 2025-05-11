@@ -27,6 +27,8 @@
     "@users_service": "./users/service/users.service.js",
     "@companys_router": "./companys/companys.router.js",
     "@companys_controller": "./companys/controller/companys.controller.js",
-    "@companys_service": "./companys/service/companys.service.js"
+    "@companys_service": "./companys/service/companys.service.js",
+    "@ai_analyze_gemini" : "./ai_analyze/gemini.js",
+    "@ai_analyze" : "./ai_analyze/ai_analyze.js"
   }
 }
