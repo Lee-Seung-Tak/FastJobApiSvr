@@ -1,6 +1,6 @@
 const fs     = require('fs');
 const pdf    = require('pdf-parse');
-const gemini = require('./gemini.js'); 
+const gemini = require('@ai_analyze_gemini'); 
 const db     = require('@db');
 const query  = require('@query');
 
