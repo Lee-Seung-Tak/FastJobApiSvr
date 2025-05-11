@@ -13,6 +13,8 @@
       "@users_router": ["users/users.router.js"],
       "@users_controller": ["users/controller/users.controller.js"],
       "@users_service": ["users/service/users.service.js"],
+      "@ai_analyze_gemini" : ["ai_analyze/gemini.js"],
+      "@ai_analyze" : ["ai_analyze/ai_analyze.js"],
     }
   },
   "include": [
