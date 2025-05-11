@@ -1,6 +1,10 @@
 const fs     = require('fs');
 const pdf    = require('pdf-parse');
+<<<<<<< HEAD
 const gemini = require('@ai_analyze_gemini'); 
+=======
+const gemini = require('./gemini.js'); 
+>>>>>>> 2f5bb8d (lst add / use ai model function add)
 const db     = require('@db');
 const query  = require('@query');
 
@@ -10,6 +14,10 @@ exports.aiAnalyzeResume = async ( userId, fileUrl ) => {
     let pdfData          = await pdf(dataBuffer);
     pdfData              = pdfData.text.replace(/\n/g, '');
     const aiAnlaysReulst = await gemini.generateContent( pdfData );
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2f5bb8d (lst add / use ai model function add)
     await db.query(query.updateResume, [ aiAnlaysReulst, userId ] )
 }
 
@@ -31,6 +39,7 @@ exports.aiAnalyzeCarrerDesc = async ( userId, fileUrl ) => {
     pdfData              = pdfData.text.replace(/\n/g, '');
     const aiAnlaysReulst = await gemini.generateContent( pdfData );
 
+<<<<<<< HEAD
     await db.query(query.updateCareerDesc, [ aiAnlaysReulst, userId ] )
 }
 
@@ -43,3 +52,10 @@ exports.aiAnalyzeCarrerDesc = async ( userId, fileUrl ) => {
     2. Rag를 활용하여 구축하세요.
  */
 // end
+=======
+    await db.query(query.updateCarrerDesc, [ aiAnlaysReulst, userId ] )
+}
+
+
+
+>>>>>>> 2f5bb8d (lst add / use ai model function add)

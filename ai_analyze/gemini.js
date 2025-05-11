@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 import dotenv from 'dotenv';
 dotenv.config(); // 가장 먼저 호출해야 함
@@ -7,6 +8,13 @@ const ai = new GoogleGenAI({ apiKey:  process.env.API_KEY });
 
 //import { GoogleGenAI } from '@google/genai';
 export const generateContent = async(data) =>{
+=======
+const { GoogleGenAI } = require('@google/genai'); 
+const ai = new GoogleGenAI({ apiKey: "AIzaSyAWuH-6ucMg35U5ZdI_ukCV6m7UKldCP-Y" });
+
+//import { GoogleGenAI } from '@google/genai';
+exports.generateContent = async(data) =>{
+>>>>>>> 2f5bb8d (lst add / use ai model function add)
     const response = await ai.models.generateContent({
         model: "gemini-2.0-flash",
         contents: `제가 제공한 데이터는 PDF에서 추출한 내용입니다. 이 내용에서 중요한 정보들을 추려내어 기승전결 구조에 맞춰서, 
