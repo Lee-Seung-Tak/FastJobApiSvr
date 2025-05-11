@@ -41,9 +41,26 @@ exports.patchUser = async ( patchUserData ) => {
   return { message: 'User information updated successfully' };
 };
 
-exports.getUserSkillsByUserId = async ( userId ) => {
-  const result = await db.query( query.getSkillsByUserId, [userId] );
-  return result.rows;
+exports.getUser = async ( userId ) => {
+  
+  if ( !userId ) {
+    const err = new Error('user Id is required');
+    err.statusCode = 400;
+    throw err;
+  }
+    // DB에서 유저 조회
+    let queryResult = await db.query( queryJson.getUserById, [userId] );
+    queryResult = queryResult.row[0];
+
+    if (!queryResult) {
+      const err = new Error('User not found');
+      err.statusCode = 404;
+      throw err;
+    }
+    
+    // 비밀번호 정보는 제외하고 반환
+    const { password, ...userInfo } = user;
+    return userInfo;
 };
 
 
