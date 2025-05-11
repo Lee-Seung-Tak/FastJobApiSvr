@@ -3,7 +3,6 @@
 const db           = require('@db');
 const serviceLogic = require('@auth_logic')
 const query        = require('@query');
-const { sign } = require('jsonwebtoken');
 
 const PENDING     = 1;
 const NORMAL      = 2;
