@@ -1,7 +1,6 @@
 
 const db                      = require('@db');
 const query                   = require('@query');
-const { PG_UNIQUE_VIOLATION } = require('postgres-error-codes');
 const dotenv                  = require('dotenv')
 const fs                      = require('fs');
 const path                    = require('path');
