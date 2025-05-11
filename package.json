@@ -10,7 +10,6 @@
     "nodemailer": "^6.10.1",
     "pdf-parse": "^1.1.1",
     "pg": "^8.15.1",
-    "postgres-error-codes": "^0.0.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
@@ -24,10 +23,10 @@
     "@middleware": "./middleware/middleware.js",
     "@auth_dto": "./auth/dto/auth.dto.js",
     "@users_router": "./users/users.router.js",
-    "@users_controller":"./users/controller/users.controller.js",
-    "@users_service":"./users/service/users.service.js",
-    "@companys_router" :"./companys/companys.router.js",
-    "@companys_controller":"./companys/controller/companys.controller.js",
-    "@companys_service":"./companys/service/companys.service.js"
+    "@users_controller": "./users/controller/users.controller.js",
+    "@users_service": "./users/service/users.service.js",
+    "@companys_router": "./companys/companys.router.js",
+    "@companys_controller": "./companys/controller/companys.controller.js",
+    "@companys_service": "./companys/service/companys.service.js"
   }
 }
