@@ -1,7 +1,6 @@
 const usersService = require('@users_service');
-const authDTO      = require('@auth_dto');
 const path         = require('path');
-const multer       = require('multer');
+
 exports.patchUser = async ( req, res ) => {
 
   try { 
