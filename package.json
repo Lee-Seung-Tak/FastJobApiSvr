@@ -24,6 +24,7 @@
     "@auth_dto": "./auth/dto/auth.dto.js",
     "@users_router": "./users/users.router.js",
     "@users_controller": "./users/controller/users.controller.js",
-    "@users_service": "./users/service/users.service.js"
+    "@users_service": "./users/service/users.service.js",
+    "@users_logic": "./users/service/users.logic.js"
   }
 }
