@@ -5,6 +5,7 @@ const dotenv                  = require('dotenv')
 const fs                      = require('fs');
 const path                    = require('path');
 const nodemailer              = require('nodemailer');
+const analyze                 = require('@ai_analyze');
 dotenv.config();
 const jwt = require('jsonwebtoken');
 
@@ -56,6 +57,50 @@ exports.sendMailForSignUp = async ( email , signUpToken ) => {
     }
 };
 
+exports.sendAnalyzeDoneEmail = async ( email ) => {
+    const filePath    = path.join(__dirname, 'analyze.html');
+    let mailBody      = fs.readFileSync(filePath, 'utf8');
+
+    const mailOptions = {
+        from   : process.env.SYS_EMAIL,  
+        to     : email,                         
+        subject: '[회원가입 인증 메일]',                       
+        html   : mailBody                           
+    };
+
+    try {
+        const info = await transPorter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+
+    } catch (error) {
+        console.error  ( 'Error sending email:', error );
+        await db.query ( query.sendEmailFalse, [email] );
+        throw new Error( 'Failed to send email' );  // 이메일 발송 실패 시 에러 발생
+    }
+};
+
+exports.sendAnalyzeErrorEmail = async () => {
+    const filePath    = path.join(__dirname, 'analyze_error.html');
+    let mailBody      = fs.readFileSync(filePath, 'utf8');
+
+    const mailOptions = {
+        from   : process.env.SYS_EMAIL,  
+        to     : 'lstlove9804@naver.com',                         
+        subject: '[회원가입 인증 메일]',                       
+        html   : mailBody                           
+    };
+
+    try {
+        const info = await transPorter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+
+    } catch (error) {
+        console.error  ( 'Error sending email:', error );
+        await db.query ( query.sendEmailFalse, [email] );
+        throw new Error( 'Failed to send email' );  // 이메일 발송 실패 시 에러 발생
+    }
+};
+
 exports.insertUserData = async ( userData, signUpToken ) => {
     const userRole = 1; //PENDING
     try {
@@ -86,4 +131,24 @@ exports.insertUserData = async ( userData, signUpToken ) => {
 
 exports.makeSignUpToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.SIGNUP_SECRET, { expiresIn: '5m' } );
+}
+
+exports.userDataAnalyze = async ( userData ) => {
+
+    try {
+        let analyzeResumeResult, analyzeSelfIntroResult, analyzeCarrerDescResult;
+        if (userData.resume)     analyzeResumeResult     = analyze.aiAnalyzeResume     ( userData.userId, userData.resumeUrl     );
+        if (userData.selfIntro)  analyzeSelfIntroResult  = analyze.aiAnalyzeSelfIntro  ( userData.userId, userData.selfIntroUrl  );
+        if (userData.carrerDesc) analyzeCarrerDescResult = analyze.aiAnalyzeCarrerDesc ( userData.userId, userData.carrerDescUrl );
+        
+        if ( analyzeResumeResult     ) await analyzeResumeResult;
+        if ( analyzeSelfIntroResult  ) await analyzeSelfIntroResult;
+        if ( analyzeCarrerDescResult ) await analyzeCarrerDescResult;
+
+        await sendAnalyzeDoneEmail( userData.email );
+
+    } catch ( error ) {
+        // Error인 경우 관리자 이메일
+        await sendAnalyzeErrorEmail();
+    }
 }
