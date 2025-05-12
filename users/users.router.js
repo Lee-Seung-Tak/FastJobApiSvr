@@ -20,8 +20,11 @@ const storage = multer.diskStorage({
     }
   });
   
-  const userData = multer({ storage: storage });
-  
+  const userData = multer({ storage }).fields([
+    { name: 'resume',     maxCount: 1 },
+    { name: 'selfIntro',  maxCount: 1 },
+    { name: 'careerDesc', maxCount: 1 },
+  ]);
 /**
  * @swagger
  * /users/user:
@@ -97,7 +100,7 @@ router.patch('/user', usersController.patchUser);
 router.get('/me', usersController.getUser);
 
 
-router.patch('/user/application-docs', userData.any(), usersController.patchUserProfileDocs);
+router.patch('/user/application-docs', userData, usersController.patchUserProfileDocs);
 // TO Do - 1
 // 사용자 이력서 및 자기소개서, 경력 기술서, 포트폴리오 url 업데이트
 //router.update('/user')
