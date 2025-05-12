@@ -14,7 +14,7 @@ exports.aiAnalyzeResume = async ( userId, fileUrl ) => {
     await db.query(query.updateResume, [ aiAnlaysReulst, userId ] )
 }
 
-exports.aiAnalyzeSelfIntro = async ( userId, fileUrl ) => {
+exports.aiAnalyzeSelfIntro = async ( userId, fileUrl ) => {ㅌㅂ
     const ResumeUrl      = `./${fileUrl}`;
     const dataBuffer     = fs.readFileSync( ResumeUrl );
     let pdfData          = await pdf(dataBuffer);
