@@ -1,5 +1,4 @@
 const usersService = require('@users_service');
-const path         = require('path');
 
 exports.patchUser = async ( req, res ) => {
 
@@ -23,21 +22,24 @@ exports.getUser = async ( req, res ) => {
   }
 };
 
+// lst add - 함수를 구현할 때 DB 저장되는 파일 외, LLM이 요약한 내용을 유저가 직접 수정하고 싶을 수 있습니다.
+// 그렇기 때문에 form-data를 사용한 것 입니다. 
+// 파일과 resume에 저장된 컬럼의 내용도 수정할 수 있어야 하기 때문입니다.
+// 그렇기 때문에, 파일들인 경우 EX) resumeFile 로 postman으로 전송, svr에서도 resumeFile 이런식으로 받으셔야 합니다.
+// 일반 DB에 저장된 내용을 수정하고 싶을 경우는 EX) resume 이렇게 받으면 LLM이 요약한 내용을 수정할 수 있어야 합니다.
+// 제가 설계한 의도는 그렇습니다.
+
 exports.patchUserProfileDocs = async (req, res) => {
+
   try {
-    const uploadDir = path.resolve(__dirname, '../../uploads');
-    // Object.values + flat 로 한번에 모든 파일을 배열로
-    const filesArray = Object.values(req.files).flat();
-    const result = await usersService.patchUserProfileDocs({
+    await usersService.patchUserProfileDocs({
       userId:    req.userId,
-      files:     filesArray,
-      uploadDir,
+      files:     req.files.resumeFile,
     });
-    console.log(filesArray)
-    return res.status(200).json({ data: result });
+
+    return res.status(200).json( { "message" : "Update Success" } );
+
   } catch (err) {
-    return res
-      .status(err.statusCode || 500)
-      .json({ message: err.message });
+    return res.status(400).json("Bad Request");
   }
 };
