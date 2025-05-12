@@ -19,6 +19,7 @@
     "auth/**/*",
     "database/**/*",
     "middleware/**/*",
+    "users/**/*",
     "src/**/*"
   ]
 }
