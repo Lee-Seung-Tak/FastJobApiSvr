@@ -13,9 +13,9 @@ const storage = multer.diskStorage({
       const safeOriginal = file.originalname
         .normalize('NFC')
         .replace(/[^a-zA-Z0-9.\-_]/g, '_');
-  
-      // 최종 파일명 생성 (userId 직접 사용)
-      const filename = `${req.body.userId}_${file.fieldname}_${safeOriginal}`;
+      
+      const filename = `${req.userId}_${file.fieldname}_${safeOriginal}`;
+      console.log(filename)
       cb(null, filename);
     }
   });
@@ -97,7 +97,7 @@ router.patch('/user', usersController.patchUser);
 router.get('/me', usersController.getUser);
 
 
-router.patch('/user/application-docs', userData.single('file'), usersController.patchResumeUrl);
+router.patch('/user/application-docs', userData.any(), usersController.patchUserProfileDocs);
 // TO Do - 1
 // 사용자 이력서 및 자기소개서, 경력 기술서, 포트폴리오 url 업데이트
 //router.update('/user')
