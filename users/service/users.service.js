@@ -2,6 +2,7 @@ const db           = require('@db');
 const queryJson    = require('@query');
 const fs           = require('fs');
 const path         = require('path');
+const multer       = require('multer');
 require('dotenv').config();
 
 
@@ -63,4 +64,35 @@ exports.getUser = async ( userId ) => {
 exports.getUserInfo = async( userId ) => {
   const { rows } = await db.query( queryJson.getUserData, [userId] );
   return rows.length ? rows[0] : null;
+};
+
+exports.patchResumeUrl = async ({ userId, file, uploadDir }) => {
+  // 1) 업로드된 파일이 없으면 400 에러
+  if (!file) {
+    const err = new Error('No resume file provided');
+    err.statusCode = 400;
+    throw err;
+  }
+  // 2) DB에서 기존 resume_url 조회
+  const prev = await db.query( queryJson.getResumeUrl, [userId] );
+  const existingUrl = prev.rows[0]?.resume_url;
+
+  // 3) 기존 파일이 있으면 파일 시스템에서 삭제
+  if (existingUrl) {
+    const oldPath = path.join(uploadDir, path.basename(existingUrl));
+    if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+  }
+
+  // 4) 새 URL 생성
+  const resumeUrl = `/uploads/${file.filename}`;
+
+  // 5) DB 업데이트
+  const { rows } = await db.query(queryJson.updateResumeUrl, [userId, resumeUrl]);
+  if (!rows.length) {
+    const err = new Error('User not found');
+    err.statusCode = 404;
+    throw err;
+  }
+  // 6) 업데이트된 URL 객체 반환
+  return rows[0];
 };
