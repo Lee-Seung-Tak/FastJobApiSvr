@@ -13,7 +13,7 @@ exports.patchUser = async ( req, res ) => {
 };
 
 exports.getUser = async ( req, res ) => {
-  console.log(req.userId)
+  
   try {
       const result = await usersService.getUserInfo( req.userId );
       return res.status(200).json({ data: result });
@@ -24,13 +24,12 @@ exports.getUser = async ( req, res ) => {
   }
 };
 
-exports.patchResumeUrl = async (req, res) => {
-  console.log('> req.file =', req.file);
+exports.patchUserProfileDocs = async (req, res) => {
   try {
     const uploadDir = path.resolve(__dirname, '../../uploads');
-    const result = await usersService.patchResumeUrl({
+    const result = await usersService.patchUserProfileDocs({
       userId: req.userId,   // 토큰 미들웨어가 주입한 사용자 ID
-      file:   req.file,     // multer.single이 파싱한 resume 파일
+      files:   req.files,     // multer.single이 파싱한 resume 파일
       uploadDir
     });
     return res.status(200).json({ data: result });
