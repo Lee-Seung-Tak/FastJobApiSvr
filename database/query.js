@@ -98,3 +98,14 @@ export const getUserData = `
   FROM users.user_account
   WHERE user_id = $1
 `;
+
+export const updateResumeUrl = `
+  UPDATE users.user_account
+  SET
+    resume_url = $2,
+    updated_at = NOW()
+  WHERE user_id = $1
+  RETURNING resume_url
+`;
+
+export const getResumeUrl = `SELECT resume_url FROM users.user_account WHERE user_id = $1`
