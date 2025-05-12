@@ -21,9 +21,9 @@ const storage = multer.diskStorage({
   });
   
   const userData = multer({ storage }).fields([
-    { name: 'resume',     maxCount: 1 },
-    { name: 'selfIntro',  maxCount: 1 },
-    { name: 'careerDesc', maxCount: 1 },
+    { name: 'resumeFile',     maxCount: 1 },
+    { name: 'selfIntroFile',  maxCount: 1 },
+    { name: 'careerDescFile', maxCount: 1 },
   ]);
 /**
  * @swagger
