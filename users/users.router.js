@@ -4,6 +4,24 @@ const multer             = require('multer');
 const path               = require('path');
 const router             = express.Router();
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // 저장 폴더
+    },
+    filename: function (req, file, cb) {
+      // 원본 이름에서 특수문자·깨진 문자 제거
+      const safeOriginal = file.originalname
+        .normalize('NFC')
+        .replace(/[^a-zA-Z0-9.\-_]/g, '_');
+  
+      // 최종 파일명 생성 (userId 직접 사용)
+      const filename = `${req.body.userId}_${file.fieldname}_${safeOriginal}`;
+      cb(null, filename);
+    }
+  });
+  
+  const userData = multer({ storage: storage });
+  
 /**
  * @swagger
  * /users/user:
@@ -78,6 +96,8 @@ router.patch('/user', usersController.patchUser);
 // 유저 본인 정보 조회
 router.get('/me', usersController.getUser);
 
+
+router.patch('/user/application-docs', userData.single('file'), usersController.patchResumeUrl);
 // TO Do - 1
 // 사용자 이력서 및 자기소개서, 경력 기술서, 포트폴리오 url 업데이트
 //router.update('/user')
