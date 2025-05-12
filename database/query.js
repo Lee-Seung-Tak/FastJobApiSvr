@@ -109,3 +109,7 @@ export const updateResumeUrl = `
 `;
 
 export const getResumeUrl = `SELECT resume_url FROM users.user_account WHERE user_id = $1`
+
+export const getSelfIntroUrl = `SELECT self_intro_url FROM users.user_account WHERE user_id = $1`
+
+export const getCareerDescUrl = `SELECT career_desc_url FROM users.user_account WHERE user_id = $1`
