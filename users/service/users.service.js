@@ -1,7 +1,7 @@
-const db           = require('@db');
-const queryJson    = require('@query');
-const fs           = require('fs');
-const path         = require('path');
+const db         = require('@db');
+const query      = require('@query');
+const usersLogic = require('@users_logic');
+const path       = require('path');
 require('dotenv').config();
 
 
@@ -18,14 +18,14 @@ exports.patchUser = async ( patchUserData ) => {
   }
 
   if ( phone ) {
-    const result = await db.query( queryJson.patchPhoneNumber, [phone, patchUserData.userId] );
+    const result = await db.query( query.patchPhoneNumber, [phone, patchUserData.userId] );
     console.log('updatePhone rowCount:', result.rowCount);
   }
 
   if ( oldPassword || newPassword || confirmPassword ) {
 
     // lst add / login -> getUserPassword라는 신규 쿼리 추가
-    let queryResult = await db.query( queryJson.getUserPassword, [patchUserData.userId] );
+    let queryResult = await db.query( query.getUserPassword, [patchUserData.userId] );
     queryResult     = queryResult.rows[0].password;
     
     if (!queryResult || queryResult !== oldPassword) {
@@ -33,7 +33,7 @@ exports.patchUser = async ( patchUserData ) => {
       throw err;
     }
     
-    await db.query( queryJson.patchPassword, [newPassword, patchUserData.userId] );
+    await db.query( query.patchPassword, [newPassword, patchUserData.userId] );
   }
 
   return { message: 'User information updated successfully' };
@@ -62,6 +62,36 @@ exports.getUser = async ( userId ) => {
 };
 
 exports.getUserInfo = async( userId ) => {
-  const { rows } = await db.query( queryJson.getUserData, [userId] );
+  const { rows } = await db.query( query.getUserData, [userId] );
   return rows.length ? rows[0] : null;
+};
+
+exports.patchUserProfileDocs = async ({ userId, files }) => {
+
+  try {
+    const uploadDir = path.resolve(__dirname, '../../uploads');
+
+    for (const file of files) {
+
+      const getUpdateQuery =
+        file.fieldname === 'resumeFile'     ? query.updateResumeUrl     :
+        file.fieldname === 'selfIntroFile'  ? query.updateSelfIntroUrl  :
+        file.fieldname === 'careerDescFile' ? query.updateCareerDescUrl : null;
+        
+      if ( getUpdateQuery )
+        updateUserDocsResult = usersLogic.updateUserDocsUrl( userId, file.filename, getUpdateQuery);
+
+      /*
+      * 여기에 file이 아닌 LLM(AI)가 정리한 내용을 직접 수정하는 로직을 넣으시면 됩니다.
+      */
+      if ( updateUserDocsResult )
+        await updateUserDocsResult;
+
+    }
+
+  } catch ( error )
+  {
+    throw new Error( error.message )
+  }
+  
 };

@@ -15,12 +15,14 @@
       "@users_service": ["users/service/users.service.js"],
       "@ai_analyze_gemini" : ["ai_analyze/gemini.js"],
       "@ai_analyze" : ["ai_analyze/ai.analyze.js"],
+      "@users_logic": ["users/service/users.logic.js"],
     }
   },
   "include": [
     "auth/**/*",
     "database/**/*",
     "middleware/**/*",
+    "users/**/*",
     "src/**/*"
   ]
 }
