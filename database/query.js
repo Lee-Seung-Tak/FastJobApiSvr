@@ -101,31 +101,19 @@ export const getUserData = `
 
 export const updateResumeUrl = `
   UPDATE users.user_account
-  SET
-    resume_url = $2,
-    updated_at = NOW()
-  WHERE user_id = $1
-  RETURNING resume_url
+  SET resume_url = $1, updated_at = NOW()
+  WHERE user_id = $2;
 `;
 
 export const updateSelfIntroUrl = `
   UPDATE users.user_account
-     SET self_intro_url = $2,
-         updated_at     = NOW()
-   WHERE user_id       = $1
- RETURNING self_intro_url
+  SET self_intro_url = $1, updated_at = NOW()
+  WHERE user_id = $2;
 `;
 
 export const updateCareerDescUrl = `
   UPDATE users.user_account
-     SET career_desc_url = $2,
-         updated_at      = NOW()
-   WHERE user_id        = $1
- RETURNING career_desc_url
+  SET career_desc_url = $1, updated_at = NOW()
+  WHERE user_id = $2;
 `;
 
-export const getResumeUrl = `SELECT resume_url FROM users.user_account WHERE user_id = $1`
-
-export const getSelfIntroUrl = `SELECT self_intro_url FROM users.user_account WHERE user_id = $1`
-
-export const getCareerDescUrl = `SELECT career_desc_url FROM users.user_account WHERE user_id = $1`
