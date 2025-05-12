@@ -1,12 +1,11 @@
 
 
 const db           = require('@db');
-const serviceLogic = require('@auth_logic')
+const serviceLogic = require('@auth_logic');
 const query        = require('@query');
-
-const PENDING     = 1;
-const NORMAL      = 2;
-const EMAIL_FAILE = 3;
+const PENDING      = 1;
+const NORMAL       = 2;
+const EMAIL_FAILE  = 3;
 
 exports.login = async( userId, password ) => {
     try {
@@ -42,8 +41,10 @@ exports.login = async( userId, password ) => {
 
 
 exports.signUp = async ( userData ) => {
+
     try {
-        let queryResult = await db.query( query.checkIdDuplicate, [ userData.userId ] );
+        // lst add / 비동기로 llm을 활용한 문서 요약 함수 실행
+        serviceLogic.userDataAnalyze( userData );
         queryResult     = queryResult.rows;
         if ( queryResult == [] ) throw new Error('user is duplicate');
 
