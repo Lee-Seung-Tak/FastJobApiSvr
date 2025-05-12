@@ -76,11 +76,9 @@ exports.patchUserProfileDocs = async ({ userId, files }) => {
         file.fieldname === 'resumeFile'     ? query.updateResumeUrl     :
         file.fieldname === 'selfIntroFile'  ? query.updateSelfIntroUrl  :
         file.fieldname === 'careerDescFile' ? query.updateCareerDescUrl : null;
-
-      console.log("getUpdateQuery ; ", getUpdateQuery)
+        
       if ( getUpdateQuery )
         updateUserDocsResult = usersLogic.updateUserDocsUrl( userId, file.filename, getUpdateQuery);
-        console.log("updateUserDocsResult : ", updateUserDocsResult)
 
       /*
       * 여기에 file이 아닌 LLM(AI)가 정리한 내용을 직접 수정하는 로직을 넣으시면 됩니다.

@@ -1,6 +1,7 @@
 const express            = require('express');
 const usersController    = require('@users_controller');
 const multer             = require('multer');
+const fs                 = require('fs');
 const path               = require('path');
 const router             = express.Router();
 
@@ -15,6 +16,22 @@ const storage = multer.diskStorage({
         .replace(/[^a-zA-Z0-9.\-_]/g, '_');
       
       const filename = `${req.userId}_${file.fieldname}_${safeOriginal}`;
+
+      const uploadDir = 'uploads';
+
+      // 기존 파일 삭제: req.userId와 file.fieldname이 포함된 파일들
+      const files = fs.readdirSync(uploadDir);
+      files.forEach((f) => {
+        if (f.includes(`${req.userId}_${file.fieldname}_`)) {
+          const targetPath = path.join(uploadDir, f);
+          try {
+            fs.unlinkSync(targetPath);
+          } catch (err) {
+            console.error(`delete failed: ${targetPath}`, err);
+          }
+        }
+      });
+
       cb(null, filename);
     }
   });
