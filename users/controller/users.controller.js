@@ -27,13 +27,18 @@ exports.getUser = async ( req, res ) => {
 exports.patchUserProfileDocs = async (req, res) => {
   try {
     const uploadDir = path.resolve(__dirname, '../../uploads');
+    // Object.values + flat 로 한번에 모든 파일을 배열로
+    const filesArray = Object.values(req.files).flat();
     const result = await usersService.patchUserProfileDocs({
-      userId: req.userId,   // 토큰 미들웨어가 주입한 사용자 ID
-      files:   req.files,     // multer.single이 파싱한 resume 파일
-      uploadDir
+      userId:    req.userId,
+      files:     filesArray,
+      uploadDir,
     });
+    console.log(filesArray)
     return res.status(200).json({ data: result });
   } catch (err) {
-    return res.status(err.statusCode||500).json({ message: err.message });
+    return res
+      .status(err.statusCode || 500)
+      .json({ message: err.message });
   }
 };
