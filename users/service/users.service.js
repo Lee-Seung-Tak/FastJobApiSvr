@@ -3,6 +3,7 @@ const queryJson    = require('@query');
 const fs           = require('fs');
 const path         = require('path');
 const multer       = require('multer');
+const usersLogic = require('@users_logic');
 require('dotenv').config();
 
 
@@ -66,68 +67,50 @@ exports.getUserInfo = async( userId ) => {
   return rows.length ? rows[0] : null;
 };
 
-// 이 함수를 resumeurl만을 위한 함수가 아니라 모두 받을 수 있게 하면 좋겠다는거에요.
-// 그래서 multer에서도 files로 넘겨 받는거고
-// 그리고 우리는 파일을 딱 3개만 받을거잖아요.
-// 파일네임으로 받아야겠지요.
 exports.patchUserProfileDocs = async ({ userId, files, uploadDir }) => {
+  // 입력 검증
+  if (!Array.isArray(files) || files.length === 0) {
+    const err = new Error('No files provided');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const result = {};
 
   for (const file of files) {
+    // 파일 유효성 검사
     if (!file) {
-      const err = new Error('No resume file provided');
+      const err = new Error('Invalid file provided');
       err.statusCode = 400;
       throw err;
     }
-    // 2) DB에서 기존 resume_url 조회
-    // 지금 이렇게 하면 기존 로직이 다 돌기는 할텐데
-    // 여기서 보이는 아 맞다 이것도 말하려고 했는데 queryJson -> query로 변경하세요. 이제 json아닙니다.
-    // 이거 조건이 좀 어렵네요 그쵸
-    // 얘를들어 file name 별로 json 하는게 좋겠네요.
-    // const query =
-    //   file.filename === 'resume'
-    //     ? queryJson.getResumeUrl
-    //     : file.filename === 'selfIntro'
-    //     ? queryJson.getSelfIntroUrl
-    //     : file.filename === 'carrerDesc'
-    //     ? queryJson.getCareerDescUrl
-    //     : null;
 
-    // let prev = query ? await db.query(query, [userId]) : null;
-
-    // 훨씬 깔끔하죠??
-    
-    const getPrevQuery =
-    file.fieldname === 'resume'     ? queryJson.getResumeUrl     :
-    file.fieldname === 'selfIntro'  ? queryJson.getSelfIntroUrl  :
-    file.fieldname === 'careerDesc' ? queryJson.getCareerDescUrl :
-    /* else */                       null;
-    if(!getPrevQuery) {
-      return resumeUrl.statusCode(400),json({ message: '필드가 존재하지 않습니다.' })
-    }
-    // 그리고 위에 if를 3항으로 하면 더 깔금하겠죠
+    // 1) fieldname에 따른 조회 쿼리·컬럼명·업데이트 쿼리 삼항 연산자
+    const [getPrevQuery, columnName] =
+      file.fieldname === 'resume'     ? [queryJson.getResumeUrl,     'resume_url']     :
+      file.fieldname === 'selfIntro'  ? [queryJson.getSelfIntroUrl,  'self_intro_url'] :
+      file.fieldname === 'careerDesc' ? [queryJson.getCareerDescUrl, 'career_desc_url'] :
+      /* else */                       (() => { 
+        const err = new Error(`Unsupported file field: ${file.fieldname}`);
+        err.statusCode = 400; throw err;
+      })();
+     
+    // 2) 이전 URL 조회
     const { rows: prevRows = [] } = await db.query(getPrevQuery, [userId]);
-    const existingUrl = prevRows[0]?.resume_url ?? null;;
-  
     
+    const existingUrl = prevRows[0]?.[columnName] ?? null;
 
-    // 3) 기존 파일이 있으면 파일 시스템에서 삭제
-    if (existingUrl) {
-      const oldPath = path.join(uploadDir, path.basename(existingUrl));
-      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-    }
-  
-    // 4) 새 URL 생성
-    const resumeUrl = `/uploads/${file.filename}`;
-    
-    // 5) DB 업데이트
-    const { rows } = await db.query(queryJson.updateResumeUrl, [userId, resumeUrl]);
-    if (!rows.length) {
-      const err = new Error('User not found');
-      err.statusCode = 404;
-      throw err;
-    }
-    // 6) 업데이트된 URL 객체 반환
-    return rows[0];
+    // 3) 삭제·생성·업데이트 로직 호출
+    const newUrl = await usersLogic.updateDocumentUrl({
+      userId,
+      file,
+      uploadDir,
+      existingUrl
+    });
+
+    // 4) 결과 저장
+    result[file.fieldname] = newUrl;
   }
- 
+
+  return result;
 };
