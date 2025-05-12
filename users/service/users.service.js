@@ -1,9 +1,7 @@
-const db           = require('@db');
-const queryJson    = require('@query');
-const fs           = require('fs');
-const path         = require('path');
-const multer       = require('multer');
+const db         = require('@db');
+const query      = require('@query');
 const usersLogic = require('@users_logic');
+const path       = require('path');
 require('dotenv').config();
 
 
@@ -20,14 +18,14 @@ exports.patchUser = async ( patchUserData ) => {
   }
 
   if ( phone ) {
-    const result = await db.query( queryJson.patchPhoneNumber, [phone, patchUserData.userId] );
+    const result = await db.query( query.patchPhoneNumber, [phone, patchUserData.userId] );
     console.log('updatePhone rowCount:', result.rowCount);
   }
 
   if ( oldPassword || newPassword || confirmPassword ) {
 
     // lst add / login -> getUserPassword라는 신규 쿼리 추가
-    let queryResult = await db.query( queryJson.getUserPassword, [patchUserData.userId] );
+    let queryResult = await db.query( query.getUserPassword, [patchUserData.userId] );
     queryResult     = queryResult.rows[0].password;
     
     if (!queryResult || queryResult !== oldPassword) {
@@ -35,7 +33,7 @@ exports.patchUser = async ( patchUserData ) => {
       throw err;
     }
     
-    await db.query( queryJson.patchPassword, [newPassword, patchUserData.userId] );
+    await db.query( query.patchPassword, [newPassword, patchUserData.userId] );
   }
 
   return { message: 'User information updated successfully' };
@@ -49,7 +47,7 @@ exports.getUser = async ( userId ) => {
     throw err;
   }
     // DB에서 유저 조회회
-    let queryResult = await db.query( queryJson.getUserById, [userId] );
+    let queryResult = await db.query( query.getUserById, [userId] );
     queryResult = queryResult.row[0];
 
     if (!user) {
@@ -63,54 +61,38 @@ exports.getUser = async ( userId ) => {
 };
 
 exports.getUserInfo = async( userId ) => {
-  const { rows } = await db.query( queryJson.getUserData, [userId] );
+  const { rows } = await db.query( query.getUserData, [userId] );
   return rows.length ? rows[0] : null;
 };
 
-exports.patchUserProfileDocs = async ({ userId, files, uploadDir }) => {
-  // 입력 검증
-  if (!Array.isArray(files) || files.length === 0) {
-    const err = new Error('No files provided');
-    err.statusCode = 400;
-    throw err;
-  }
+exports.patchUserProfileDocs = async ({ userId, files }) => {
 
-  const result = {};
+  try {
+    const uploadDir = path.resolve(__dirname, '../../uploads');
 
-  for (const file of files) {
-    // 파일 유효성 검사
-    if (!file) {
-      const err = new Error('Invalid file provided');
-      err.statusCode = 400;
-      throw err;
+    for (const file of files) {
+
+      const getUpdateQuery =
+        file.fieldname === 'resumeFile'     ? query.updateResumeUrl     :
+        file.fieldname === 'selfIntroFile'  ? query.updateSelfIntroUrl  :
+        file.fieldname === 'careerDescFile' ? query.updateCareerDescUrl : null;
+
+      console.log("getUpdateQuery ; ", getUpdateQuery)
+      if ( getUpdateQuery )
+        updateUserDocsResult = usersLogic.updateUserDocsUrl( userId, file.filename, getUpdateQuery);
+        console.log("updateUserDocsResult : ", updateUserDocsResult)
+
+      /*
+      * 여기에 file이 아닌 LLM(AI)가 정리한 내용을 직접 수정하는 로직을 넣으시면 됩니다.
+      */
+      if ( updateUserDocsResult )
+        await updateUserDocsResult;
+
     }
 
-    // 1) fieldname에 따른 조회 쿼리·컬럼명·업데이트 쿼리 삼항 연산자
-    const [getPrevQuery, columnName] =
-      file.fieldname === 'resume'     ? [queryJson.getResumeUrl,     'resume_url']     :
-      file.fieldname === 'selfIntro'  ? [queryJson.getSelfIntroUrl,  'self_intro_url'] :
-      file.fieldname === 'careerDesc' ? [queryJson.getCareerDescUrl, 'career_desc_url'] :
-      /* else */                       (() => { 
-        const err = new Error(`Unsupported file field: ${file.fieldname}`);
-        err.statusCode = 400; throw err;
-      })();
-     
-    // 2) 이전 URL 조회
-    const { rows: prevRows = [] } = await db.query(getPrevQuery, [userId]);
-    
-    const existingUrl = prevRows[0]?.[columnName] ?? null;
-
-    // 3) 삭제·생성·업데이트 로직 호출
-    const newUrl = await usersLogic.updateDocumentUrl({
-      userId,
-      file,
-      uploadDir,
-      existingUrl
-    });
-
-    // 4) 결과 저장
-    result[file.fieldname] = newUrl;
+  } catch ( error )
+  {
+    throw new Error( error.message )
   }
-
-  return result;
+  
 };
