@@ -108,6 +108,22 @@ export const updateResumeUrl = `
   RETURNING resume_url
 `;
 
+export const updateSelfIntroUrl = `
+  UPDATE users.user_account
+     SET self_intro_url = $2,
+         updated_at     = NOW()
+   WHERE user_id       = $1
+ RETURNING self_intro_url
+`;
+
+export const updateCareerDescUrl = `
+  UPDATE users.user_account
+     SET career_desc_url = $2,
+         updated_at      = NOW()
+   WHERE user_id        = $1
+ RETURNING career_desc_url
+`;
+
 export const getResumeUrl = `SELECT resume_url FROM users.user_account WHERE user_id = $1`
 
 export const getSelfIntroUrl = `SELECT self_intro_url FROM users.user_account WHERE user_id = $1`
