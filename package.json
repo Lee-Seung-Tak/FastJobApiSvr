@@ -24,10 +24,11 @@
     "@users_router": "./users/users.router.js",
     "@users_controller": "./users/controller/users.controller.js",
     "@users_service": "./users/service/users.service.js",
+    "@users_logic": "./users/service/users.logic.js",
     "@companys_router": "./companys/companys.router.js",
     "@companys_controller": "./companys/controller/companys.controller.js",
     "@companys_service": "./companys/service/companys.service.js",
     "@ai_analyze_gemini": "./ai_analyze/gemini.js",
-    "@ai_analyze": "./ai_analyze/ai_analyze.js"
+    "@ai_analyze": "./ai_analyze/ai.analyze.js"
   }
 }
