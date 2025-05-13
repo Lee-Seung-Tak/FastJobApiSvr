@@ -100,14 +100,29 @@ export const getUserData = `
 `;
 
 export const updateResume = `UPDATE users.user_account
-  SET resume = $1,
-  WHERE userId = $2
+  SET resume = $1
+  WHERE user_id = $2
 `;
 
 export const updateSelfIntro = `UPDATE users.user_account
-  SET self_intro = $1,
-  WHERE userId = $2`;
+  SET self_intro = $1
+  WHERE user_id = $2`;
 
 export const updateCarrerDesc = `UPDATE users.user_account
-  SET career_desc = $1,
-  WHERE userId = $2`;
+  SET career_desc = $1
+  WHERE user_id = $2`;
+
+export const updateResumeUrl = `UPDATE users.user_account
+  SET resume_url = $1
+  WHERE user_id = $2
+`;
+
+export const updateSelfIntroUrl = `UPDATE users.user_account
+  SET self_intro_url = $1
+  WHERE user_id = $2
+`;
+
+export const updateCareerDescUrl = `UPDATE users.user_account
+  SET career_desc_url = $1
+  WHERE user_id = $2
+`;
