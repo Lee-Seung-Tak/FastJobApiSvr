@@ -75,14 +75,14 @@ exports.patchUserProfileDocs = async ( { userId, files } ) => {
   try {
     for (const file of files) {
       const docTask =
-        file.fieldname === 'resumeFile'     ? usersLogic.updateUserDocsUrl(userId, file.filename, query.updateResumeUrl) :
-        file.fieldname === 'selfIntroFile'  ? usersLogic.updateUserDocsUrl(userId, file.filename, query.updateSelfIntroUrl) :
+        file.fieldname === 'resumeFile'     ? usersLogic.updateUserDocsUrl(userId, file.filename, query.updateResumeUrl)     :
+        file.fieldname === 'selfIntroFile'  ? usersLogic.updateUserDocsUrl(userId, file.filename, query.updateSelfIntroUrl)  :
         file.fieldname === 'careerDescFile' ? usersLogic.updateUserDocsUrl(userId, file.filename, query.updateCareerDescUrl) :
         null;
   
       const aiTask =
-        file.fieldname === 'resumeFile'     ? ai.aiAnalyzeResume(userId, file.path) :
-        file.fieldname === 'selfIntroFile'  ? ai.aiAnalyzeSelfIntro(userId, file.path) :
+        file.fieldname === 'resumeFile'     ? ai.aiAnalyzeResume(userId, file.path)     :
+        file.fieldname === 'selfIntroFile'  ? ai.aiAnalyzeSelfIntro(userId, file.path)  :
         file.fieldname === 'careerDescFile' ? ai.aiAnalyzeCarrerDesc(userId, file.path) :
         null;
     
