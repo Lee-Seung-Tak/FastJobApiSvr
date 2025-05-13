@@ -10,11 +10,10 @@ exports.aiAnalyzeResume = async ( userId, fileUrl ) => {
     let pdfData          = await pdf(dataBuffer);
     pdfData              = pdfData.text.replace(/\n/g, '');
     const aiAnlaysReulst = await gemini.generateContent( pdfData );
-
     await db.query(query.updateResume, [ aiAnlaysReulst, userId ] )
 }
 
-exports.aiAnalyzeSelfIntro = async ( userId, fileUrl ) => {ㅌㅂ
+exports.aiAnalyzeSelfIntro = async ( userId, fileUrl ) => {
     const ResumeUrl      = `./${fileUrl}`;
     const dataBuffer     = fs.readFileSync( ResumeUrl );
     let pdfData          = await pdf(dataBuffer);
