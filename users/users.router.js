@@ -6,41 +6,41 @@ const path               = require('path');
 const router             = express.Router();
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/'); // 저장 폴더
-    },
-    filename: function (req, file, cb) {
-      // 원본 이름에서 특수문자·깨진 문자 제거
-      const safeOriginal = file.originalname
-        .normalize('NFC')
-        .replace(/[^a-zA-Z0-9.\-_]/g, '_');
-      
-      const filename = `${req.userId}_${file.fieldname}_${safeOriginal}`;
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // 저장 폴더
+  },
+  filename: function (req, file, cb) {
+    // 원본 이름에서 특수문자·깨진 문자 제거
+    const safeOriginal = file.originalname
+      .normalize('NFC')
+      .replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    
+    const filename = `${req.userId}_${file.fieldname}_${safeOriginal}`;
 
-      const uploadDir = 'uploads';
+    const uploadDir = 'uploads';
 
-      // 기존 파일 삭제: req.userId와 file.fieldname이 포함된 파일들
-      const files = fs.readdirSync(uploadDir);
-      files.forEach((f) => {
-        if (f.includes(`${req.userId}_${file.fieldname}_`)) {
-          const targetPath = path.join(uploadDir, f);
-          try {
-            fs.unlinkSync(targetPath);
-          } catch (err) {
-            console.error(`delete failed: ${targetPath}`, err);
-          }
+    // 기존 파일 삭제: req.userId와 file.fieldname이 포함된 파일들
+    const files = fs.readdirSync(uploadDir);
+    files.forEach((f) => {
+      if (f.includes(`${req.userId}_${file.fieldname}_`)) {
+        const targetPath = path.join(uploadDir, f);
+        try {
+          fs.unlinkSync(targetPath);
+        } catch (err) {
+          console.error(`delete failed: ${targetPath}`, err);
         }
-      });
+      }
+    });
 
-      cb(null, filename);
-    }
-  });
-  
-  const userData = multer({ storage }).fields([
-    { name: 'resumeFile',     maxCount: 1 },
-    { name: 'selfIntroFile',  maxCount: 1 },
-    { name: 'careerDescFile', maxCount: 1 },
-  ]);
+    cb(null, filename);
+  }
+});
+const userData = multer({ storage: storage });
+  // const userData = multer({ storage }).fields([
+  //   { name: 'resumeFile',     maxCount: 1 },
+  //   { name: 'selfIntroFile',  maxCount: 1 },
+  //   { name: 'careerDescFile', maxCount: 1 },
+  // ]);
 /**
  * @swagger
  * /users/user:
@@ -116,7 +116,7 @@ router.patch('/user', usersController.patchUser);
 router.get('/me', usersController.getUser);
 
 
-router.patch('/user/application-docs', userData, usersController.patchUserProfileDocs);
+router.patch('/user/application-docs', userData.any(), usersController.patchUserProfileDocs);
 // TO Do - 1
 // 사용자 이력서 및 자기소개서, 경력 기술서, 포트폴리오 url 업데이트
 //router.update('/user')
