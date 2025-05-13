@@ -2,6 +2,8 @@ const db         = require('@db');
 const query      = require('@query');
 const usersLogic = require('@users_logic');
 const path       = require('path');
+const ai         = require('@ai_analyze');
+
 require('dotenv').config();
 
 
@@ -66,31 +68,35 @@ exports.getUserInfo = async( userId ) => {
   return rows.length ? rows[0] : null;
 };
 
-exports.patchUserProfileDocs = async ({ userId, files }) => {
+exports.patchUserProfileDocs = async ( { userId, files } ) => {
 
+  let docTasks = [];
+  let aiTasks  = [];
   try {
-    const uploadDir = path.resolve(__dirname, '../../uploads');
-
     for (const file of files) {
-
-      const getUpdateQuery =
-        file.fieldname === 'resumeFile'     ? query.updateResumeUrl     :
-        file.fieldname === 'selfIntroFile'  ? query.updateSelfIntroUrl  :
-        file.fieldname === 'careerDescFile' ? query.updateCareerDescUrl : null;
-        
-      if ( getUpdateQuery )
-        updateUserDocsResult = usersLogic.updateUserDocsUrl( userId, file.filename, getUpdateQuery);
-
-      /*
-      * 여기에 file이 아닌 LLM(AI)가 정리한 내용을 직접 수정하는 로직을 넣으시면 됩니다.
-      */
-      if ( updateUserDocsResult )
-        await updateUserDocsResult;
+      const docTask =
+        file.fieldname === 'resumeFile'     ? usersLogic.updateUserDocsUrl(userId, file.filename, query.updateResumeUrl) :
+        file.fieldname === 'selfIntroFile'  ? usersLogic.updateUserDocsUrl(userId, file.filename, query.updateSelfIntroUrl) :
+        file.fieldname === 'careerDescFile' ? usersLogic.updateUserDocsUrl(userId, file.filename, query.updateCareerDescUrl) :
+        null;
+  
+      const aiTask =
+        file.fieldname === 'resumeFile'     ? ai.aiAnalyzeResume(userId, file.path) :
+        file.fieldname === 'selfIntroFile'  ? ai.aiAnalyzeSelfIntro(userId, file.path) :
+        file.fieldname === 'careerDescFile' ? ai.aiAnalyzeCarrerDesc(userId, file.path) :
+        null;
+    
+      if (docTask) docTasks.push(docTask);
+      if (aiTask)  aiTasks.push(aiTask);
 
     }
 
+    const tasks = [...docTasks, ...aiTasks]; // 평탄화
+    await Promise.all(tasks);
+
   } catch ( error )
   {
+    console.log(error)
     throw new Error( error.message )
   }
   
