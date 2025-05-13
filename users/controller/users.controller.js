@@ -34,7 +34,7 @@ exports.patchUserProfileDocs = async (req, res) => {
   try {
     await usersService.patchUserProfileDocs({
       userId:    req.userId,
-      files:     req.files.resumeFile,
+      files:     req.files,
     });
 
     return res.status(200).json( { "message" : "Update Success" } );
