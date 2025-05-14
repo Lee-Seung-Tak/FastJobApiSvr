@@ -30,6 +30,7 @@ exports.verifyRefreshToken = async ( token ) => {
 exports.tokensRefresh = async ( userId ) => {
     
     const [ accessToken, refreshToken ] = await Promise.all ( [ this.makeAccessToken(userId), this.makeRefreshToken(userId) ] );
+    await db.query( query.updateUserTokens, [ accessToken, refreshToken, userId ] );
     return {
         "access_token"  : accessToken,
         "refresh_token" : refreshToken
