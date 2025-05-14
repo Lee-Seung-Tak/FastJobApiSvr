@@ -10,3 +10,13 @@ exports.updateUserDocsUrl = async ( userId, fileName, updateQuery ) => {
   const newUrl = `/uploads/${fileName}`;
   await db.query( updateQuery, [ newUrl, userId ] );
 };
+
+exports.updateUserDocsText = async ( userId, text, updateQuery ) => {
+  try {
+   
+    await db.query( updateQuery, [ text, userId ] );
+  } catch (err) {
+    console.error('[DB] Text update error:', err);
+    throw new Error('텍스트 업데이트 중 오류 발생');
+  }
+};
