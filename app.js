@@ -21,7 +21,7 @@ app.use( express.json() );
 
 
 app.use( ( req, res, next ) => {
-    if ( req.path === '/auth/login' || req.path === '/auth/signup') return next();
+    if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/auth/token-refresh') return next();
     middleWare.verifyToken( req, res, next );
 })
 
