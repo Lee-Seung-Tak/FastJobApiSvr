@@ -186,12 +186,11 @@ router.post('/login',  authController.login);
  *             example:
  *               message: Bad Request
  */
-
-
 router.post('/signup', userData.any(), authController.signUp);
 
 
 router.get('/signup-verify', authController.signUpVerify);
 
+router.post('/token-refresh', authController.tokenRefresh);
 module.exports = router;
 
