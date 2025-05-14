@@ -35,6 +35,7 @@ exports.patchUserProfileDocs = async (req, res) => {
     await usersService.patchUserProfileDocs({
       userId:    req.userId,
       files:     req.files,
+      body:      req.body,
     });
 
     return res.status(200).json( { "message" : "Update Success" } );
