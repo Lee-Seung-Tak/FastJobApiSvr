@@ -50,3 +50,12 @@ exports.signUpVerify = async ( req, res ) => {
     else                return res.sendFile( path.join(__dirname, 'token-error.html'   ));
 
 }
+
+exports.tokenRefresh = async ( req, res ) => {
+    try {
+        const tokens = await authService.tokenRefresh( req.body.refresh_token );
+        return res.status(201).json({ tokens })
+    } catch ( error ) {
+        return res.status(401).json( { "message" : "check your refresh token"})
+    }
+}
