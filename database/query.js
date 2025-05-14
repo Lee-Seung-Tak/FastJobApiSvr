@@ -126,3 +126,8 @@ export const updateCareerDescUrl = `UPDATE users.user_account
   SET career_desc_url = $1
   WHERE user_id = $2
 `;
+
+export const updateUserTokens = ` UPDATE users.user_account
+  SET access_token = $1, refresh_token = $2
+  WHERE user_id = $3;
+`;
