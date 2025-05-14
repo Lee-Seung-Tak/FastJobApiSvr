@@ -172,6 +172,18 @@ router.post('/login',  authController.login);
  *                 type: string
  *                 description: External link to portfolio (optional)
  *                 example: https://portfolio.example.com
+ *               userSkills:
+ *                 type: array
+ *                 description: List of user skills (optional, JSON array)
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                       example: JavaScript
+ *                     level:
+ *                       type: string
+ *                       example: Intermediate
  *     responses:
  *       201:
  *         description: Successfully registered. Awaiting email verification.
@@ -186,6 +198,7 @@ router.post('/login',  authController.login);
  *             example:
  *               message: Bad Request
  */
+
 router.post('/signup', userData.any(), authController.signUp);
 
 /**
