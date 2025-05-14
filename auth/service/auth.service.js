@@ -79,3 +79,13 @@ exports.signUpVerify = async( signUpToken ) => {
         return false;
     }
 }
+
+exports.tokenRefresh = async( token ) => {
+    try {
+        const userId = await serviceLogic.verifyRefreshToken( token );
+        if( userId ) return await serviceLogic.tokensRefresh( userId );
+    } catch ( error ) {
+        console.log("error : ", error.message)
+        throw new Error(error);
+    }
+}

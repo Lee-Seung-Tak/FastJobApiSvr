@@ -18,7 +18,23 @@ exports.makeRefreshToken = async ( userId ) => {
 exports.verifySignUpToken = async ( signUpToken ) => {
     return jwt.verify( signUpToken, process.env.SIGNUP_SECRET );
 }
+exports.verifyRefreshToken = async ( token ) => {
+    try {
+        const decode = jwt.verify( token, process.env.REFRESH_SECRET );
+        return decode.userId;
+    } catch (error ){
+        return null;
+    }
+}
 
+exports.tokensRefresh = async ( userId ) => {
+    
+    const [ accessToken, refreshToken ] = await Promise.all ( [ this.makeAccessToken(userId), this.makeRefreshToken(userId) ] );
+    return {
+        "access_token"  : accessToken,
+        "refresh_token" : refreshToken
+    }
+}
 
 // 이메일 발송 함수 
 const transPorter = nodemailer.createTransport({
