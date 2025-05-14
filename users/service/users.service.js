@@ -68,11 +68,25 @@ exports.getUserInfo = async( userId ) => {
   return rows.length ? rows[0] : null;
 };
 
-exports.patchUserProfileDocs = async ( { userId, files } ) => {
-
+exports.patchUserProfileDocs = async ( { userId, files, body } ) => {
+  
   let docTasks = [];
   let aiTasks  = [];
   try {
+    
+    body?.resumeText
+    ? await usersLogic.updateUserDocsText(userId, body.resumeText, query.updateResume)
+    : null;
+
+  body?.selfIntroText
+    ? await usersLogic.updateUserDocsText(userId, body.selfIntroText, query.updateSelfIntro)
+    : null;
+
+  body?.careerDescText
+    ? await usersLogic.updateUserDocsText(userId, body.careerDescText, query.updateCarrerDesc)
+    : null;
+
+  if (files?.length) {
     for (const file of files) {
       const docTask =
         file.fieldname === 'resumeFile'     ? usersLogic.updateUserDocsUrl(userId, file.filename, query.updateResumeUrl)     :
@@ -93,7 +107,7 @@ exports.patchUserProfileDocs = async ( { userId, files } ) => {
 
     const tasks = [...docTasks, ...aiTasks]; // 평탄화
     await Promise.all(tasks);
-
+  }
   } catch ( error )
   {
     console.log(error)
