@@ -74,24 +74,18 @@ exports.patchUserProfileDocs = async ( { userId, files, body } ) => {
   let aiTasks    = [];
   let textTasks  = [];
   try {
-  if (body?.resumeText || body?.selfIntroText || body?.careerDescText) {
+    if (body?.resumeText || body?.selfIntroText || body?.careerDescText) {
 
-      const resumeTask      =
-        body?.resumeText
-          ? usersLogic.updateUserDocsText(userId, body.resumeText, query.updateResume) : null; 
-          if (resumeTask) textTasks.push(resumeTask);
+      const resumeTask = body?.resumeText? usersLogic.updateUserDocsText(userId, body.resumeText, query.updateResume) : null; 
+      if (resumeTask) textTasks.push(resumeTask);
           
-      const selfIntroTask   =
-        body?.selfIntroText
-          ? usersLogic.updateUserDocsText(userId, body.selfIntroText, query.updateSelfIntro) : null; 
-          if (selfIntroTask) textTasks.push(selfIntroTask);
+      const selfIntroTask = body?.selfIntroText? usersLogic.updateUserDocsText(userId, body.selfIntroText, query.updateSelfIntro) : null; 
+      if (selfIntroTask) textTasks.push(selfIntroTask);
 
-      const careerDescTask  =
-        body?.careerDescText
-          ? usersLogic.updateUserDocsText(userId, body.careerDescText, query.updateCarrerDesc) : null; 
-          if (careerDescTask) textTasks.push(careerDescTask);
+      const careerDescTask = body?.careerDescText? usersLogic.updateUserDocsText(userId, body.careerDescText, query.updateCarrerDesc) : null; 
+      if (careerDescTask) textTasks.push(careerDescTask);
 
-  }
+    }
   
   
   if (files?.length) {
