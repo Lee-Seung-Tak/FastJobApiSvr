@@ -70,22 +70,30 @@ exports.getUserInfo = async( userId ) => {
 
 exports.patchUserProfileDocs = async ( { userId, files, body } ) => {
   
-  let docTasks = [];
-  let aiTasks  = [];
+  let docTasks   = [];
+  let aiTasks    = [];
+  let textTasks  = [];
   try {
-    
-    body?.resumeText
-    ? await usersLogic.updateUserDocsText(userId, body.resumeText, query.updateResume)
-    : null;
+  if (body?.resumeText || body?.selfIntroText || body?.careerDescText) {
 
-  body?.selfIntroText
-    ? await usersLogic.updateUserDocsText(userId, body.selfIntroText, query.updateSelfIntro)
-    : null;
+      const resumeTask      =
+        body?.resumeText
+          ? usersLogic.updateUserDocsText(userId, body.resumeText, query.updateResume) : null; 
+          if (resumeTask) textTasks.push(resumeTask);
+          
+      const selfIntroTask   =
+        body?.selfIntroText
+          ? usersLogic.updateUserDocsText(userId, body.selfIntroText, query.updateSelfIntro) : null; 
+          if (selfIntroTask) textTasks.push(selfIntroTask);
 
-  body?.careerDescText
-    ? await usersLogic.updateUserDocsText(userId, body.careerDescText, query.updateCarrerDesc)
-    : null;
+      const careerDescTask  =
+        body?.careerDescText
+          ? usersLogic.updateUserDocsText(userId, body.careerDescText, query.updateCarrerDesc) : null; 
+          if (careerDescTask) textTasks.push(careerDescTask);
 
+  }
+  
+  
   if (files?.length) {
     for (const file of files) {
       const docTask =
@@ -105,7 +113,7 @@ exports.patchUserProfileDocs = async ( { userId, files, body } ) => {
 
     }
 
-    const tasks = [...docTasks, ...aiTasks]; // 평탄화
+    const tasks = [...docTasks, ...aiTasks, textTasks]; // 평탄화
     await Promise.all(tasks);
   }
   } catch ( error )
