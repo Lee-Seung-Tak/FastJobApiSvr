@@ -45,6 +45,7 @@ exports.signUp = async ( userData ) => {
     try {
         // lst add / 비동기로 llm을 활용한 문서 요약 함수 실행
         serviceLogic.userDataAnalyze( userData );
+        let queryResult = db.query( query.checkIdDuplicate, [userData.userId] );
         queryResult     = queryResult.rows;
         if ( queryResult == [] ) throw new Error('user is duplicate');
 

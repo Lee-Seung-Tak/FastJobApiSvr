@@ -162,10 +162,10 @@ exports.userDataAnalyze = async ( userData ) => {
         if ( analyzeSelfIntroResult  ) await analyzeSelfIntroResult;
         if ( analyzeCarrerDescResult ) await analyzeCarrerDescResult;
 
-        await sendAnalyzeDoneEmail( userData.email );
+        await this.sendAnalyzeDoneEmail( userData.email );
 
     } catch ( error ) {
         // Error인 경우 관리자 이메일
-        await sendAnalyzeErrorEmail();
+        await this.sendAnalyzeErrorEmail();
     }
 }
