@@ -29,6 +29,9 @@
     "@companys_controller": "./companys/controller/companys.controller.js",
     "@companys_service": "./companys/service/companys.service.js",
     "@ai_analyze_gemini": "./ai_analyze/gemini.js",
-    "@ai_analyze": "./ai_analyze/ai.analyze.js"
+    "@ai_analyze": "./ai_analyze/ai.analyze.js",
+    "@skills_router": "./skills/skills.router.js",
+    "@skills_controller": "./skills/controller/skills.controller.js",
+    "@skills_service": "./skills/service/skills.service.js"
   }
 }
