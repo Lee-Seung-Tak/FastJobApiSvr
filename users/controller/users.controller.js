@@ -13,8 +13,13 @@ exports.patchUser = async ( req, res ) => {
 exports.getUser = async ( req, res ) => {
   
   try {
-      const result = await usersService.getUserInfo( req.userId );
-      return res.status(200).json({ data: result });
+      const result = await usersService.getUser( req.userId );
+      const userSkills = await usersService.getUserSkillsByUserId(req.userId);
+
+      return res.status(200).json({ 
+        data: result,
+        skills: userSkills
+      });
 
   } catch ( err ) {
       console.error(err);
