@@ -131,3 +131,18 @@ export const updateUserTokens = ` UPDATE users.user_account
   SET access_token = $1, refresh_token = $2
   WHERE user_id = $3;
 `;
+
+export const getSkillsByUserId = `
+  SELECT s.id, s.skill
+  FROM users.user_account ua
+  JOIN users.user_skill us ON ua.id = us.user_id
+  JOIN skill.skill s ON us.skill_id = s.id
+  WHERE ua.user_id = $1
+  ORDER BY s.id;
+`;
+
+export const getAllSkills = `
+  SELECT id, skill
+  FROM skill.skill
+  ORDER BY id;
+`;
