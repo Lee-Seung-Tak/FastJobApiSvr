@@ -15,6 +15,7 @@ const swaggerSpec = require('./swagger');
 const authRouter  = require('@auth_router');
 const swaggerJSDoc = require('swagger-jsdoc');
 const usersRouter = require('@users_router');
+const skillsRouter = require('@skills_router');
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use( express.json() );
@@ -24,7 +25,7 @@ app.use( ( req, res, next ) => {
     if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/auth/token-refresh') return next();
     middleWare.verifyToken( req, res, next );
 })
-
+app.use( '/skills', skillsRouter );
 app.use( '/users', usersRouter );
 app.use( '/auth',  authRouter );
 
