@@ -13,9 +13,13 @@ exports.patchUser = async ( req, res ) => {
 exports.getUser = async ( req, res ) => {
   
   try {
-      const result = await usersService.getUser( req.userId );
-      const userSkills = await usersService.getUserSkillsByUserId(req.userId);
-
+      const [result, userskills] = await Promise.all([
+        usersService.getUser(req.userId),
+        usersService.getUserSkillsByUserId(req.userId)
+    ]);
+      // const result = await usersService.getUser( req.userId );
+      // const userSkills = await usersService.getUserSkillsByUserId(req.userId);
+      
       return res.status(200).json({ 
         data: result,
         skills: userSkills
@@ -40,6 +44,11 @@ exports.patchUserProfileDocs = async (req, res) => {
     await usersService.patchUserProfileDocs({
       userId:    req.userId,
       files:     req.files,
+      texts: {
+        resumeText: req.body.resumeText,
+        selfIntroText: req.body.selfIntroText,
+        careerDescText: req.body.careerDescText
+      }
     });
 
     return res.status(200).json( { "message" : "Update Success" } );
