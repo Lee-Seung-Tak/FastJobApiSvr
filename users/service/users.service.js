@@ -86,7 +86,7 @@ exports.patchUserProfileDocs = async ( { userId, files, texts } ) => {
     if (texts?.careerDescText) {
       textTasks.push(usersLogic.updateUserDocsText(userId, texts.careerDescText, query.updateCareerDesc));
     }
-    const tasks = [...docTasks, ...aiTasks, textTasks]; // 평탄화
+    const tasks = [...docTasks, ...aiTasks, ...textTasks]; // 평탄화
     await Promise.all(tasks);
 
   } catch ( error )
