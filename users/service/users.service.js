@@ -52,10 +52,11 @@ exports.getUser = async ( userId ) => {
   return rows.length ? rows[0] : null;
 };
 
-exports.patchUserProfileDocs = async ( { userId, files } ) => {
+exports.patchUserProfileDocs = async ( { userId, files, texts } ) => {
 
   let docTasks = [];
   let aiTasks  = [];
+  let textTasks =[];
   try {
     for (const file of files) {
       const docTask =
@@ -74,8 +75,18 @@ exports.patchUserProfileDocs = async ( { userId, files } ) => {
       if (aiTask)  aiTasks.push(aiTask);
 
     }
+    if (texts?.resumeText) {
+      textTasks.push(usersLogic.updateUserDocsText(userId, texts.resumeText, query.updateResume));
+    }
 
-    const tasks = [...docTasks, ...aiTasks]; // 평탄화
+    if (texts?.selfIntroText) {
+      textTasks.push(usersLogic.updateUserDocsText(userId, texts.selfIntroText, query.updateSelfIntro));
+    }
+
+    if (texts?.careerDescText) {
+      textTasks.push(usersLogic.updateUserDocsText(userId, texts.careerDescText, query.updateCareerDesc));
+    }
+    const tasks = [...docTasks, ...aiTasks, textTasks]; // 평탄화
     await Promise.all(tasks);
 
   } catch ( error )
