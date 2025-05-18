@@ -108,7 +108,7 @@ export const updateSelfIntro = `UPDATE users.user_account
   SET self_intro = $1
   WHERE user_id = $2`;
 
-export const updateCarrerDesc = `UPDATE users.user_account
+export const updateCareerDesc = `UPDATE users.user_account
   SET career_desc = $1
   WHERE user_id = $2`;
 
