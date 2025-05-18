@@ -10,3 +10,7 @@ exports.updateUserDocsUrl = async ( userId, fileName, updateQuery ) => {
   const newUrl = `/uploads/${fileName}`;
   await db.query( updateQuery, [ newUrl, userId ] );
 };
+
+exports.updateUserDocsText = async ( userId, text, updateQuery ) => {
+  await db.query(updateQuery, [text, userId]);
+};
