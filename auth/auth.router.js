@@ -143,7 +143,7 @@ router.post('/login',  authController.login);
  *               category:
  *                 type: string
  *                 description: User's job category or field of interest
- *                 example: frontend
+ *                 example: 1
  *               resume:
  *                 type: string
  *                 format: binary
@@ -172,18 +172,12 @@ router.post('/login',  authController.login);
  *                 type: string
  *                 description: External link to portfolio (optional)
  *                 example: https://portfolio.example.com
- *               userSkills:
+ *               skills:
  *                 type: array
- *                 description: List of user skills (optional, JSON array)
+ *                 description: List of skill IDs (as integers)
  *                 items:
- *                   type: object
- *                   properties:
- *                     name:
- *                       type: string
- *                       example: JavaScript
- *                     level:
- *                       type: string
- *                       example: Intermediate
+ *                   type: integer
+ *                 example: [1, 2, 3]
  *     responses:
  *       201:
  *         description: Successfully registered. Awaiting email verification.
@@ -198,7 +192,6 @@ router.post('/login',  authController.login);
  *             example:
  *               message: Bad Request
  */
-
 router.post('/signup', userData.any(), authController.signUp);
 
 /**
