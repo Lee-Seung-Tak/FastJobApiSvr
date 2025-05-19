@@ -146,3 +146,11 @@ export const getAllSkills = `
   FROM skill.skill
   ORDER BY id;
 `;
+
+export const insertUserSkill = `
+  INSERT INTO users.user_skill (user_id, skill_id)
+  VALUES ($1, $2)
+  ON CONFLICT DO NOTHING;
+`;
+
+export const getUserPk = `SELECT id FROM users.user_account WHERE user_id = $1`;
