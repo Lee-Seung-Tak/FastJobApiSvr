@@ -12,5 +12,5 @@ exports.updateUserDocsUrl = async ( userId, fileName, updateQuery ) => {
 };
 
 exports.updateUserDocsText = async ( userId, text, updateQuery ) => {
-  await db.query(updateQuery, [text, userId]);
+  await db.query( updateQuery, [ text, userId ] );
 };
