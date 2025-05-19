@@ -12,13 +12,15 @@ const CPU        = 2;
 const swaggerUi   = require('swagger-ui-express');
 const swaggerSpec = require('./swagger'); 
 
-const authRouter  = require('@auth_router');
-const swaggerJSDoc = require('swagger-jsdoc');
-const usersRouter = require('@users_router');
-
+const authRouter   = require('@auth_router');
+const usersRouter  = require('@users_router');
+const cors         = require("cors");
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use( express.json() );
-
+app.use(cors({
+  origin: 'http://localhost:5173', // ⚠️ '*' 말고 정확한 주소
+  credentials: true                // 쿠키 허용
+}));
 
 app.use( ( req, res, next ) => {
     if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/auth/token-refresh') return next();
