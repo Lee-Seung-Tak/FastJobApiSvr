@@ -13,7 +13,14 @@ exports.login = async ( req, res ) => {
         try {
 
             const serviceResult = await authService.login( userData.userId, userData.password );
-            return res.status(200).json( serviceResult );
+
+            res.cookie("refresh_token", serviceResult.refresh_token, {
+                httpOnly: true,
+                secure: false, // 배포시엔 true로 (HTTPS에서만 동작)
+                sameSite: "Strict",
+                maxAge: 1000 * 60 * 60 * 24 * 7 // 7일
+            });
+            return res.status(200).json({ access_token : serviceResult.access_token });
 
         } catch ( error ) {
             // userId에 or password의 유효성 검사에 걸리는 exceptiond / http status : 401
