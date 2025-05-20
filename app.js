@@ -21,6 +21,7 @@ const skillsRouter = require('@skills_router');
 =======
 const authRouter   = require('@auth_router');
 const usersRouter  = require('@users_router');
+const skillsRouter = require('@skills_router');
 const cors         = require("cors");
 >>>>>>> develop
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
