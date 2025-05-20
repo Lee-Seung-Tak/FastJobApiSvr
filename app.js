@@ -12,18 +12,12 @@ const CPU        = 2;
 const swaggerUi   = require('swagger-ui-express');
 const swaggerSpec = require('./swagger'); 
 
-<<<<<<< HEAD
-const authRouter  = require('@auth_router');
 const swaggerJSDoc = require('swagger-jsdoc');
-const usersRouter = require('@users_router');
-const skillsRouter = require('@skills_router');
-
-=======
 const authRouter   = require('@auth_router');
 const usersRouter  = require('@users_router');
 const skillsRouter = require('@skills_router');
 const cors         = require("cors");
->>>>>>> develop
+
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use( express.json() );
 app.use(cors({
