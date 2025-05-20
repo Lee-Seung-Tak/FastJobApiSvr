@@ -154,3 +154,9 @@ export const insertUserSkill = `
 `;
 
 export const getUserPk = `SELECT id FROM users.user_account WHERE user_id = $1`;
+
+export const getJobApplications =`
+    SELECT application_id, status, notified
+    FROM users.job_application
+    WHERE user_id = $1
+  `;
