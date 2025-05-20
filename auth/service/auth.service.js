@@ -30,7 +30,7 @@ exports.login = async( userId, password ) => {
             await db.query( query.loginSuccess, [ accessToken, refreshToken, updateDate, userId ] );
 
             // token return
-            return { "access_token : " : accessToken , "refresh_token" : refreshToken };
+            return { "access_token" : accessToken , "refresh_token" : refreshToken };
         }
         else throw new Error('user not found')
         
