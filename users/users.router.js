@@ -114,7 +114,7 @@ router.patch('/user', usersController.patchUser);
 
 // 유저 본인 정보 조회
 router.get('/me', usersController.getUser);
-
+router.get('/my-job-application', usersController.jobApplications);
 
 router.patch('/user/application-docs', userData.any(), usersController.patchUserProfileDocs);
 // TO Do - 1
