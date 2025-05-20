@@ -57,3 +57,13 @@ exports.patchUserProfileDocs = async (req, res) => {
     return res.status(400).json("Bad Request");
   }
 };
+
+exports.myJobApplications = async ( req, res ) => {
+
+  try {
+    const result = await usersService.myJobApplications( req.userId );
+    return res.status( 200 ).json( result );
+  } catch (err) {
+    return res.status(400).json({ message: "Bad Request" });
+  }
+};
