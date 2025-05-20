@@ -96,4 +96,10 @@ exports.patchUserProfileDocs = async ( { userId, files, texts } ) => {
   }
   
 };
-
+exports.myJobApplications = async ( userId ) => {
+  const { rows: userRows } = await db.query(query.getUserPk, [userId])
+  if (!userRows || userRows.length === 0) return null;
+  const userPk = userRows[0].id;
+  const { rows:jobRows } = await db.query( query.getJobApplications, [userPk] );
+  return jobRows.length ? jobRows[0] : null;
+};
