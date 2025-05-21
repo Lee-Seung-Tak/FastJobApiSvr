@@ -16,6 +16,9 @@
       "@users_logic": ["users/service/users.logic.js"],
       "@ai_analyze_gemini" : ["ai_analyze/gemini.js"],
       "@ai_analyze" : ["ai_analyze/ai.analyze.js"],
+      "@skills_controller": ["skills/controller/skills.controller.js"],
+      "@skills_service": ["skills/service/skills.service.js"],
+      "@skills_router": ["skills/skills.router.js"],
     }
   },
   "include": [
@@ -24,6 +27,7 @@
     "database/**/*",
     "middleware/**/*",
     "users/**/*",
-    "src/**/*"
+    "src/**/*",
+    "skills/**/*"
   ]
 }
