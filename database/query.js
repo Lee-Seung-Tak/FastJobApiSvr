@@ -160,3 +160,28 @@ export const getJobApplications =`
     FROM users.job_application
     WHERE user_id = $1
   `;
+
+  export const insertCompanySignupData = `INSERT INTO company.company_account (
+    name,
+    email,
+    phone,
+    address,
+    company_id,
+    password,
+    business,
+    role,
+    access_token,
+    created_at,
+    updated_at
+  ) VALUES (
+    $1, $2, $3, $4, $5, $6, 
+    $7, $8, $9, NOW(), NOW()
+  );
+`;
+
+export const checkCompanyIdDuplicate = "SELECT * FROM company.company_account WHERE company_id = $1 LIMIT 1;";
+
+export const sendCompanyEmailFalse = `UPDATE company.company_account
+  SET role = 3
+  WHERE email = $1
+`;
