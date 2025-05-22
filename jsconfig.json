@@ -19,6 +19,11 @@
       "@skills_controller": ["skills/controller/skills.controller.js"],
       "@skills_service": ["skills/service/skills.service.js"],
       "@skills_router": ["skills/skills.router.js"],
+      "@companys_controller": ["companys/controller/companys.controller.js"],
+      "@companys_service": ["companys/service/companys.service.js"],
+      "@companys_router": ["companys/companys.router.js"],
+      "@companys_dto": ["companys/dto/companys.dto.js"],
+      "@companys_logic": ["companys/service/companys.logic.js"],
     }
   },
   "include": [
@@ -28,6 +33,7 @@
     "middleware/**/*",
     "users/**/*",
     "src/**/*",
-    "skills/**/*"
+    "skills/**/*",
+    "companys/**/*"
   ]
 }
