@@ -48,3 +48,12 @@ exports.login = async ( req, res ) => {
     }
 }
 
+
+exports.signUpVerify = async ( req, res ) => {
+    console.log(req);
+    const verifyStatus = await companysService.signUpVerify( req.query.token );
+    
+    if ( verifyStatus ) return res.sendFile( path.join(__dirname, 'signup-success.html'));
+    else                return res.sendFile( path.join(__dirname, 'token-error.html'   ));
+  
+  }
