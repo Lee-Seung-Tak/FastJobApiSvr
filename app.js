@@ -27,7 +27,7 @@ app.use(cors({
 }));
 
 app.use( ( req, res, next ) => {
-    if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/companys/signup' || req.path === '/auth/token-refresh') return next();
+    if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/companys/login' || req.path === '/companys/signup' || req.path === '/auth/token-refresh') return next();
     middleWare.verifyToken( req, res, next );
 })
 app.use( '/skills', skillsRouter );
