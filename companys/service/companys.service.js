@@ -4,25 +4,24 @@ const query         = require('@query');
 const PENDING       = 1;
 const NORMAL        = 2;
 const EMAIL_FAILE   = 3;
+
+
+
 exports.signUp = async ( userData ) => {
     try {
       const queryResult = await db.query( query.checkCompanyIdDuplicate, [ userData.userId ] );
       if (queryResult.rows.length > 0) throw new Error('user is duplicate');
   
-      const signUpToken = companysLogic.makeSignUpToken(userData.email);
+      const signUpToken = await companysLogic.makeSignUpToken( userData.email );
 
-      await Promise.all([
-        companysLogic.insertUserData(userData, signUpToken),
-        companysLogic.sendMailForSignUp(userData.email, signUpToken)
-      ]);
-  
+      await companysLogic.insertUserData( userData, signUpToken );
+      await companysLogic.sendMailForSignUp( userData.email, signUpToken );
       return { message: 'Signup successful. Please verify your email.' };
   
     } catch (error) {
       throw new Error( error.message );
     }
   };
-  
 
 // exports.signUp = async ( userData ) => {
 
@@ -77,5 +76,25 @@ exports.login = async( userId, password ) => {
         
     } catch ( error ) {
         throw new Error('user not found')
+    }
+}
+
+exports.signUpVerify = async( signUpToken ) => {
+    try {
+        console.log(signUpToken)
+        const decode    = await companysLogic.verifySignUpToken( signUpToken );
+        let queryResult = await db.query ( query.companyCheckSignUpToken, [decode.email] );
+        queryResult     = queryResult.rows[0].access_token;
+
+        if ( signUpToken === queryResult )
+        {
+            await db.query ( query.companySignupSuccess, [decode.email] );
+            return true;
+
+        } else return false;
+
+    } catch ( error ) {
+        console.log(error)
+        return false;
     }
 }
