@@ -101,7 +101,7 @@ const userData = multer({ storage: storage });
  *               message: Bad Request
  */
 router.post('/signup', userData.any(), companysController.signUp);
-// router.post('/login',  companysController.login);
+router.post('/login',  companysController.login);
 module.exports = router;
 
 
