@@ -189,3 +189,13 @@ export const sendCompanyEmailFalse = `UPDATE company.company_account
 export const companyLogin = "SELECT * FROM company.company_account WHERE company_id = $1";
 
 export const companyLoginSuccess = "UPDATE company.company_account SET access_token = $1, refresh_token = $2, updated_at = $3 WHERE company_id=$4;";
+
+export const companyCheckSignUpToken = `SELECT access_token
+  FROM company.company_account
+  WHERE email = $1
+`;
+
+export const companySignupSuccess = `UPDATE company.company_account
+  SET role = 2 , access_token = null
+  WHERE email = $1
+`;
