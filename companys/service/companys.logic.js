@@ -11,12 +11,12 @@ dotenv.config();
 exports.makeSignUpToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.SIGNUP_SECRET, { expiresIn: '5m' } );
 }
-// exports.makeAccessToken = async ( userId ) => {
-//     return jwt.sign( { userId : userId }, process.env.ACCESS_SECRET, { expiresIn: '1h' } );
-// }
-// exports.makeRefreshToken = async ( userId ) => {
-//     return jwt.sign( { userId : userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
-// }
+exports.makeAccessToken = async ( userId ) => {
+    return jwt.sign( { userId : userId }, process.env.ACCESS_SECRET, { expiresIn: '1h' } );
+}
+exports.makeRefreshToken = async ( userId ) => {
+    return jwt.sign( { userId : userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
+}
 // exports.verifySignUpToken = async ( signUpToken ) => {
 //     return jwt.verify( signUpToken, process.env.SIGNUP_SECRET );
 // }
