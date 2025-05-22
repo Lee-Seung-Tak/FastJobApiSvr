@@ -17,17 +17,17 @@ exports.makeAccessToken = async ( userId ) => {
 exports.makeRefreshToken = async ( userId ) => {
     return jwt.sign( { userId : userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
 }
-// exports.verifySignUpToken = async ( signUpToken ) => {
-//     return jwt.verify( signUpToken, process.env.SIGNUP_SECRET );
-// }
-// exports.verifyRefreshToken = async ( token ) => {
-//     try {
-//         const decode = jwt.verify( token, process.env.REFRESH_SECRET );
-//         return decode.userId;
-//     } catch (error ){
-//         return null;
-//     }
-// }
+exports.verifySignUpToken = async ( signUpToken ) => {
+    return jwt.verify( signUpToken, process.env.SIGNUP_SECRET );
+}
+exports.verifyRefreshToken = async ( token ) => {
+    try {
+        const decode = jwt.verify( token, process.env.REFRESH_SECRET );
+        return decode.userId;
+    } catch (error ){
+        return null;
+    }
+}
 
 exports.insertUserData = async ( userData, signUpToken ) => {
     const userRole = 1; //PENDING
