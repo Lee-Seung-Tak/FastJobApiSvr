@@ -32,17 +32,6 @@ exports.makeSignUpToken = async ( email ) => {
 exports.insertUserData = async ( userData, signUpToken ) => {
     const userRole = 1; //PENDING
     try {
-        console.log('[INSERT VALUES]', [
-            userData.name,
-            userData.email,
-            userData.phone,
-            userData.address,
-            userData.userId,
-            userData.password,
-            userData.business,
-            signUpToken,
-            userRole
-          ]);
         await db.query( query.insertCompanySignupData , [
             userData.name,
             userData.email,
@@ -53,7 +42,6 @@ exports.insertUserData = async ( userData, signUpToken ) => {
             userData.business,
             userRole,
             signUpToken,
-            
         ]);
          
     } catch ( error ) {
