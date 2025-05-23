@@ -104,6 +104,3 @@ router.post('/signup', userData.any(), companysController.signUp);
 router.post('/login',  companysController.login);
 router.get('/signup-verify', companysController.signUpVerify);
 module.exports = router;
-
-
-//router.patch('/skills');
