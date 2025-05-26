@@ -12,22 +12,28 @@ const CPU        = 2;
 const swaggerUi   = require('swagger-ui-express');
 const swaggerSpec = require('./swagger'); 
 
-const authRouter  = require('@auth_router');
-const swaggerJSDoc = require('swagger-jsdoc');
-const usersRouter = require('@users_router');
+const swaggerJSDoc   = require('swagger-jsdoc');
+const authRouter     = require('@auth_router');
+const usersRouter    = require('@users_router');
+const skillsRouter   = require('@skills_router');
+const companysRouter = require('@companys_router');
+const cors         = require("cors");
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use( express.json() );
-
+app.use(cors({
+  origin: 'http://localhost:5173', // ⚠️ '*' 말고 정확한 주소
+  credentials: true                // 쿠키 허용
+}));
 
 app.use( ( req, res, next ) => {
-    if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/auth/token-refresh') return next();
+    if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/companys/login' || req.path === '/companys/signup' || req.path === '/companys/signup-verify' || req.path === '/auth/token-refresh') return next();
     middleWare.verifyToken( req, res, next );
 })
-
+app.use( '/skills', skillsRouter );
 app.use( '/users', usersRouter );
 app.use( '/auth',  authRouter );
-
+app.use( '/companys', companysRouter );
 if (cluster.isMaster) {
     for (let i = 0; i< CPU; i++)
         cluster.fork();

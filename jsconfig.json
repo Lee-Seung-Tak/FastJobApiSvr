@@ -16,6 +16,14 @@
       "@users_logic": ["users/service/users.logic.js"],
       "@ai_analyze_gemini" : ["ai_analyze/gemini.js"],
       "@ai_analyze" : ["ai_analyze/ai.analyze.js"],
+      "@skills_controller": ["skills/controller/skills.controller.js"],
+      "@skills_service": ["skills/service/skills.service.js"],
+      "@skills_router": ["skills/skills.router.js"],
+      "@companys_controller": ["companys/controller/companys.controller.js"],
+      "@companys_service": ["companys/service/companys.service.js"],
+      "@companys_router": ["companys/companys.router.js"],
+      "@companys_dto": ["companys/dto/companys.dto.js"],
+      "@companys_logic": ["companys/service/companys.logic.js"],
     }
   },
   "include": [
@@ -24,6 +32,8 @@
     "database/**/*",
     "middleware/**/*",
     "users/**/*",
-    "src/**/*"
+    "src/**/*",
+    "skills/**/*",
+    "companys/**/*"
   ]
 }

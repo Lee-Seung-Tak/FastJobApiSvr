@@ -30,7 +30,7 @@ exports.login = async( userId, password ) => {
             await db.query( query.loginSuccess, [ accessToken, refreshToken, updateDate, userId ] );
 
             // token return
-            return { "access_token : " : accessToken , "refresh_token" : refreshToken };
+            return { "access_token" : accessToken , "refresh_token" : refreshToken };
         }
         else throw new Error('user not found')
         
@@ -45,17 +45,25 @@ exports.signUp = async ( userData ) => {
     try {
         // lst add / 비동기로 llm을 활용한 문서 요약 함수 실행
         serviceLogic.userDataAnalyze( userData );
+        let queryResult = db.query( query.checkIdDuplicate, [userData.userId] );
         queryResult     = queryResult.rows;
         if ( queryResult == [] ) throw new Error('user is duplicate');
 
         const signUpToken    = serviceLogic.makeSignUpToken  ( userData.email );
+        const userPk         = await serviceLogic.insertUserData( userData, await signUpToken );        
         
-        const insertStatus   = await serviceLogic.insertUserData( userData, await signUpToken );
-        if (insertStatus === true)
+        const skillsArr      = userData.skills.split(',');
+        const tasks          = [];
+        for(skillId of skillsArr) {
+            
+            if( skillId ) tasks.push( serviceLogic.insertUserSkill(userPk, skillId) );
+        }
+        if (userPk)
             serviceLogic.sendMailForSignUp( userData.email, signUpToken );
-
+        
+        
         else throw new Error(insertStatus)
-
+        await Promise.all( tasks );
     } catch (error) {
         throw new Error(error.message)
     }

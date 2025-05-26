@@ -108,7 +108,7 @@ export const updateSelfIntro = `UPDATE users.user_account
   SET self_intro = $1
   WHERE user_id = $2`;
 
-export const updateCarrerDesc = `UPDATE users.user_account
+export const updateCareerDesc = `UPDATE users.user_account
   SET career_desc = $1
   WHERE user_id = $2`;
 
@@ -130,4 +130,72 @@ export const updateCareerDescUrl = `UPDATE users.user_account
 export const updateUserTokens = ` UPDATE users.user_account
   SET access_token = $1, refresh_token = $2
   WHERE user_id = $3;
+`;
+
+export const getSkillsByUserId = `
+  SELECT s.id, s.skill
+  FROM users.user_account ua
+  JOIN users.user_skill us ON ua.id = us.user_id
+  JOIN skill.skill s ON us.skill_id = s.id
+  WHERE ua.user_id = $1
+  ORDER BY s.id;
+`;
+
+export const getAllSkills = `
+  SELECT id, skill
+  FROM skill.skill
+  ORDER BY id;
+`;
+
+export const insertUserSkill = `
+  INSERT INTO users.user_skill (user_id, skill_id)
+  VALUES ($1, $2)
+  ON CONFLICT DO NOTHING;
+`;
+
+export const getUserPk = `SELECT id FROM users.user_account WHERE user_id = $1`;
+
+export const getJobApplications =`
+    SELECT application_id, status, notified
+    FROM users.job_application
+    WHERE user_id = $1
+  `;
+
+  export const insertCompanySignupData = `INSERT INTO company.company_account (
+    name,
+    email,
+    phone,
+    address,
+    company_id,
+    password,
+    business,
+    role,
+    access_token,
+    created_at,
+    updated_at
+  ) VALUES (
+    $1, $2, $3, $4, $5, $6, 
+    $7, $8, $9, NOW(), NOW()
+  );
+`;
+
+export const checkCompanyIdDuplicate = "SELECT * FROM company.company_account WHERE company_id = $1 LIMIT 1;";
+
+export const sendCompanyEmailFalse = `UPDATE company.company_account
+  SET role = 3
+  WHERE email = $1
+`;
+
+export const companyLogin = "SELECT * FROM company.company_account WHERE company_id = $1";
+
+export const companyLoginSuccess = "UPDATE company.company_account SET access_token = $1, refresh_token = $2, updated_at = $3 WHERE company_id=$4;";
+
+export const companyCheckSignUpToken = `SELECT access_token
+  FROM company.company_account
+  WHERE email = $1
+`;
+
+export const companySignupSuccess = `UPDATE company.company_account
+  SET role = 2 , access_token = null
+  WHERE email = $1
 `;

@@ -29,7 +29,8 @@ class SignUpDTO {
         this.userId        = userData.userId;
         this.password      = userData.password;
         this.category      = userData.category;
-        
+        this.skills        = userData.skills;
+
         const newUserFiles = userFiles.reduce( (acc, fileData ) => {
             if ( fileData.portpolioUrl != '' )
                 acc[fileData.fieldname+'Url'] = fileData.path;

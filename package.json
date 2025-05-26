@@ -2,8 +2,10 @@
   "dependencies": {
     "@drdgvhbh/postgres-error-codes": "^0.0.6",
     "@google/genai": "^0.13.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
     "multer": "^1.4.5-lts.2",
     "nodemailer": "^6.10.1",
@@ -28,7 +30,12 @@
     "@companys_router": "./companys/companys.router.js",
     "@companys_controller": "./companys/controller/companys.controller.js",
     "@companys_service": "./companys/service/companys.service.js",
+    "@companys_dto": "./companys/dto/companys.dto.js",
+    "@companys_logic": "./companys/service/companys.logic.js",
     "@ai_analyze_gemini": "./ai_analyze/gemini.js",
-    "@ai_analyze": "./ai_analyze/ai.analyze.js"
+    "@ai_analyze": "./ai_analyze/ai.analyze.js",
+    "@skills_router": "./skills/skills.router.js",
+    "@skills_controller": "./skills/controller/skills.controller.js",
+    "@skills_service": "./skills/service/skills.service.js"
   }
 }

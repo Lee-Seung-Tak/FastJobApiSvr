@@ -41,38 +41,22 @@ exports.patchUser = async ( patchUserData ) => {
   return { message: 'User information updated successfully' };
 };
 
-exports.getUser = async ( userId ) => {
-  
-  if ( !userId ) {
-    const err = new Error('user Id is required');
-    err.statusCode = 400;
-    throw err;
-  }
-    // DB에서 유저 조회
-    let queryResult = await db.query( queryJson.getUserById, [userId] );
-    queryResult = queryResult.row[0];
-
-    if (!queryResult) {
-      const err = new Error('User not found');
-      err.statusCode = 404;
-      throw err;
-    }
-    
-    // 비밀번호 정보는 제외하고 반환
-    const { password, ...userInfo } = user;
-    return userInfo;
+exports.getUserSkillsByUserId = async ( userId ) => {
+  const result = await db.query( query.getSkillsByUserId, [userId] );
+  return result.rows;
 };
 
-exports.getUserInfo = async( userId ) => {
+
+exports.getUser = async ( userId ) => {
   const { rows } = await db.query( query.getUserData, [userId] );
   return rows.length ? rows[0] : null;
 };
 
-exports.patchUserProfileDocs = async ( { userId, files, body } ) => {
-  
-  let docTasks   = [];
-  let aiTasks    = [];
-  let textTasks  = [];
+exports.patchUserProfileDocs = async ( { userId, files, texts } ) => {
+
+  let docTasks = [];
+  let aiTasks  = [];
+  let textTasks =[];
   try {
     if (body?.resumeText || body?.selfIntroText || body?.careerDescText) {
 
@@ -106,8 +90,18 @@ exports.patchUserProfileDocs = async ( { userId, files, body } ) => {
       if (aiTask)  aiTasks.push(aiTask);
 
     }
+    if (texts?.resumeText) {
+      textTasks.push(usersLogic.updateUserDocsText(userId, texts.resumeText, query.updateResume));
+    }
 
-    const tasks = [...docTasks, ...aiTasks, textTasks]; // 평탄화
+    if (texts?.selfIntroText) {
+      textTasks.push(usersLogic.updateUserDocsText(userId, texts.selfIntroText, query.updateSelfIntro));
+    }
+
+    if (texts?.careerDescText) {
+      textTasks.push(usersLogic.updateUserDocsText(userId, texts.careerDescText, query.updateCareerDesc));
+    }
+    const tasks = [...docTasks, ...aiTasks, ...textTasks]; // 평탄화
     await Promise.all(tasks);
   }
   } catch ( error )
@@ -117,3 +111,10 @@ exports.patchUserProfileDocs = async ( { userId, files, body } ) => {
   }
   
 };
+
+exports.myJobApplications = async ( userId ) => {
+  const userPk                = ( await db.query( query.getUserPk, [userId] ) ).rows[0].id;
+  const getMyJobApplications  = ( await db.query( query.getJobApplications, [userPk] ) ).rows;
+  return getMyJobApplications.length ? getMyJobApplications : null;
+};
+

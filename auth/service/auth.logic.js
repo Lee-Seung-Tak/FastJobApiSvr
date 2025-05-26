@@ -138,8 +138,10 @@ exports.insertUserData = async ( userData, signUpToken ) => {
             userData.careerDescUrl,
             userData.portpolioUrl,   
         ]);
-        return true;
-
+        const getUserPk = await db.query( query.getUserPk, [ userData.userId ] )
+        const userPk    = getUserPk.rows[0].id;
+        return userPk;
+        
     } catch ( error ) {
         return error
     }
@@ -162,10 +164,14 @@ exports.userDataAnalyze = async ( userData ) => {
         if ( analyzeSelfIntroResult  ) await analyzeSelfIntroResult;
         if ( analyzeCarrerDescResult ) await analyzeCarrerDescResult;
 
-        await sendAnalyzeDoneEmail( userData.email );
+        await this.sendAnalyzeDoneEmail( userData.email );
 
     } catch ( error ) {
         // Error인 경우 관리자 이메일
-        await sendAnalyzeErrorEmail();
+        await this.sendAnalyzeErrorEmail();
     }
 }
+
+exports.insertUserSkill = async ( userPk, skillId ) => {
+    await db.query( query.insertUserSkill, [ userPk, skillId ] );
+};

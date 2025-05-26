@@ -114,66 +114,8 @@ router.patch('/user', usersController.patchUser);
 
 // 유저 본인 정보 조회
 router.get('/me', usersController.getUser);
+router.get('/my-job-application', usersController.myJobApplications);
 
-/**
- * @swagger
- * /users/user/application-docs:
- *   patch:
- *     summary: 사용자 서류 파일 및 작성 텍스트 수정
- *     tags:
- *       - Users
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               resumeFile:
- *                 type: string
- *                 format: binary
- *                 description: 이력서 파일 (.pdf 등)
- *               selfIntroFile:
- *                 type: string
- *                 format: binary
- *                 description: 자기소개서 파일 (.pdf 등)
- *               careerDescFile:
- *                 type: string
- *                 format: binary
- *                 description: 경력기술서 파일 (.pdf 등)
- *               resumeText:
- *                 type: string
- *                 description: 이력서 텍스트 내용
- *                 example: "이력서 내용입니다"
- *               selfIntroText:
- *                 type: string
- *                 description: 자기소개서 텍스트 내용
- *                 example: "자기소개 내용입니다"
- *               careerDescText:
- *                 type: string
- *                 description: 경력기술서 텍스트 내용
- *                 example: "3년차 백엔드 개발자입니다"
- *     responses:
- *       200:
- *         description: 수정 성공
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Update Success
- *       400:
- *         description: 잘못된 요청
- *         content:
- *           application/json:
- *             schema:
- *               type: string
- *               example: Bad Request
- */
 router.patch('/user/application-docs', userData.any(), usersController.patchUserProfileDocs);
 // TO Do - 1
 // 사용자 이력서 및 자기소개서, 경력 기술서, 포트폴리오 url 업데이트
