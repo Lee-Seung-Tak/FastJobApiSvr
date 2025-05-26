@@ -27,13 +27,20 @@ app.use(cors({
 }));
 
 app.use( ( req, res, next ) => {
-    if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/companys/login' || req.path === '/companys/signup' || req.path === '/companys/signup-verify' || req.path === '/auth/token-refresh') return next();
+    if ( 
+        req.path === '/auth/login' || req.path === '/auth/signup' || 
+        req.path === '/companys/login' || req.path === '/companys/signup' || 
+        req.path === '/companys/signup-verify' || req.path === '/auth/token-refresh'
+    ) return next();
+
     middleWare.verifyToken( req, res, next );
 })
-app.use( '/skills', skillsRouter );
-app.use( '/users', usersRouter );
-app.use( '/auth',  authRouter );
-app.use( '/companys', companysRouter );
+
+app.use( '/skills',   skillsRouter   );
+app.use( '/users',    usersRouter    );
+app.use( '/auth',     authRouter     );
+app.use( '/companys', companysRouter ); 
+
 if (cluster.isMaster) {
     for (let i = 0; i< CPU; i++)
         cluster.fork();
