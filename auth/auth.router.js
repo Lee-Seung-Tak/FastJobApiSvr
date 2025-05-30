@@ -196,7 +196,7 @@ router.post('/signup', userData.any(), authController.signUp);
 
 /**
  * @swagger
- * /signup-verify:
+ * /auth/signup-verify:
  *   get:
  *     summary: "회원가입 검증"
  *     description: "Bearer 토큰을 사용하여 회원가입을 검증합니다. 토큰이 정상적인 경우 400을, 비정상적인 경우 401을 반환합니다."
