@@ -159,7 +159,7 @@ export const getJobApplications =`
     SELECT application_id, status, notified
     FROM users.job_application
     WHERE user_id = $1
-  `;
+`;
 
   export const insertCompanySignupData = `INSERT INTO company.company_account (
     name,
@@ -199,3 +199,20 @@ export const companySignupSuccess = `UPDATE company.company_account
   SET role = 2 , access_token = null
   WHERE email = $1
 `;
+
+export const IsUserValid = `SELECT COUNT(*)
+FROM users.user_account
+WHERE email = $1;
+`;
+
+export const updateTokenIsNull = `UPDATE users.user_account
+SET access_token = NULL
+WHERE email = $1;`
+
+export const updateToken = `UPDATE users.user_account
+SET access_token = $1
+WHERE email = $2;`
+
+export const updateUserPassworkd = `UPDATE users.user_account
+SET password = $1
+WHERE email = $2;`
