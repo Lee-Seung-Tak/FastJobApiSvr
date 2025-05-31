@@ -15,14 +15,34 @@ exports.makeAccessToken = async ( userId ) => {
 exports.makeRefreshToken = async ( userId ) => {
     return jwt.sign( { userId : userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
 }
+
+exports.makeSignUpToken = async ( email ) => {
+    return jwt.sign( { email : email }, process.env.SIGNUP_SECRET, { expiresIn: '5m' } );
+}
+
+exports.makeResetPasswordToken = async ( email ) => {
+    return jwt.sign( { email : email }, process.env.RESETPASSWORD_SECRET, { expiresIn: '15m' } );
+}
+
 exports.verifySignUpToken = async ( signUpToken ) => {
     return jwt.verify( signUpToken, process.env.SIGNUP_SECRET );
 }
+
 exports.verifyRefreshToken = async ( token ) => {
     try {
         const decode = jwt.verify( token, process.env.REFRESH_SECRET );
         return decode.userId;
     } catch (error ){
+        return null;
+    }
+}
+
+exports.verifyResetPasswordToken = async ( RESETPASSWORD_SECRET ) => {
+    try {
+        const decode = jwt.verify( RESETPASSWORD_SECRET, process.env.RESETPASSWORD_SECRET );
+        return decode.email;
+    } catch (error ){
+        console.log(error)
         return null;
     }
 }
@@ -49,10 +69,32 @@ const transPorter = nodemailer.createTransport({
     },
   });
 
+exports.sendMailResetPassword = async ( email , signUpToken ) => {
+    const filePath    = path.join(__dirname, '/web/resetPassword.html');
+    let mailBody      = fs.readFileSync(filePath, 'utf8');
+    mailBody          = mailBody.replace('{TOKEN}', await signUpToken);
+
+    const mailOptions = {
+        from   : process.env.SYS_EMAIL,  
+        to     : email,                         
+        subject: '[비밀번호 초기화 메일]',                       
+        html   : mailBody                           
+    };
+
+    try {
+        const info = await transPorter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+
+    } catch (error) {
+        console.error  ( 'Error sending email:', error );
+        await db.query ( query.sendEmailFalse, [email] );
+        throw new Error( 'Failed to send email' );  // 이메일 발송 실패 시 에러 발생
+    }
+}
 
 
 exports.sendMailForSignUp = async ( email , signUpToken ) => {
-    const filePath    = path.join(__dirname, 'index.html');
+    const filePath    = path.join(__dirname, '/web/index.html');
     let mailBody      = fs.readFileSync(filePath, 'utf8');
     mailBody          = mailBody.replace('{TOKEN}', await signUpToken);
 
@@ -75,7 +117,7 @@ exports.sendMailForSignUp = async ( email , signUpToken ) => {
 };
 
 exports.sendAnalyzeDoneEmail = async ( email ) => {
-    const filePath    = path.join(__dirname, 'analyze.html');
+    const filePath    = path.join(__dirname, '/web/analyze.html');
     let mailBody      = fs.readFileSync(filePath, 'utf8');
 
     const mailOptions = {
@@ -97,7 +139,7 @@ exports.sendAnalyzeDoneEmail = async ( email ) => {
 };
 
 exports.sendAnalyzeErrorEmail = async () => {
-    const filePath    = path.join(__dirname, 'analyze_error.html');
+    const filePath    = path.join(__dirname, '/web/analyze_error.html');
     let mailBody      = fs.readFileSync(filePath, 'utf8');
 
     const mailOptions = {
@@ -146,10 +188,6 @@ exports.insertUserData = async ( userData, signUpToken ) => {
         return error
     }
    
-}
-
-exports.makeSignUpToken = async ( email ) => {
-    return jwt.sign( { email : email }, process.env.SIGNUP_SECRET, { expiresIn: '5m' } );
 }
 
 exports.userDataAnalyze = async ( userData ) => {

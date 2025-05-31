@@ -3,6 +3,8 @@
 const db           = require('@db');
 const serviceLogic = require('@auth_logic');
 const query        = require('@query');
+const fs           = require('fs')
+const path         = require('path');
 const PENDING      = 1;
 const NORMAL       = 2;
 const EMAIL_FAILE  = 3;
@@ -95,5 +97,74 @@ exports.tokenRefresh = async( token ) => {
     } catch ( error ) {
         console.log("error : ", error.message)
         throw new Error(error);
+    }
+}
+
+exports.resetPassword = async ( userEmail ) => {
+    try {
+        const userStatus         = (await db.query( query.IsUserValid, [ userEmail ] )).rowCount;
+        const resetPasswordToken = await serviceLogic.makeResetPasswordToken( userEmail );
+
+        await db.query( query.updateToken, [ resetPasswordToken, userEmail ] );
+
+        if ( userStatus == 1 ) await serviceLogic.sendMailResetPassword( userEmail, resetPasswordToken );
+        else return false;
+
+        return true
+    } catch ( error ) {
+        console.log(error)
+    }
+}
+
+exports.resetPasswordTokenVerify = async ( resetPasswordTokenVerify ) => {
+    try {
+        const userEmail = await serviceLogic.verifyResetPasswordToken( resetPasswordTokenVerify );
+
+        if ( userEmail != null ) {
+            await db.query( query.updateTokenIsNull, [ userEmail ] );
+           
+            const filePath           = path.join(__dirname, '/web/setNewPassword.html');
+            const html               = fs.readFileSync(filePath, 'utf8');
+            const resetPasswordToken = await serviceLogic.makeResetPasswordToken( userEmail )
+            const updatedHtml        = html.replace('{TOKEN}', resetPasswordToken );
+
+            await db.query( query.updateToken, [ resetPasswordToken, userEmail ] );
+            return updatedHtml
+        }
+        
+        else {
+            const filePath    = path.join(__dirname, '/web/resetPasswordError.html');
+            const errorPage   =  fs.readFileSync(filePath, 'utf8');
+            return errorPage
+        }
+    } catch ( error )
+    {
+        console.log(error)
+    }
+}
+
+exports.updateNewPassword = async ( updateToken, newPassword ) => {
+    try {
+        const userEmail = await serviceLogic.verifyResetPasswordToken( updateToken );
+  
+        if ( userEmail != null ) {
+     
+            await db.query( query.updateTokenIsNull, [ userEmail ] );
+           
+            const filePath           = path.join(__dirname, '/web/resetPasswordSuccess.html');
+            const html               = fs.readFileSync(filePath, 'utf8');;
+
+            await db.query( query.updateToken,         [ resetPasswordToken, userEmail ] );
+            await db.query( query.updateUserPassworkd, [ newPassword, userEmail        ] )
+            return html
+        }
+        
+        else {
+            const filePath    = path.join(__dirname, '/web/resetPasswordError.html');
+            const errorPage   =  fs.readFileSync(filePath, 'utf8');
+            return errorPage
+        }
+    } catch ( error ) {
+
     }
 }
