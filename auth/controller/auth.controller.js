@@ -66,3 +66,40 @@ exports.tokenRefresh = async ( req, res ) => {
         return res.status(401).json( { "message" : "check your refresh token"})
     }
 }
+
+exports.resetPassword = async ( req, res ) => {
+    try {
+        const resultStatus = await authService.resetPassword( req.body.email )
+
+        if ( resultStatus )
+            return res.status(200).json( {"message" : "success"} )
+
+        else return res.status(401).json( { "message" : "check your email"})
+
+    } catch ( error ) {
+        return res.status(401).json( { "message" : "check your email"})
+    }
+}
+
+exports.resetPasswordTokenVerify = async ( req, res ) => {
+    try {
+        const resetPasswordToken = req.query.token;
+        const getPage            = await authService.resetPasswordTokenVerify( resetPasswordToken );
+        return res.status(200).send(getPage)
+    } catch ( error ) {
+        console.log(error)
+    }
+}
+
+exports.updateNewPassword = async ( req, res ) => {
+    try {
+        const updateToken = req.body.token;
+        const newPassword = req.body.password;
+  
+        const getPage = await authService.updateNewPassword( updateToken,newPassword );
+        
+        return res.status(200).send(getPage)
+    } catch ( error ) {
+
+    }
+}
