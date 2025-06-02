@@ -132,6 +132,7 @@ export const updateUserTokens = ` UPDATE users.user_account
   WHERE user_id = $3;
 `;
 
+//추가
 export const sendResetEmail = `UPDATE users.user_account
   SET reset_token = $1 
   WHERE email = $2

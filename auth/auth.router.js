@@ -4,7 +4,8 @@ const router         = express.Router();
 const authController = require('@auth_controller');
 
 
-const multer         = require('multer');
+const multer         = require('multer'); //파일 업로드를 처리하기 위한 Express 미들웨어
+//클라이언트가 폼 데이터(multipart/form-data)로 파일(예: 이미지, PDF)을 전송하면, multer가 이를 처리하여 서버에 저장하거나 메모리에 유지
 const path           = require('path');
 const fs             = require('fs');
 const storage = multer.diskStorage({
