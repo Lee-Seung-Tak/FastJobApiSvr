@@ -134,11 +134,16 @@ export const updateUserTokens = ` UPDATE users.user_account
 
 //추가
 export const sendResetEmail = `UPDATE users.user_account
-  SET reset_token = $1 
+  SET access_token = $1 
   WHERE email = $2
 `;
 
 export const updatePassword = `UPDATE users.user_account
-  SET password = $1, reset_token = NULL 
+  SET password = $1, acess_token = NULL 
   WHERE email = $2
 `;
+
+//다시 생각해보기기
+// export const requestPasswordReset = `SELECT email From users.user_account
+//   WHERE email = $1
+// `;
