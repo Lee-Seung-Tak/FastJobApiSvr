@@ -192,8 +192,7 @@ exports.sendResetEmail = async (email, resetToken) => {
 // 비밀번호 업데이트
 exports.updatePassword = async (email, newPassword) => {
     try {
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        await db.query(query.updatePassword, [hashedPassword, email]);
+        await db.query(query.updatePassword,[newPassword, email]);
         return true;
     } catch (error) {
         console.error('Error updating password:', error);
