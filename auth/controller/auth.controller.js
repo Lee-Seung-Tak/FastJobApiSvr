@@ -5,8 +5,9 @@ const path        = require('path');
 const loginDTO    = authDTO.LoginDTO;
 const signUpDTO   = authDTO.SignUpDTO;
 
-
-exports.login = async ( req, res ) => {
+//사용자가 ID와 비밀번호를 입력해 로그인하면, 액세스 토큰과 리프레시 토큰을 발급함.
+//exports = 이 파일을 외부에서 사용할 수 있게 내보내는 함수
+exports.login = async ( req, res ) => {  //비동기 작업은 시간이 걸릴 수 있어서, 결과를 기다리기 위해 사용
     try {
         const userData = loginDTO.isValid( req.body );
 
@@ -35,7 +36,7 @@ exports.login = async ( req, res ) => {
 }
 
 
-
+//사용자가 회원가입 정보를 제출하고, 이메일 인증 안내를 받음.
 exports.signUp = async ( req, res ) => {
     try {
         const userData = signUpDTO.isValid    ( req.body, req.files );
@@ -49,6 +50,7 @@ exports.signUp = async ( req, res ) => {
     }
 }
 
+//이메일 인증 링크를 통해 계정을 활성화.
 exports.signUpVerify = async ( req, res ) => {
 
     const verifyStatus = await authService.signUpVerify( req.query.token );
@@ -58,6 +60,7 @@ exports.signUpVerify = async ( req, res ) => {
 
 }
 
+//리프레시 토큰으로 새 액세스 토큰을 발급받음.
 exports.tokenRefresh = async ( req, res ) => {
     try {
         const tokens = await authService.tokenRefresh( req.body.refresh_token );

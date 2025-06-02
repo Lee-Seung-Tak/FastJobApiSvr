@@ -1,11 +1,12 @@
 
 const db                      = require('@db');
 const query                   = require('@query');
-const dotenv                  = require('dotenv')
+const dotenv                  = require('dotenv');
 const fs                      = require('fs');
 const path                    = require('path');
 const nodemailer              = require('nodemailer');
 const analyze                 = require('@ai_analyze');
+const bcrypt = require('bcrypt');
 dotenv.config();
 const jwt = require('jsonwebtoken');
 
@@ -40,7 +41,7 @@ exports.tokensRefresh = async ( userId ) => {
 // 이메일 발송 함수 
 const transPorter = nodemailer.createTransport({
     service:"gmail",
-    host: "smtp.gmail.email",
+    host: "smtp.gmail.com", //*"smtp.gmail.email" -> "smtp.gmail.com" 수정
     port: 587,
     secure: false, 
     auth: {
@@ -81,7 +82,7 @@ exports.sendAnalyzeDoneEmail = async ( email ) => {
     const mailOptions = {
         from   : process.env.SYS_EMAIL,  
         to     : email,                         
-        subject: '[회원가입 인증 메일]',                       
+        subject: '[회원가입 인증 메일]',   //**수정필요 */                    
         html   : mailBody                           
     };
 
@@ -103,7 +104,7 @@ exports.sendAnalyzeErrorEmail = async () => {
     const mailOptions = {
         from   : process.env.SYS_EMAIL,  
         to     : 'lstlove9804@naver.com',                         
-        subject: '[회원가입 인증 메일]',                       
+        subject: '[회원가입 인증 메일]',           //**수정필요 */             
         html   : mailBody                           
     };
 
@@ -149,6 +150,57 @@ exports.insertUserData = async ( userData, signUpToken ) => {
 exports.makeSignUpToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.SIGNUP_SECRET, { expiresIn: '5m' } );
 }
+
+// 비밀번호 초기화 토큰 생성
+exports.makeResetToken = async (email) => {
+    return jwt.sign({ email }, process.env.RESET_SECRET, { expiresIn: '15m' });
+};
+
+// 비밀번호 초기화 토큰 검증
+exports.verifyResetToken = async (token) => {
+    try {
+        const decode = jwt.verify(token, process.env.RESET_SECRET);
+        return decode.email;
+    } catch (error) {
+        return null;
+    }
+};
+
+// 비밀번호 초기화 이메일 전송
+exports.sendResetEmail = async (email, resetToken) => {
+    const filePath = path.join(__dirname, 'reset.html');
+    let mailBody = fs.readFileSync(filePath, 'utf8');
+    mailBody = mailBody.replace('{RESET_LINK}', `http://localhost:3000/reset-password?token=${resetToken}`);
+
+    const mailOptions = {
+        from: process.env.SYS_EMAIL,
+        to: email,
+        subject: '비밀번호 재설정 링크',
+        html: mailBody
+    };
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+        await db.query(query.sendResetEmail, [resetToken, email]);
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw new Error('Failed to send email');
+    }
+};
+
+// 비밀번호 업데이트
+exports.updatePassword = async (email, newPassword) => {
+    try {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await db.query(query.updatePassword, [hashedPassword, email]);
+        return true;
+    } catch (error) {
+        console.error('Error updating password:', error);
+        return false;
+    }
+};
+
 
 exports.userDataAnalyze = async ( userData ) => {
 

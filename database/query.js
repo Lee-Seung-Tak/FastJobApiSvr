@@ -131,3 +131,13 @@ export const updateUserTokens = ` UPDATE users.user_account
   SET access_token = $1, refresh_token = $2
   WHERE user_id = $3;
 `;
+
+export const sendResetEmail = `UPDATE users.user_account
+  SET reset_token = $1 
+  WHERE email = $2
+`;
+
+export const updatePassword = `UPDATE users.user_account
+  SET password = $1, reset_token = NULL 
+  WHERE email = $2
+`;
