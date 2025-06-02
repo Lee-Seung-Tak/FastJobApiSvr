@@ -31,7 +31,7 @@ app.use(cors({
  //브라우저에서 http://localhost:5173에서 보낸 요청은 서버가 허용하며, 쿠키를 포함한 요청도 처리할 수 있습니다.
 
 app.use( ( req, res, next ) => {
-    if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/auth/token-refresh') return next();
+    if ( req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/auth/token-refresh'|| req.path === '/auth/signup-verify') return next();
     middleWare.verifyToken( req, res, next );
 })
 
