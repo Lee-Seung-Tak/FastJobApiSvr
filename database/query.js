@@ -65,6 +65,11 @@ export const patchPhoneNumber = `UPDATE users.user_account
   WHERE user_id = $2
 `;
 
+export const updatePassword = `UPDATE users.user_accountMore actions
+  SET password = $1, acess_token = NULL 
+  WHERE email = $2
+`;
+
 export const getUserById = `
   SELECT
     id,
