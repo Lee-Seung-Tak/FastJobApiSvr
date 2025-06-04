@@ -107,10 +107,24 @@ exports.updateNewPassword = async ( req, res ) => {
 exports.getUserIdByEmail = async ( req, res ) => {
     try{
         const email = req.body.email;
-        const getId = await authService.findId( email );
+        const getId = await authService.getUserIdByEmail( email );
 
         return res.status(200).send(getId)
     } catch ( error ) {
         console.log( error )
+    }
+}
+
+exports.showRecoveredId = async ( req, res ) => {
+    try{
+        const token = req.query.token;
+        if ( !token ) {
+            return res.status(400).send('토큰이 없습니다.');
+        }
+        const html = await authService.showRecoveredId(token);
+        return res.status(200).send(html);
+    } catch ( error ) {
+        console.error('아이디 확인 에러:', error);
+        throw error;
     }
 }
