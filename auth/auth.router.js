@@ -222,7 +222,7 @@ router.post('/signup', userData.any(), authController.signUp);
  *           type: string
  *           example: "Bearer your_token_here"
  */
-router.get('/signup-verify', authController.signUpVerify);
+router.get('/signup/verify', authController.signUpVerify);
 
 
 /**
@@ -272,9 +272,13 @@ router.get('/signup-verify', authController.signUpVerify);
 router.post('/token-refresh', authController.tokenRefresh);
 
 router.post('/reset-password', authController.resetPassword)
-router.get('/reset-password/token-verify', authController.resetPasswordTokenVerify)
+
+router.get('/reset-password/verify', authController.resetPasswordTokenVerify)
 router.patch('/new-password', authController.updateNewPassword)
-router.post('/request-id-verification', authController.sendVerificationEmailToUser)
-router.get('/get-verified-id',authController.getUserIdAfterVerification)
+
+router.post('/recover-id', authController.sendVerificationEmailToUser)
+
+router.get('/recover-id/verify',authController.getUserIdAfterVerification)
 module.exports = router;
 
+  
