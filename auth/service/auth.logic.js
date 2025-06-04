@@ -24,7 +24,7 @@ exports.makeResetPasswordToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.RESETPASSWORD_SECRET, { expiresIn: '15m' } );
 }
 
-exports.getIdToken = async ( email ) => {
+exports.makeIdVerificationToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.GETID_SECRET, { expiresIn: '5m' } );
 }
 
@@ -51,7 +51,7 @@ exports.verifyResetPasswordToken = async ( RESETPASSWORD_SECRET ) => {
     }
 }
 
-exports.verifyComfirmIdToken = async ( GETID_SECRET ) => {
+exports.verifyIdRecoveryToken = async ( GETID_SECRET ) => {
     try {
         const decode = jwt.verify( GETID_SECRET, process.env.GETID_SECRET );
         return decode.email;
@@ -228,7 +228,7 @@ exports.insertUserSkill = async ( userPk, skillId ) => {
     await db.query( query.insertUserSkill, [ userPk, skillId ] );
 };
 
-exports.sendMailGetUserByEmail = async ( email , getIdToken ) => {
+exports.sendMailCheckId = async ( email , getIdToken ) => {
     const filePath    = path.join(__dirname, '/web/getUserByEmail.html');
     let mailBody      = fs.readFileSync(filePath, 'utf8');
     mailBody          = mailBody.replace('{TOKEN}', await getIdToken);
