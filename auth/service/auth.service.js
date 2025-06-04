@@ -168,3 +168,18 @@ exports.updateNewPassword = async ( updateToken, newPassword ) => {
 
     }
 }
+
+exports.getUserIdByEmail = async ( email ) => {
+    try {
+        const result = await db.query( query.findUserId, [ email ] );
+        
+        if ( result.rows.length === 0 ) {
+            return null;
+        }
+        const userId = result.rows[0].user_id;
+        return userId;
+    } catch ( error ) {
+        console.error( "아이디를 찾지 못하였습니다.", error );
+        throw error;
+    }
+}
