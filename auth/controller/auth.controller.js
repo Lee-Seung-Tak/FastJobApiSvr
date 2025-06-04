@@ -103,3 +103,14 @@ exports.updateNewPassword = async ( req, res ) => {
 
     }
 }
+
+exports.getUserIdByEmail = async ( req, res ) => {
+    try{
+        const email = req.body.email;
+        const getId = await authService.findId( email );
+
+        return res.status(200).send(getId)
+    } catch ( error ) {
+        console.log( error )
+    }
+}
