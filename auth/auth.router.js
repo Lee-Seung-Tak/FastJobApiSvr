@@ -274,6 +274,7 @@ router.post('/token-refresh', authController.tokenRefresh);
 router.post('/reset-password', authController.resetPassword)
 router.get('/reset-password/token-verify', authController.resetPasswordTokenVerify)
 router.patch('/new-password', authController.updateNewPassword)
-router.post('/find/id', authController.getUserIdByEmail)
+router.post('/recover-id-request', authController.getUserIdByEmail)
+router.get('/find-id',authController.showRecoveredId)
 module.exports = router;
 
