@@ -33,12 +33,12 @@ app.use(cors({
 app.use( ( req, res, next ) => {
     if ( 
         // auth 관련 
-        req.path === '/auth/login'                        || req.path === '/auth/signup'         || 
-        req.path === '/auth/token-refresh'                || req.path === '/auth/reset-password' ||
-        req.path === '/auth/reset-password/token-verify'  || req.path === '/auth/new-password'   ||
-        req.path === '/auth/find/id'                      || req.path === '/auth/find/getId'          ||
+        req.path === '/auth/login'                        || req.path === '/auth/signup'          || 
+        req.path === '/auth/token-refresh'                || req.path === '/auth/reset-password'  ||
+        req.path === '/auth/reset-password/token-verify'  || req.path === '/auth/new-password'    ||
+        req.path === '/auth/request-id-verification'      || req.path === '/auth/get-verified-id' ||
         // company 관련
-        req.path === '/companys/login'                    || req.path === '/companys/signup'     || 
+        req.path === '/companys/login'                    || req.path === '/companys/signup'      || 
         req.path === '/companys/signup-verify' 
 
     ) return next();
