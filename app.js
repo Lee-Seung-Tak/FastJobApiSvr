@@ -36,7 +36,7 @@ app.use( ( req, res, next ) => {
         req.path === '/auth/login'                        || req.path === '/auth/signup'         || 
         req.path === '/auth/token-refresh'                || req.path === '/auth/reset-password' ||
         req.path === '/auth/reset-password/token-verify'  || req.path === '/auth/new-password'   ||
-        req.path === '/auth/find/id'                      ||
+        req.path === '/auth/find/id'                      || req.path === '/auth/find/getId'          ||
         // company 관련
         req.path === '/companys/login'                    || req.path === '/companys/signup'     || 
         req.path === '/companys/signup-verify' 
