@@ -169,17 +169,46 @@ exports.updateNewPassword = async ( updateToken, newPassword ) => {
     }
 }
 
-exports.getUserIdByEmail = async ( email ) => {
+exports.getUserIdByEmail = async ( userEmail ) => {
     try {
-        const result = await db.query( query.findUserId, [ email ] );
-        
-        if ( result.rows.length === 0 ) {
-            return null;
-        }
-        const userId = result.rows[0].user_id;
-        return userId;
+        const userStatus         = (await db.query( query.IsUserValid, [ userEmail ] )).rowCount;
+        const getIdToken = await serviceLogic.getIdToken( userEmail );
+
+        await db.query( query.updateToken, [ getIdToken, userEmail ] );
+
+        if ( userStatus == 1 ) await serviceLogic.sendMailGetUserByEmail( userEmail, getIdToken );
+        else return false;
+
+        return true
     } catch ( error ) {
-        console.error( "아이디를 찾지 못하였습니다.", error );
+        console.log(error)
+    }
+}
+
+exports.showRecoveredId = async ( checkToken ) => {
+    try {
+        const userEmail = await serviceLogic.verifyComfirmIdToken( checkToken );
+  
+        if ( userEmail != null ) {
+     
+            await db.query( query.updateTokenIsNull, [ userEmail ] );
+           
+            const filePath           = path.join(__dirname, '/web/confirmId.html');
+            const html               = fs.readFileSync(filePath, 'utf8');
+            const getUser            = await db.query(query.findUserId, [ userEmail ] );
+            const userId             = getUser.rows[0]?.user_id
+            const updatedHtml        = html.replace('{USER_ID}', userId.toString());
+            
+            return updatedHtml
+        }
+        
+        else {
+            const filePath    = path.join(__dirname, '/web/resetPasswordError.html');
+            const errorPage   =  fs.readFileSync(filePath, 'utf8');
+            return errorPage
+        }
+    } catch ( error ) {
+        console.error('ID 확인 오류', error);
         throw error;
     }
 }
