@@ -203,7 +203,7 @@ exports.showRecoveredId = async ( checkToken ) => {
         }
         
         else {
-            const filePath    = path.join(__dirname, '/web/resetPasswordError.html');
+            const filePath    = path.join(__dirname, '/web/confirmIdError.html');
             const errorPage   =  fs.readFileSync(filePath, 'utf8');
             return errorPage
         }
