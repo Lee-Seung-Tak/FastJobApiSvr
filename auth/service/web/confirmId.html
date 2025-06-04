@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>아이디 확인 결과</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+    h1 {
+      color: #333;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    p {
+      font-size: 16px;
+      color: #555;
+      line-height: 1.6;
+    }
+    .user-id {
+      display: inline-block;
+      margin: 20px 0;
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #007bff;
+      border-radius: 6px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>아이디 확인이 완료되었습니다 ✅</h1>
+    <p>회원님의 아이디는 아래와 같습니다.</p>
+    <div class="user-id">{USER_ID}</div>
+    <p>로그인 페이지로 이동하여 서비스를 이용해주세요.</p>
+    <div class="footer">FastJobAPI 팀 드림</div>
+  </div>
+</body>
+</html>
