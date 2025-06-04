@@ -1,7 +1,8 @@
-const authService = require('@auth_service');
-const authDTO     = require('@auth_dto');
-const path        = require('path');
-
+const authService    = require('@auth_service');
+const authDTO        = require('@auth_dto');
+const path           = require('path');
+const query          = require('@query');
+const db             = require('@db');
 const loginDTO    = authDTO.LoginDTO;
 const signUpDTO   = authDTO.SignUpDTO;
 
@@ -104,27 +105,33 @@ exports.updateNewPassword = async ( req, res ) => {
     }
 }
 
-exports.getUserIdByEmail = async ( req, res ) => {
+exports.sendVerificationEmailToUser = async ( req, res ) => {
     try{
         const email = req.body.email;
-        const getId = await authService.getUserIdByEmail( email );
+        const queryResult = await db.query(query.duplicateEmail, [email]);
 
+        if (queryResult.rowCount === 0) {
+            return res.status(401).json({ message: 'No account is associated with this email address.' });
+        }
+
+        const getId = await authService.sendVerificationEmailToUser( email );
+        
         return res.status(200).send(getId)
     } catch ( error ) {
         console.log( error )
     }
 }
 
-exports.showRecoveredId = async ( req, res ) => {
+exports.getUserIdAfterVerification = async ( req, res ) => {
     try{
         const token = req.query.token;
         if ( !token ) {
-            return res.status(400).send('토큰이 없습니다.');
+            return res.status(400).send('Token is missing.');
         }
-        const html = await authService.showRecoveredId(token);
+        const html = await authService.getUserIdAfterVerification(token);
         return res.status(200).send(html);
     } catch ( error ) {
-        console.error('아이디 확인 에러:', error);
+        console.error('Error retrieving user ID:', error);
         throw error;
     }
 }
