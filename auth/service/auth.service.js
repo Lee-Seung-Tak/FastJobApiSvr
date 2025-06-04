@@ -169,29 +169,28 @@ exports.updateNewPassword = async ( updateToken, newPassword ) => {
     }
 }
 
-exports.getUserIdByEmail = async ( userEmail ) => {
-    try {
+exports.sendVerificationEmailToUser = async ( userEmail ) => {
+    try {    
         const userStatus         = (await db.query( query.IsUserValid, [ userEmail ] )).rowCount;
-        const getIdToken = await serviceLogic.getIdToken( userEmail );
+        const getIdToken         = await serviceLogic.makeIdVerificationToken( userEmail );
+        await db.query( query.updateIdToken, [ getIdToken, userEmail ] );
 
-        await db.query( query.updateToken, [ getIdToken, userEmail ] );
-
-        if ( userStatus == 1 ) await serviceLogic.sendMailGetUserByEmail( userEmail, getIdToken );
+        if ( userStatus == 1 ) await serviceLogic.sendMailCheckId( userEmail, getIdToken );
         else return false;
 
-        return true
+        return { message: "Email sent successfully" };
     } catch ( error ) {
         console.log(error)
     }
 }
 
-exports.showRecoveredId = async ( checkToken ) => {
+exports.getUserIdAfterVerification = async ( checkToken ) => {
     try {
-        const userEmail = await serviceLogic.verifyComfirmIdToken( checkToken );
+        const userEmail = await serviceLogic.verifyIdRecoveryToken( checkToken );
   
         if ( userEmail != null ) {
      
-            await db.query( query.updateTokenIsNull, [ userEmail ] );
+            await db.query( query.updateIdFindTokenIsNull, [ userEmail ] );
            
             const filePath           = path.join(__dirname, '/web/confirmId.html');
             const html               = fs.readFileSync(filePath, 'utf8');
@@ -208,7 +207,6 @@ exports.showRecoveredId = async ( checkToken ) => {
             return errorPage
         }
     } catch ( error ) {
-        console.error('ID 확인 오류', error);
-        throw error;
+        console.error(error)       
     }
 }
