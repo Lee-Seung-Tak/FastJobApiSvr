@@ -58,15 +58,15 @@ exports.patchUserProfileDocs = async ( { userId, files, texts } ) => {
   let aiTasks  = [];
   let textTasks =[];
   try {
-    if (body?.resumeText || body?.selfIntroText || body?.careerDescText) {
+    if (texts?.resumeText || texts?.selfIntroText || texts?.careerDescText) {
 
-      const resumeTask = body?.resumeText? usersLogic.updateUserDocsText(userId, body.resumeText, query.updateResume) : null; 
+      const resumeTask = texts?.resumeText? usersLogic.updateUserDocsText(userId, texts.resumeText, query.updateResume) : null; 
       if (resumeTask) textTasks.push(resumeTask);
           
-      const selfIntroTask = body?.selfIntroText? usersLogic.updateUserDocsText(userId, body.selfIntroText, query.updateSelfIntro) : null; 
+      const selfIntroTask = texts?.selfIntroText? usersLogic.updateUserDocsText(userId, texts.selfIntroText, query.updateSelfIntro) : null; 
       if (selfIntroTask) textTasks.push(selfIntroTask);
 
-      const careerDescTask = body?.careerDescText? usersLogic.updateUserDocsText(userId, body.careerDescText, query.updateCarrerDesc) : null; 
+      const careerDescTask = texts?.careerDescText? usersLogic.updateUserDocsText(userId, texts.careerDescText, query.updateCareerDesc) : null; 
       if (careerDescTask) textTasks.push(careerDescTask);
 
     }
