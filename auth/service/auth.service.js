@@ -149,13 +149,11 @@ exports.updateNewPassword = async ( updateToken, newPassword ) => {
   
         if ( userEmail != null ) {
      
-            await db.query( query.updateTokenIsNull, [ userEmail ] );
-           
             const filePath           = path.join(__dirname, '/web/resetPasswordSuccess.html');
             const html               = fs.readFileSync(filePath, 'utf8');;
-
-            await db.query( query.updateToken,         [ resetPasswordToken, userEmail ] );
-            await db.query( query.updateUserPassworkd, [ newPassword, userEmail        ] )
+            
+            await db.query( query.updateTokenIsNull,   [ userEmail              ] );
+            await db.query( query.updateUserPassworkd, [ newPassword, userEmail ] );
             return html
         }
         
@@ -165,7 +163,7 @@ exports.updateNewPassword = async ( updateToken, newPassword ) => {
             return errorPage
         }
     } catch ( error ) {
-
+        console.error('updateNewPassword error:', error);
     }
 }
 
