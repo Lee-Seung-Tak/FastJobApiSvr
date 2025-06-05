@@ -168,3 +168,45 @@ exports.updateNewPassword = async ( updateToken, newPassword ) => {
 
     }
 }
+
+exports.sendVerificationEmailToUser = async ( userEmail ) => {
+    try {    
+        const userStatus         = (await db.query( query.IsUserValid, [ userEmail ] )).rowCount;
+        const getIdToken         = await serviceLogic.makeIdVerificationToken( userEmail );
+        await db.query( query.updateIdToken, [ getIdToken, userEmail ] );
+
+        if ( userStatus == 1 ) await serviceLogic.sendMailCheckId( userEmail, getIdToken );
+        else return false;
+
+        return { message: "Email sent successfully" };
+    } catch ( error ) {
+        console.log(error)
+    }
+}
+
+exports.getUserIdAfterVerification = async ( checkToken ) => {
+    try {
+        const userEmail = await serviceLogic.verifyIdRecoveryToken( checkToken );
+  
+        if ( userEmail != null ) {
+     
+            await db.query( query.updateIdFindTokenIsNull, [ userEmail ] );
+           
+            const filePath           = path.join(__dirname, '/web/confirmId.html');
+            const html               = fs.readFileSync(filePath, 'utf8');
+            const getUser            = await db.query(query.findUserId, [ userEmail ] );
+            const userId             = getUser.rows[0]?.user_id
+            const updatedHtml        = html.replace('{USER_ID}', userId.toString());
+            
+            return updatedHtml
+        }
+        
+        else {
+            const filePath    = path.join(__dirname, '/web/confirmIdError.html');
+            const errorPage   =  fs.readFileSync(filePath, 'utf8');
+            return errorPage
+        }
+    } catch ( error ) {
+        console.error(error)       
+    }
+}

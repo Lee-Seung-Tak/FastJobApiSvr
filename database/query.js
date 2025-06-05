@@ -221,3 +221,15 @@ WHERE email = $2;`
 export const updateUserPassworkd = `UPDATE users.user_account
 SET password = $1
 WHERE email = $2;`
+
+export const findUserId = `SELECT user_id FROM users.user_account WHERE email =$1`;
+
+export const updateIdToken = `UPDATE users.user_account
+SET id_find_token = $1
+WHERE email = $2;`
+
+export const duplicateEmail = 'SELECT 1 FROM users.user_account WHERE email = $1 LIMIT 1';
+
+export const updateIdFindTokenIsNull = `UPDATE users.user_account
+SET id_find_token = NULL
+WHERE email = $1;`
