@@ -47,9 +47,10 @@ exports.signUp = async ( userData ) => {
     try {
         // lst add / 비동기로 llm을 활용한 문서 요약 함수 실행
         serviceLogic.userDataAnalyze( userData );
-        let queryResult = db.query( query.checkIdDuplicate, [userData.userId] );
-        queryResult     = queryResult.rows;
-        if ( queryResult == [] ) throw new Error('user is duplicate');
+        let queryResult = await db.query( query.checkIdDuplicate, [userData.userId] );
+        console.log("auth.service.signup - queryResult : ", queryResult)
+        queryResult     = queryResult.rowCount;
+        if ( rowCount > 0 ) throw new Error('user is duplicate');
 
         const signUpToken    = serviceLogic.makeSignUpToken  ( userData.email );
         const userPk         = await serviceLogic.insertUserData( userData, await signUpToken );        
