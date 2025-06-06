@@ -233,3 +233,7 @@ export const duplicateEmail = 'SELECT 1 FROM users.user_account WHERE email = $1
 export const updateIdFindTokenIsNull = `UPDATE users.user_account
 SET id_find_token = NULL
 WHERE email = $1;`
+
+export const updatePasswordTokenIsNull = `UPDATE users.user_account
+SET id_find_token = NULL
+WHERE email = $1;`

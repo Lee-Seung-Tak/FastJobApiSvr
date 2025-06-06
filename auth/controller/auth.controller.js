@@ -70,15 +70,23 @@ exports.tokenRefresh = async ( req, res ) => {
 
 exports.resetPassword = async ( req, res ) => {
     try {
-        const resultStatus = await authService.resetPassword( req.body.email )
+        const email        = req.body.email;
+        const queryResult  = await db.query(query.duplicateEmail, [email]);
 
-        if ( resultStatus )
+        if ( queryResult.rowCount === 0 ) {
+            return res.status(404).json({ message: 'No account is associated with this email address.' });
+        }
+
+        const resultStatus = await authService.resetPassword( email )
+
+        if ( resultStatus ) {
             return res.status(200).json( {"message" : "success"} )
+        }
 
-        else return res.status(401).json( { "message" : "check your email"})
+        return res.status(400).json({ message: 'check your email' });
 
     } catch ( error ) {
-        return res.status(401).json( { "message" : "check your email"})
+        return res.status(500).json( { "message" : "An error occurred. Please try again later."})
     }
 }
 

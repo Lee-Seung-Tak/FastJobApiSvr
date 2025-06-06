@@ -13,7 +13,7 @@ exports.patchUser = async ( req, res ) => {
 exports.getUser = async ( req, res ) => {
   
   try {
-      const [result, userskills] = await Promise.all([
+      const [result, userSkills] = await Promise.all([
         usersService.getUser(req.userId),
         usersService.getUserSkillsByUserId(req.userId)
     ]);

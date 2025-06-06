@@ -271,13 +271,175 @@ router.get('/signup/verify', authController.signUpVerify);
 
 router.post('/token-refresh', authController.tokenRefresh);
 
+/**
+ * @swagger
+ * /auth/reset-password:
+ *   post:
+ *     summary: 비밀번호 재설정 이메일 전송
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: 사용자 이메일
+ *                 example: "user@example.com"
+ *     responses:
+ *       200:
+ *         description: 비밀번호 재설정 메일 전송 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Reset password email sent successfully"
+ *       400:
+ *         description: 잘못된 요청 또는 존재하지 않는 이메일
+ *       500:
+ *         description: 서버 오류
+ */
 router.post('/reset-password', authController.resetPassword)
 
+/**
+ * @swagger
+ * /auth/reset-password/verify:
+ *   get:
+ *     summary: 비밀번호 재설정 토큰 검증 및 페이지 제공
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: query
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 이메일로 전달된 비밀번호 재설정 토큰
+ *     responses:
+ *       200:
+ *         description: 비밀번호 재설정 페이지 HTML 반환
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *               example: "<html><body>비밀번호를 재설정하세요</body></html>"
+ *       400:
+ *         description: 토큰이 없거나 잘못됨
+ *       500:
+ *         description: 서버 오류
+ */
 router.get('/reset-password/verify', authController.resetPasswordTokenVerify)
+
+
+/**
+ * @swagger
+ * /auth/update-password:
+ *   post:
+ *     summary: 비밀번호 재설정 처리
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - token
+ *               - password
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: 이메일을 통해 전달받은 비밀번호 재설정 토큰
+ *                 example: "abc123tokenvalue"
+ *               password:
+ *                 type: string
+ *                 description: 새 비밀번호
+ *                 example: "newSecurePassword123!"
+ *     responses:
+ *       200:
+ *         description: 비밀번호 재설정 성공 후 HTML 페이지 반환
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *               example: "<html><body>비밀번호가 성공적으로 변경되었습니다.</body></html>"
+ *       400:
+ *         description: 요청 파라미터 오류 또는 유효하지 않은 토큰
+ *       500:
+ *         description: 서버 내부 오류
+ */
 router.patch('/new-password', authController.updateNewPassword)
 
+/**
+ * @swagger
+ * /auth/recover-id:
+ *   post:
+ *     summary: 아이디 찾기 이메일 전송
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: 사용자 이메일
+ *                 example: "xowjd8465@naver.com"
+ *     responses:
+ *       200:
+ *         description: 비밀번호 재설정 메일 전송 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Reset password email sent successfully"
+ *       400:
+ *         description: 잘못된 요청 또는 존재하지 않는 이메일
+ *       500:
+ *         description: 서버 오류
+ */
 router.post('/recover-id', authController.sendVerificationEmailToUser)
 
+
+/**
+ * @swagger
+ * /auth/recover-id/verify:
+ *   get:
+ *     summary: 이메일 인증 후 사용자 ID 확인
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: query
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 이메일 인증 토큰
+ *     responses:
+ *       200:
+ *         description: 인증 성공 시 HTML 반환
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *               example: "<html><body>인증이 완료되었습니다</body></html>"
+ *       400:
+ *         description: 토큰 없음
+ *       500:
+ *         description: 서버 오류
+ */
 router.get('/recover-id/verify',authController.getUserIdAfterVerification)
 module.exports = router;
 
