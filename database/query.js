@@ -210,30 +210,46 @@ FROM users.user_account
 WHERE email = $1;
 `;
 
-export const updateTokenIsNull = `UPDATE users.user_account
-SET access_token = NULL
-WHERE email = $1;`
+export const updateResetPwdToken = `UPDATE users.user_account
+SET pwd_reset_token = $1
+WHERE email = $2`
+;
 
-export const updateToken = `UPDATE users.user_account
-SET access_token = $1
-WHERE email = $2;`
+export const updateResetPwdTokenIsNull = `UPDATE users.user_account
+SET pwd_reset_token = NULL
+WHERE email = $1`
+;
 
-export const updateUserPassworkd = `UPDATE users.user_account
+export const updateChangePwdToken = `UPDATE users.user_account
+SET pwd_change_token = $1
+WHERE email = $2`
+;
+
+export const updateChangePwdTokenIsNull = `UPDATE users.user_account
+SET pwd_change_token = NULL
+WHERE email = $1`
+;
+
+export const updateUserPassword = `UPDATE users.user_account
 SET password = $1
-WHERE email = $2;`
+WHERE email = $2`
+;
 
 export const findUserId = `SELECT user_id FROM users.user_account WHERE email =$1`;
 
 export const updateIdToken = `UPDATE users.user_account
 SET id_find_token = $1
-WHERE email = $2;`
+WHERE email = $2`
+;
 
 export const duplicateEmail = 'SELECT 1 FROM users.user_account WHERE email = $1 LIMIT 1';
 
 export const updateIdFindTokenIsNull = `UPDATE users.user_account
 SET id_find_token = NULL
-WHERE email = $1;`
+WHERE email = $1`
+;
 
 export const updatePasswordTokenIsNull = `UPDATE users.user_account
 SET id_find_token = NULL
-WHERE email = $1;`
+WHERE email = $1`
+;
