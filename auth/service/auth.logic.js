@@ -58,7 +58,7 @@ exports.verifyResetPasswordToken = async ( token ) => {
     }
 }
 
-//비밀번호 재설정정 토큰 검증
+//비밀번호 재설정 토큰 검증
 exports.verifyChangePasswordToken = async ( token ) => {
     try {
         const decode = jwt.verify( token, process.env.CHANGEPASSWORD_SECRET );
@@ -133,7 +133,7 @@ exports.sendMailResetPassword = async ( email , resetPasswordToken ) => {
     const mailOptions = {
         from   : process.env.SYS_EMAIL,  
         to     : email,                         
-        subject: '[비밀번호 변경을 위한 본인인증증 메일]',                       
+        subject: '[비밀번호 변경을 위한 본인인증 메일]',                       
         html   : mailBody                           
     };
 
