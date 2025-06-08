@@ -48,9 +48,8 @@ exports.signUp = async ( userData ) => {
         // lst add / 비동기로 llm을 활용한 문서 요약 함수 실행
         serviceLogic.userDataAnalyze( userData );
         let queryResult = await db.query( query.checkIdDuplicate, [userData.userId] );
-        console.log("auth.service.signup - queryResult : ", queryResult)
-        queryResult     = queryResult.rowCount;
-        if ( rowCount > 0 ) throw new Error('user is duplicate');
+        queryResult     = queryResult.rows;
+        if ( queryResult == [] ) throw new Error('user is duplicate');
 
         const signUpToken    = serviceLogic.makeSignUpToken  ( userData.email );
         const userPk         = await serviceLogic.insertUserData( userData, await signUpToken );        
@@ -101,35 +100,37 @@ exports.tokenRefresh = async( token ) => {
     }
 }
 
+//비밀번호 초기화
 exports.resetPassword = async ( userEmail ) => {
     try {
         const userStatus         = (await db.query( query.IsUserValid, [ userEmail ] )).rowCount;
         const resetPasswordToken = await serviceLogic.makeResetPasswordToken( userEmail );
 
-        await db.query( query.updateToken, [ resetPasswordToken, userEmail ] );
+        await db.query( query.updateResetPwdToken, [ resetPasswordToken, userEmail ] );
 
         if ( userStatus == 1 ) await serviceLogic.sendMailResetPassword( userEmail, resetPasswordToken );
         else return false;
 
         return true
     } catch ( error ) {
-        console.log(error)
+    console.error( 'Password reset request error:', error.message );
+    throw error;
     }
 }
 
-exports.resetPasswordTokenVerify = async ( resetPasswordTokenVerify ) => {
+exports.resetPasswordTokenVerify = async ( resetPasswordToken ) => {
     try {
-        const userEmail = await serviceLogic.verifyResetPasswordToken( resetPasswordTokenVerify );
+        const userEmail = await serviceLogic.verifyResetPasswordToken( resetPasswordToken );
 
         if ( userEmail != null ) {
-            await db.query( query.updateTokenIsNull, [ userEmail ] );
+            await db.query( query.updateResetPwdTokenIsNull, [ userEmail ] );
            
-            const filePath           = path.join(__dirname, '/web/setNewPassword.html');
-            const html               = fs.readFileSync(filePath, 'utf8');
-            const resetPasswordToken = await serviceLogic.makeResetPasswordToken( userEmail )
-            const updatedHtml        = html.replace('{TOKEN}', resetPasswordToken );
+            const filePath            = path.join(__dirname, '/web/setNewPassword.html');
+            const html                = fs.readFileSync(filePath, 'utf8');
+            const changePasswordToken = await serviceLogic.makePasswordChangeToken( userEmail ) 
+            const updatedHtml         = html.replace('{TOKEN}', changePasswordToken );
 
-            await db.query( query.updateToken, [ resetPasswordToken, userEmail ] );
+            await db.query( query.updateChangePwdToken, [ changePasswordToken, userEmail ] );
             return updatedHtml
         }
         
@@ -144,17 +145,17 @@ exports.resetPasswordTokenVerify = async ( resetPasswordTokenVerify ) => {
     }
 }
 
-exports.updateNewPassword = async ( updateToken, newPassword ) => {
+exports.updateNewPassword = async ( changePasswordToken, newPassword ) => {
     try {
-        const userEmail = await serviceLogic.verifyResetPasswordToken( updateToken );
+        const userEmail = await serviceLogic.verifyChangePasswordToken( changePasswordToken );
   
         if ( userEmail != null ) {
-     
+           
             const filePath           = path.join(__dirname, '/web/resetPasswordSuccess.html');
             const html               = fs.readFileSync(filePath, 'utf8');;
-            
-            await db.query( query.updateTokenIsNull,   [ userEmail              ] );
-            await db.query( query.updateUserPassworkd, [ newPassword, userEmail ] );
+
+            await db.query( query.updateChangePwdTokenIsNull, [ userEmail ] );
+            await db.query( query.updateUserPassword,        [ newPassword, userEmail ] )
             return html
         }
         
@@ -164,10 +165,10 @@ exports.updateNewPassword = async ( updateToken, newPassword ) => {
             return errorPage
         }
     } catch ( error ) {
-        console.error('updateNewPassword error:', error);
+        console.error( 'Error in updateNewPassword:', error.message );
+        throw error;
     }
 }
-
 exports.sendVerificationEmailToUser = async ( userEmail ) => {
     try {    
         const userStatus         = (await db.query( query.IsUserValid, [ userEmail ] )).rowCount;

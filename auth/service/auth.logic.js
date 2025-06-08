@@ -25,6 +25,11 @@ exports.makeResetPasswordToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.RESETPASSWORD_SECRET, { expiresIn: '15m' } );
 }
 
+//비밀번호 재설정 토큰 생성
+exports.makePasswordChangeToken = async ( email ) => {
+    return jwt.sign( { email : email }, process.env.CHANGEPASSWORD_SECRET, { expiresIn: '15m' } );
+}
+
 exports.makeIdVerificationToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.GETID_SECRET, { expiresIn: '5m' } );
 }
@@ -53,6 +58,17 @@ exports.verifyResetPasswordToken = async ( token ) => {
     }
 }
 
+//비밀번호 재설정정 토큰 검증
+exports.verifyChangePasswordToken = async ( token ) => {
+    try {
+        const decode = jwt.verify( token, process.env.CHANGEPASSWORD_SECRET );
+        return decode.email;
+    } catch (error){
+        console.log(error)
+        return null;
+    }
+}
+
 exports.verifyIdRecoveryToken = async ( GETID_SECRET ) => {
     try {
         const decode = jwt.verify( GETID_SECRET, process.env.GETID_SECRET );
@@ -64,7 +80,7 @@ exports.verifyIdRecoveryToken = async ( GETID_SECRET ) => {
 }
 
 exports.tokensRefresh = async ( userId ) => {
-    
+
     const [ accessToken, refreshToken ] = await Promise.all ( [ this.makeAccessToken(userId), this.makeRefreshToken(userId) ] );
     await db.query( query.updateUserTokens, [ accessToken, refreshToken, userId ] );
     return {
@@ -108,7 +124,7 @@ exports.sendMailForSignUp = async ( email , signUpToken ) => {
     }
 };
 
-  //비밀번호 초기화 이메일 전송
+  //비밀번호 초기화를 위한 본인인증 이메일 전송
 exports.sendMailResetPassword = async ( email , resetPasswordToken ) => {
     const filePath    = path.join(__dirname, '/web/resetPassword.html');
     let mailBody      = fs.readFileSync(filePath, 'utf8');
@@ -117,7 +133,7 @@ exports.sendMailResetPassword = async ( email , resetPasswordToken ) => {
     const mailOptions = {
         from   : process.env.SYS_EMAIL,  
         to     : email,                         
-        subject: '[비밀번호 초기화 메일]',                       
+        subject: '[비밀번호 변경을 위한 본인인증증 메일]',                       
         html   : mailBody                           
     };
 
