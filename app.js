@@ -4,7 +4,7 @@ const express    = require('express');
 const app        = express();
 const port       = 4000
 
-const middleWare = require('@middleware')
+const middleWare = require('@middleware');
 const cluster    = require('cluster');
 const os         = require('os');
 const CPU        = 2;
