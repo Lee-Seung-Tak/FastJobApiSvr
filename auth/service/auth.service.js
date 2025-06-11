@@ -67,7 +67,7 @@ exports.signUp = async ( userData ) => {
         else throw new Error(insertStatus)
         await Promise.all( tasks );
     } catch (error) {
-        throw new Error(error.message)
+        throw new Error( error.message );
     }
 }
 
@@ -169,6 +169,7 @@ exports.updateNewPassword = async ( changePasswordToken, newPassword ) => {
         throw error;
     }
 }
+
 exports.sendVerificationEmailToUser = async ( userEmail ) => {
     try {    
         const userStatus         = (await db.query( query.IsUserValid, [ userEmail ] )).rowCount;
