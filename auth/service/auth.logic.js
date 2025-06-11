@@ -124,7 +124,7 @@ exports.sendMailForSignUp = async ( email , signUpToken ) => {
     }
 };
 
-  //비밀번호 초기화를 위한 본인인증 이메일 전송
+//비밀번호 초기화를 위한 본인인증 이메일 전송
 exports.sendMailResetPassword = async ( email , resetPasswordToken ) => {
     const filePath    = path.join(__dirname, '/web/resetPassword.html');
     let mailBody      = fs.readFileSync(filePath, 'utf8');

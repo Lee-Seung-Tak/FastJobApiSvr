@@ -1,6 +1,8 @@
 const db            = require('@db');
 const companysLogic = require('@companys_logic');
 const query         = require('@query');
+const fs           = require('fs')
+const path         = require('path');
 const PENDING       = 1;
 const NORMAL        = 2;
 const EMAIL_FAILE   = 3;
@@ -22,6 +24,25 @@ exports.signUp = async ( userData ) => {
       throw new Error( error.message );
     }
   };
+
+exports.signUpVerify = async( signUpToken ) => {
+    try {
+        const decode    = await companysLogic.verifySignUpToken( signUpToken );
+        let queryResult = await db.query ( query.checkCompanySignUpToken, [decode.email] );
+        queryResult     = queryResult.rows[0].access_token;
+
+        if ( signUpToken === queryResult )
+        {
+            await db.query ( query.companySignupSuccess, [decode.email] );
+            return true;
+
+        } else return false;
+
+    } catch ( error ) {
+        console.log(error)
+        return false;
+    }
+}
 
 exports.login = async( userId, password ) => {
     try {
@@ -55,22 +76,83 @@ exports.login = async( userId, password ) => {
     }
 }
 
-exports.signUpVerify = async( signUpToken ) => {
+exports.tokenRefresh = async( token ) => {
     try {
-        console.log(signUpToken)
-        const decode    = await companysLogic.verifySignUpToken( signUpToken );
-        let queryResult = await db.query ( query.companyCheckSignUpToken, [decode.email] );
-        queryResult     = queryResult.rows[0].access_token;
-
-        if ( signUpToken === queryResult )
-        {
-            await db.query ( query.companySignupSuccess, [decode.email] );
-            return true;
-
-        } else return false;
-
+        const userId = await companysLogic.verifyRefreshToken( token );
+        if( userId ) return await companysLogic.tokensRefresh( userId );
     } catch ( error ) {
+        console.log("error : ", error.message)
+        throw new Error(error);
+    }
+}
+
+//비밀번호 초기화 및 검증
+exports.resetPwd = async ( userEmail ) => {
+    try {
+        const CompanyStatus         = (await db.query( query.IsUserValid, [ userEmail ] )).rowCount;
+        const resetPasswordToken = await companysLogic.makeResetPwdToken( userEmail );
+
+        await db.query( query.updateResetCompanyPwdToken, [ resetPasswordToken, userEmail ] );
+
+        if ( CompanyStatus == 1 ) await companysLogic.sendMailResetPassword( userEmail, resetPasswordToken );
+        else return false;
+
+        return true
+    } catch ( error ) {
+    console.error( 'Password reset request error:', error.message );
+    throw error;
+    }
+}
+
+exports.resetPwdTokenVerify = async ( resetPasswordToken ) => {
+    try {
+        const userEmail = await companysLogic.verifyResetPwdToken( resetPasswordToken );
+
+        if ( userEmail != null ) {
+            await db.query( query.updateResetCompanyPwdTokenIsNull, [ userEmail ] );
+           
+            const filePath            = path.join(__dirname, '/web/setNewPassword.html');
+            const html                = fs.readFileSync(filePath, 'utf8');
+            const changePasswordToken = await companysLogic.makeChangePwdToken( userEmail ) 
+            const updatedHtml         = html.replace('{TOKEN}', changePasswordToken );
+
+            await db.query( query.updateChangeCompanyPwdToken, [ changePasswordToken, userEmail ] );
+            return updatedHtml
+        }
+        
+        else {
+            const filePath    = path.join(__dirname, '/web/resetPasswordError.html');
+            const errorPage   =  fs.readFileSync(filePath, 'utf8');
+            return errorPage
+        }
+    } catch ( error )
+    {
         console.log(error)
-        return false;
+    }
+}
+
+//비밀번호 재설정
+exports.updateNewPwd = async ( changePasswordToken, newPassword ) => {
+    try {
+        const userEmail = await companysLogic.verifyChangePwdToken( changePasswordToken );
+  
+        if ( userEmail != null ) {
+           
+            const filePath           = path.join(__dirname, '/web/resetPasswordSuccess.html');
+            const html               = fs.readFileSync(filePath, 'utf8');;
+
+            await db.query( query.updateChangePwdTokenIsNull, [ userEmail ] );
+            await db.query( query.updateUserPassword,        [ newPassword, userEmail ] )
+            return html
+        }
+        
+        else {
+            const filePath    = path.join(__dirname, '/web/resetPasswordError.html');
+            const errorPage   =  fs.readFileSync(filePath, 'utf8');
+            return errorPage
+        }
+    } catch ( error ) {
+        console.error( 'Error in updateNewPassword:', error.message );
+        throw error;
     }
 }

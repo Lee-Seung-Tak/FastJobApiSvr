@@ -65,8 +65,8 @@ export const patchPhoneNumber = `UPDATE users.user_account
   WHERE user_id = $2
 `;
 
-export const updatePassword = `UPDATE users.user_accountMore actions
-  SET password = $1, acess_token = NULL 
+export const updatePassword = `UPDATE users.user_account
+  SET password = $1, access_token = NULL 
   WHERE email = $2
 `;
 
@@ -166,45 +166,6 @@ export const getJobApplications =`
     WHERE user_id = $1
 `;
 
-  export const insertCompanySignupData = `INSERT INTO company.company_account (
-    name,
-    email,
-    phone,
-    address,
-    company_id,
-    password,
-    business,
-    role,
-    access_token,
-    created_at,
-    updated_at
-  ) VALUES (
-    $1, $2, $3, $4, $5, $6, 
-    $7, $8, $9, NOW(), NOW()
-  );
-`;
-
-export const checkCompanyIdDuplicate = "SELECT * FROM company.company_account WHERE company_id = $1 LIMIT 1;";
-
-export const sendCompanyEmailFalse = `UPDATE company.company_account
-  SET role = 3
-  WHERE email = $1
-`;
-
-export const companyLogin = "SELECT * FROM company.company_account WHERE company_id = $1";
-
-export const companyLoginSuccess = "UPDATE company.company_account SET access_token = $1, refresh_token = $2, updated_at = $3 WHERE company_id=$4;";
-
-export const companyCheckSignUpToken = `SELECT access_token
-  FROM company.company_account
-  WHERE email = $1
-`;
-
-export const companySignupSuccess = `UPDATE company.company_account
-  SET role = 2 , access_token = null
-  WHERE email = $1
-`;
-
 export const IsUserValid = `SELECT COUNT(*)
 FROM users.user_account
 WHERE email = $1;
@@ -252,4 +213,85 @@ WHERE email = $1`
 export const updatePasswordTokenIsNull = `UPDATE users.user_account
 SET id_find_token = NULL
 WHERE email = $1`
+;
+
+
+//company
+export const updateCompanyTokens = ` UPDATE company.company_account
+  SET access_token = $1, refresh_token = $2
+  WHERE user_id = $3;
+`;
+
+export const sendCompanyEmailFalse = `UPDATE company.company_account
+  SET role = 3
+  WHERE email = $1
+`;
+
+export const updateCompanyPwd = `UPDATE company.company_account
+  SET password = $1, access_token = NULL 
+  WHERE email = $2
+`;
+
+export const checkCompanyIdDuplicate = "SELECT * FROM company.company_account WHERE company_id = $1 LIMIT 1;";
+
+export const companyLogin = "SELECT * FROM company.company_account WHERE company_id = $1";
+
+export const companyLoginSuccess = "UPDATE company.company_account SET access_token = $1, refresh_token = $2, updated_at = $3 WHERE company_id=$4;";
+
+export const checkCompanySignUpToken = `SELECT access_token
+  FROM company.company_account
+  WHERE email = $1
+`;
+
+ export const insertCompanySignupData = `INSERT INTO company.company_account (
+    name,
+    email,
+    phone,
+    address,
+    company_id,
+    password,
+    business,
+    role,
+    sign_token, 
+    created_at,
+    updated_at
+  ) VALUES (
+    $1, $2, $3, $4, $5, $6, 
+    $7, $8, $9, NOW(), NOW()
+  );
+`;
+
+export const companySignupSuccess = `UPDATE company.company_account
+  SET role = 2 , sign_token = null
+  WHERE email = $1
+`;
+
+export const IsCompanyValid = `SELECT COUNT(*)
+FROM company.company_account
+WHERE email = $1;
+`;
+
+export const updateResetCompanyPwdToken = `UPDATE company.company_account
+SET pwd_reset_token = $1
+WHERE email = $2`
+;
+
+export const updateResetCompanyPwdTokenIsNull = `UPDATE company.company_account
+SET pwd_reset_token = NULL
+WHERE email = $1`
+;
+
+export const updateChangeCompanyPwdToken = `UPDATE company.company_account
+SET pwd_change_token = $1
+WHERE email = $2`
+;
+
+export const updateChangeCompanyPwdTokenIsNull = `UPDATE company.company_account
+SET pwd_change_token = NULL
+WHERE email = $1`
+;
+
+export const updateCompanyPassword = `UPDATE company.company_account
+SET password = $1
+WHERE email = $2`
 ;
