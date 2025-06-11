@@ -35,7 +35,7 @@ exports.aiAnalyzeCarrerDesc = async ( userId, fileUrl ) => {
 }
 
 
-// TO-DO lts
+// TO-DO ltj
 /*
     1. 채용공고에 지원한 지원자들의 이력서, 경력기술서, 자기소개서를 바탕으로 어떤 사용자가 가장 지원한 공고에 적합한지 회사측에
     추천해주는 함수를 구현하세요.
