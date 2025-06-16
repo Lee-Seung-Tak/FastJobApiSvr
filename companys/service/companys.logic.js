@@ -44,7 +44,6 @@ exports.makeResetPwdToken = async ( email ) => {
 exports.verifyResetPwdToken = async ( token ) => {
     try {
         const decode = jwt.verify( token, process.env.RESETPASSWORD_SECRET );
-        console.log('decode:', decode)
         return decode.email;
     } catch (error){
         console.log(error)
