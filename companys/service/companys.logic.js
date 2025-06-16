@@ -66,7 +66,7 @@ exports.verifyChangePwdToken = async ( token ) => {
     }
 }
 
-//아이디 찾기 토큰 생성 및 검증
+//ID 찾기 토큰 생성 및 검증
 exports.makeFindIdToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.GETID_SECRET, { expiresIn: '5m' } );
 }
@@ -82,10 +82,10 @@ exports.verifyFindIdToken = async ( GETID_SECRET ) => {
 }
 
 //토큰 생성 및 DB 저장
-exports.tokensRefresh = async ( userId ) => {
+exports.tokensRefresh = async ( companyId ) => {
 
-    const [ accessToken, refreshToken ] = await Promise.all ( [ this.makeAccessToken(userId), this.makeRefreshToken(userId) ] );
-    await db.query( query.updateCompanyTokens, [ accessToken, refreshToken, userId ] );
+    const [ accessToken, refreshToken ] = await Promise.all ( [ this.makeAccessToken(companyId), this.makeRefreshToken(companyId) ] );
+    await db.query( query.updateCompanyTokens, [ accessToken, refreshToken, companyId ] );
     return {
         "access_token"  : accessToken,
         "refresh_token" : refreshToken
@@ -128,6 +128,30 @@ exports.sendMailForSignUp = async ( email , signUpToken ) => {
     }
 };
 
+//ID 찾기를 위한 이메일 전송
+exports.sendMailCheckId = async ( email , getIdToken ) => {
+    const filePath    = path.join(__dirname, '/web/getUserByEmail.html');
+    let mailBody      = fs.readFileSync(filePath, 'utf8');
+    mailBody          = mailBody.replace('{TOKEN}', await getIdToken);
+
+    const mailOptions = {
+        from   : process.env.SYS_EMAIL,  
+        to     : email,                         
+        subject: '[아이디 확인 메일]',                       
+        html   : mailBody                           
+    };
+
+    try {
+        const info = await transPorter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+
+    } catch (error) {
+        console.error  ( 'Error sending email:', error );
+        await db.query ( query.sendEmailFalse, [email] );
+        throw new Error( 'Failed to send email' );  // 이메일 발송 실패 시 에러 발생
+    }
+}
+
 //비밀번호 초기화를 위한 본인인증 이메일 전송
 exports.sendMailResetPassword = async ( email , resetPasswordToken ) => {
     const filePath    = path.join(__dirname, '/web/resetPassword.html');
@@ -163,17 +187,17 @@ exports.updatePassword = async (email, newPassword) => {
     }
 }
 
-exports.insertCompanyData = async ( userData, signUpToken ) => {
+exports.insertCompanyData = async ( companyData, signUpToken ) => {
     const userRole = 1; //PENDING
     try {
         await db.query( query.insertCompanySignupData , [
-            userData.name,
-            userData.email,
-            userData.phone,
-            userData.address,
-            userData.userId,
-            userData.password,
-            userData.business,
+            companyData.name,
+            companyData.email,
+            companyData.phone,
+            companyData.address,
+            companyData.companyId,
+            companyData.password,
+            companyData.business,
             userRole, 
             signUpToken,
         ]);
@@ -183,3 +207,4 @@ exports.insertCompanyData = async ( userData, signUpToken ) => {
     }
    
 }
+
