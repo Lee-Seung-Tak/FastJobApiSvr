@@ -295,3 +295,16 @@ export const updateCompanyPassword = `UPDATE company.company_account
 SET password = $1
 WHERE email = $2`
 ;
+
+export const duplicateCompanyEmail = `SELECT 1 FROM company.company_account
+WHERE email = $1 LIMIT 1`
+;
+
+export const updateCompanyIdFindTokenIsNull = `UPDATE company.company_account
+SET id_find_token = NULL
+WHERE email = $1`
+;
+
+export const findCompanyId = `SELECT company_id FROM company.company_account 
+WHERE email = $1`
+;
