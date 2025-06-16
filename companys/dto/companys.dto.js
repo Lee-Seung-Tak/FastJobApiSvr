@@ -1,48 +1,48 @@
 class SignUpDTO {
-    constructor ( userData ) {
+    constructor ( companyData ) {
         // name, email, phone, address, companyId, password, business
-        this.name      = userData.name;
-        this.email     = userData.email;
-        this.phone     = userData.phone;
-        this.address   = userData.address;
-        this.userId    = userData.userId;
-        this.password  = userData.password;
-        this.business  = userData.business;
+        this.name      = companyData.name;
+        this.email     = companyData.email;
+        this.phone     = companyData.phone;
+        this.address   = companyData.address;
+        this.companyId = companyData.companyId;
+        this.password  = companyData.password;
+        this.business  = companyData.business;
     }
 
-    static isValid( userData ) {
+    static isValid( companyData ) {
         if (
-          !userData          ||
-          !userData.name     ||
-          !userData.email    ||
-          !userData.phone    ||
-          !userData.address  ||
-          !userData.userId   ||
-          !userData.password ||
-          !userData.business
+          !companyData          ||
+          !companyData.name     ||
+          !companyData.email    ||
+          !companyData.phone    ||
+          !companyData.address  ||
+          !companyData.companyId||
+          !companyData.password ||
+          !companyData.business
         ) {
-          throw new Error('check user data (name, email, phone, userId, password, business)');
+          throw new Error('check company data (name, email, phone, companyId, password, business)');
         }
 
-        return new SignUpDTO( userData );
+        return new SignUpDTO( companyData );
     }
 }
 
 class LoginDTO { 
-  // 객체의 email, password 초기화
-  constructor( userId, password ) {
-      this.userId   = userId;
-      this.password = password;
+  // 객체의 id, password 초기화
+  constructor( companyId, password ) {
+      this.companyId = companyId;
+      this.password  = password;
   }
 
   static isValid ( loginData ) {
-      // 조건 수정 -> loginData가 없거나, loginData.userId 및 password가 없거나
+      // 조건 수정 -> loginData가 없거나, loginData.companyId 및 password가 없거나
       // 중복되는 조건 최적화
-      if (!loginData || !loginData.userId || !loginData.password) {
-          throw new Error('user_id and password are required');
+      if (!loginData || !loginData.companyId || !loginData.password) {
+          throw new Error('company_id and password are required');
       }
-      const { userId, password } = loginData;
-      return new LoginDTO(userId, password);
+      const { companyId, password } = loginData;
+      return new LoginDTO(companyId, password);
   }
 
 }
