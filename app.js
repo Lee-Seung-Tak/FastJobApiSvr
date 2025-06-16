@@ -33,13 +33,15 @@ app.use(cors({
 app.use( ( req, res, next ) => {
     if ( 
         // auth 관련 
-        req.path === '/auth/login'                        || req.path === '/auth/signup'            || 
-        req.path === '/auth/token-refresh'                || req.path === '/auth/reset-password'    ||
-        req.path === '/auth/reset-password/verify'        || req.path === '/auth/new-password'      ||
-        req.path === '/auth/recover-id'                   || req.path === '/auth/recover-id/verify' ||
+        req.path === '/auth/login'                        || req.path === '/auth/signup'               || 
+        req.path === '/auth/token-refresh'                || req.path === '/auth/reset-password'       ||
+        req.path === '/auth/reset-password/verify'        || req.path === '/auth/new-password'         ||
+        req.path === '/auth/recover-id'                   || req.path === '/auth/recover-id/verify'    ||
         // company 관련
-        req.path === '/companys/login'                    || req.path === '/companys/signup'        || 
-        req.path === '/companys/signup-verify' 
+        req.path === '/companys/login'                    || req.path === '/companys/signup'           || 
+        req.path === '/companys/signup-verify'            || req.path === '/companys/reset-password'   ||  
+        req.path === '/companys/reset-password/verify'    || req.path === '/companys/new-password'     ||
+        req.path === '/companys/recover-id'               || req.path === '/companys/recover-id/verify'
 
     ) return next();
 
