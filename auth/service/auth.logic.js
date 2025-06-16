@@ -61,7 +61,7 @@ exports.verifyResetPasswordToken = async ( token ) => {
 //비밀번호 재설정 토큰 검증
 exports.verifyChangePasswordToken = async ( token ) => {
     try {
-        const decode = jwt.verify( token, process.env.CHANGEPASSWORD_SECRET );
+        const decode = jwt.verify( token, process.env.RESETPASSWORD_SECRET );
         return decode.email;
     } catch (error){
         console.log(error)
