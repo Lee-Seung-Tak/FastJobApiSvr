@@ -77,7 +77,6 @@ exports.resetPassword = async ( req, res ) => {
         if ( queryResult.rowCount === 0 ) {
             return res.status(404).json({ message: 'No account is associated with this email address.' });
         }
-
         const resultStatus = await companysService.resetPwd( email )
 
         if ( resultStatus ) {
@@ -111,7 +110,7 @@ exports.updateNewPassword = async ( req, res ) => {
         
         return res.status(200).send(getPage)
     } catch ( error ) {
-
+        console.log(error)
     }
 }
 
@@ -147,8 +146,45 @@ exports.getUserIdAfterVerification = async ( req, res ) => {
     }
 }
 
-exports.uploadRecruitJob
+// exports.uploadRecruitJob = async ( req, res ) => {
+//   try {
+//     const { title, description, category, deadline } = req.body;
+//     const image = req.files?.image?.[0];
+    
+//     if ( !title || !description || !category || !deadline ) {
+//       return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
+//     }
 
-exports.updateRecruitJob
+//     if ( !/^\d{4}-\d{2}-\d{2}$/.test(deadline) ) {
+//       return res.status(400).json({ message: 'deadline은 YYYY-MM-DD 형식이어야 합니다.' });
+//     }
 
-exports.deleteRecruitJob
+//     const categoryNum = Number(category);
+//     if (isNaN(categoryNum) || categoryNum < 1 || categoryNum > 100) {
+//     return res.status(400).json({ message: '유효하지 않은 category 값입니다.' });
+//     }
+
+//     // 채용 공고 생성
+//     const job = await Job.create({
+//       companyId: company.id,
+//       title,
+//       description,
+//       category,
+//       deadline,
+//       imagePath: image ? image.path : null,
+//       createdBy: req.userId,
+//     });
+
+//     return res.status(201).json({
+//       companyId: company.id,
+//       title: job.title,
+//     });
+//   } catch (error) {
+//     console.error('Upload recruit job error:', error);
+//     return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+//   }
+// };
+
+// exports.updateRecruitJob
+
+// exports.deleteRecruitJob
