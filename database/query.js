@@ -291,6 +291,7 @@ SET pwd_change_token = NULL
 WHERE email = $1`
 ;
 
+
 export const updateCompanyPassword = `UPDATE company.company_account
 SET password = $1
 WHERE email = $2`
