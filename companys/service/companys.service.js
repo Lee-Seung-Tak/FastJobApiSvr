@@ -118,6 +118,7 @@ exports.resetPwdTokenVerify = async ( resetPasswordToken ) => {
 
             await db.query( query.updateChangeCompanyPwdToken, [ changePasswordToken, companyEmail ] );
             return updatedHtml
+            
         }
         
         else {
@@ -141,8 +142,8 @@ exports.updateNewPwd = async ( changePasswordToken, newPassword ) => {
             const filePath           = path.join(__dirname, '/web/resetPasswordSuccess.html');
             const html               = fs.readFileSync(filePath, 'utf8');;
 
-            await db.query( query.updateChangePwdTokenIsNull, [ companyEmail ] );
-            await db.query( query.updateUserPassword,        [ newPassword, companyEmail ] )
+            await db.query( query.updateChangeCompanyPwdTokenIsNull, [ companyEmail ] );
+            await db.query( query.updateCompanyPassword,        [ newPassword, companyEmail ] )
             return html
         }
         
@@ -156,7 +157,6 @@ exports.updateNewPwd = async ( changePasswordToken, newPassword ) => {
         throw error;
     }
 }
-
 
 exports.sendVerificationEmailToUser = async ( userEmail ) => {
     try {    
