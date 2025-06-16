@@ -9,15 +9,15 @@ const EMAIL_FAILE   = 3;
 
 
 
-exports.signUp = async ( userData ) => {
+exports.signUp = async ( companyData ) => {
     try {
-      const queryResult = await db.query( query.checkCompanyIdDuplicate, [ userData.userId ] );
+      const queryResult = await db.query( query.checkCompanyIdDuplicate, [ companyData.companyId ] );
       if (queryResult.rows.length > 0) throw new Error('user is duplicate');
   
-      const signUpToken = await companysLogic.makeSignUpToken( userData.email );
+      const signUpToken = await companysLogic.makeSignUpToken( companyData.email );
 
-      await companysLogic.insertUserData( userData, signUpToken );
-      await companysLogic.sendMailForSignUp( userData.email, signUpToken );
+      await companysLogic.insertUserData( companyData, signUpToken );
+      await companysLogic.sendMailForSignUp( companyData.email, signUpToken );
       return { message: 'Signup successful. Please verify your email.' };
       
     } catch (error) {
@@ -44,10 +44,10 @@ exports.signUpVerify = async( signUpToken ) => {
     }
 }
 
-exports.login = async( userId, password ) => {
+exports.login = async( companyId, password ) => {
     try {
         // DB에서 userId값이 있는지 조회
-        let queryResult = await db.query( query.companyLogin, [ userId ] );
+        let queryResult = await db.query( query.companyLogin, [ companyId ] );
         queryResult     = queryResult.rows[0];
 
         // 없다면 Error
@@ -64,7 +64,7 @@ exports.login = async( userId, password ) => {
             const updateDate                    = new Date();
 
             // db에 token 및 현재 시간 update
-            await db.query( query.companyLoginSuccess, [ accessToken, refreshToken, updateDate, userId ] );
+            await db.query( query.companyLoginSuccess, [ accessToken, refreshToken, updateDate, companyId ] );
 
             // token return
             return { "access_token" : accessToken , "refresh_token" : refreshToken };
@@ -78,8 +78,8 @@ exports.login = async( userId, password ) => {
 
 exports.tokenRefresh = async( token ) => {
     try {
-        const userId = await companysLogic.verifyRefreshToken( token );
-        if( userId ) return await companysLogic.tokensRefresh( userId );
+        const companyId = await companysLogic.verifyRefreshToken( token );
+        if( companyId ) return await companysLogic.tokensRefresh( companyId );
     } catch ( error ) {
         console.log("error : ", error.message)
         throw new Error(error);
@@ -87,14 +87,14 @@ exports.tokenRefresh = async( token ) => {
 }
 
 //비밀번호 초기화 및 검증
-exports.resetPwd = async ( userEmail ) => {
+exports.resetPwd = async ( companyEmail ) => {
     try {
-        const CompanyStatus         = (await db.query( query.IsUserValid, [ userEmail ] )).rowCount;
-        const resetPasswordToken = await companysLogic.makeResetPwdToken( userEmail );
+        const CompanyStatus         = (await db.query( query.IsUserValid, [ companyEmail ] )).rowCount;
+        const resetPasswordToken = await companysLogic.makeResetPwdToken( companyEmail );
 
-        await db.query( query.updateResetCompanyPwdToken, [ resetPasswordToken, userEmail ] );
+        await db.query( query.updateResetCompanyPwdToken, [ resetPasswordToken, companyEmail ] );
 
-        if ( CompanyStatus == 1 ) await companysLogic.sendMailResetPassword( userEmail, resetPasswordToken );
+        if ( CompanyStatus == 1 ) await companysLogic.sendMailResetPassword( companyEmail, resetPasswordToken );
         else return false;
 
         return true
@@ -106,17 +106,17 @@ exports.resetPwd = async ( userEmail ) => {
 
 exports.resetPwdTokenVerify = async ( resetPasswordToken ) => {
     try {
-        const userEmail = await companysLogic.verifyResetPwdToken( resetPasswordToken );
+        const companyEmail = await companysLogic.verifyResetPwdToken( resetPasswordToken );
 
-        if ( userEmail != null ) {
-            await db.query( query.updateResetCompanyPwdTokenIsNull, [ userEmail ] );
+        if ( companyEmail != null ) {
+            await db.query( query.updateResetCompanyPwdTokenIsNull, [ companyEmail ] );
            
             const filePath            = path.join(__dirname, '/web/setNewPassword.html');
             const html                = fs.readFileSync(filePath, 'utf8');
-            const changePasswordToken = await companysLogic.makeChangePwdToken( userEmail ) 
+            const changePasswordToken = await companysLogic.makeChangePwdToken( companyEmail ) 
             const updatedHtml         = html.replace('{TOKEN}', changePasswordToken );
 
-            await db.query( query.updateChangeCompanyPwdToken, [ changePasswordToken, userEmail ] );
+            await db.query( query.updateChangeCompanyPwdToken, [ changePasswordToken, companyEmail ] );
             return updatedHtml
         }
         
@@ -134,15 +134,15 @@ exports.resetPwdTokenVerify = async ( resetPasswordToken ) => {
 //비밀번호 재설정
 exports.updateNewPwd = async ( changePasswordToken, newPassword ) => {
     try {
-        const userEmail = await companysLogic.verifyChangePwdToken( changePasswordToken );
+        const companyEmail = await companysLogic.verifyChangePwdToken( changePasswordToken );
   
-        if ( userEmail != null ) {
+        if ( companyEmail != null ) {
            
             const filePath           = path.join(__dirname, '/web/resetPasswordSuccess.html');
             const html               = fs.readFileSync(filePath, 'utf8');;
 
-            await db.query( query.updateChangePwdTokenIsNull, [ userEmail ] );
-            await db.query( query.updateUserPassword,        [ newPassword, userEmail ] )
+            await db.query( query.updateChangePwdTokenIsNull, [ companyEmail ] );
+            await db.query( query.updateUserPassword,        [ newPassword, companyEmail ] )
             return html
         }
         
@@ -154,5 +154,48 @@ exports.updateNewPwd = async ( changePasswordToken, newPassword ) => {
     } catch ( error ) {
         console.error( 'Error in updateNewPassword:', error.message );
         throw error;
+    }
+}
+
+
+exports.sendVerificationEmailToUser = async ( userEmail ) => {
+    try {    
+        const userStatus         = (await db.query( query.IsCompanyValid, [ userEmail ] )).rowCount;
+        const getIdToken         = await serviceLogic.makeIdVerificationToken( userEmail );
+        await db.query( query.updateIdToken, [ getIdToken, userEmail ] );
+
+        if ( userStatus == 1 ) await companysLogic.sendMailCheckId( userEmail, getIdToken );
+        else return false;
+
+        return { message: "Email sent successfully" };
+    } catch ( error ) {
+        console.log(error)
+    }
+}
+
+exports.getUserIdAfterVerification = async ( checkToken ) => {
+    try {
+        const companyEmail = await companysLogic.verifyFindIdToken( checkToken );
+  
+        if ( companyEmail != null ) {
+     
+            await db.query( query.updateCompanyIdFindTokenIsNull, [ companyEmail ] );
+           
+            const filePath           = path.join(__dirname, '/web/confirmId.html');
+            const html               = fs.readFileSync(filePath, 'utf8');
+            const getCompany         = await db.query(query.findCompanyId, [ companyEmail ] );
+            const companyId          = getCompany.rows[0]?.company_id
+            const updatedHtml        = html.replace('{USER_ID}', companyId.toString());
+            
+            return updatedHtml
+        }
+        
+        else {
+            const filePath    = path.join(__dirname, '/web/confirmIdError.html');
+            const errorPage   =  fs.readFileSync(filePath, 'utf8');
+            return errorPage
+        }
+    } catch ( error ) {
+        console.error(error)       
     }
 }
