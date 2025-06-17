@@ -67,13 +67,13 @@ exports.verifyChangePwdToken = async ( token ) => {
 }
 
 //ID 찾기 토큰 생성 및 검증
-exports.makeFindIdToken = async ( email ) => {
+exports.makeIdVerificationToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.GETID_SECRET, { expiresIn: '5m' } );
 }
 
-exports.verifyFindIdToken = async ( GETID_SECRET ) => {
+exports.verifyIdRecoveryToken = async ( token ) => {
     try {
-        const decode = jwt.verify( GETID_SECRET, process.env.GETID_SECRET );
+        const decode = jwt.verify( token, process.env.GETID_SECRET );
         return decode.email;
     } catch (error ){
         console.log(error)
