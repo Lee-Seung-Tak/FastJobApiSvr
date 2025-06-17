@@ -77,7 +77,7 @@ exports.resetPassword = async ( req, res ) => {
         if ( queryResult.rowCount === 0 ) {
             return res.status(404).json({ message: 'No account is associated with this email address.' });
         }
-        const resultStatus = await companysService.resetPwd( email )
+        const resultStatus = await companysService.resetPwd( email );
 
         if ( resultStatus ) {
             return res.status(200).json( {"message" : "success"} )
@@ -90,6 +90,7 @@ exports.resetPassword = async ( req, res ) => {
     }
 }
 
+// 비밀번호 찾기 인증하기
 exports.resetPasswordTokenVerify = async ( req, res ) => {
     try {
         const resetPasswordToken = req.query.token;
@@ -105,7 +106,7 @@ exports.updateNewPassword = async ( req, res ) => {
     try {
         const updateToken = req.body.token;
         const newPassword = req.body.password;
-  
+        
         const getPage = await companysService.updateNewPwd( updateToken,newPassword );
         
         return res.status(200).send(getPage)
