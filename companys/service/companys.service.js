@@ -156,13 +156,13 @@ exports.updateNewPwd = async ( changePasswordToken, newPassword ) => {
     }
 }
 
-exports.sendVerificationEmailToUser = async ( userEmail ) => {
+exports.sendVerificationEmailToUser = async ( companyEmail ) => {
     try {    
-        const userStatus         = (await db.query( query.IsCompanyValid, [ userEmail ] )).rowCount;
-        const getIdToken         = await serviceLogic.makeIdVerificationToken( userEmail );
-        await db.query( query.updateIdToken, [ getIdToken, userEmail ] );
+        const companyStatus         = (await db.query( query.IsCompanyValid, [ companyEmail ] )).rowCount;
+        const getIdToken         = await companysLogic.makeIdVerificationToken( companyEmail );
+        await db.query( query.updateCompanyIdToken, [ getIdToken, companyEmail ] );
 
-        if ( userStatus == 1 ) await companysLogic.sendMailCheckId( userEmail, getIdToken );
+        if ( companyStatus == 1 ) await companysLogic.sendMailCheckId( companyEmail, getIdToken );
         else return false;
 
         return { message: "Email sent successfully" };
@@ -173,7 +173,7 @@ exports.sendVerificationEmailToUser = async ( userEmail ) => {
 
 exports.getUserIdAfterVerification = async ( checkToken ) => {
     try {
-        const companyEmail = await companysLogic.verifyFindIdToken( checkToken );
+        const companyEmail = await companysLogic.verifyIdRecoveryToken( checkToken );
   
         if ( companyEmail != null ) {
      
