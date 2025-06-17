@@ -93,7 +93,6 @@ exports.resetPwd = async ( companyEmail ) => {
         const resetPasswordToken = await companysLogic.makeResetPwdToken( companyEmail );
 
         await db.query( query.updateResetCompanyPwdToken, [ resetPasswordToken, companyEmail ] );
-
         if ( CompanyStatus == 1 ) await companysLogic.sendMailResetPassword( companyEmail, resetPasswordToken );
         else return false;
 
@@ -110,12 +109,11 @@ exports.resetPwdTokenVerify = async ( resetPasswordToken ) => {
 
         if ( companyEmail != null ) {
             await db.query( query.updateResetCompanyPwdTokenIsNull, [ companyEmail ] );
-           
             const filePath            = path.join(__dirname, '/web/setNewPassword.html');
             const html                = fs.readFileSync(filePath, 'utf8');
             const changePasswordToken = await companysLogic.makeChangePwdToken( companyEmail ) 
             const updatedHtml         = html.replace('{TOKEN}', changePasswordToken );
-
+            
             await db.query( query.updateChangeCompanyPwdToken, [ changePasswordToken, companyEmail ] );
             return updatedHtml
             
