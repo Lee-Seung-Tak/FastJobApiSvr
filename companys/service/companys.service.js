@@ -16,7 +16,7 @@ exports.signUp = async ( companyData ) => {
   
       const signUpToken = await companysLogic.makeSignUpToken( companyData.email );
 
-      await companysLogic.insertUserData( companyData, signUpToken );
+      await companysLogic.insertCompanyData( companyData, signUpToken );
       await companysLogic.sendMailForSignUp( companyData.email, signUpToken );
       return { message: 'Signup successful. Please verify your email.' };
       
@@ -197,3 +197,11 @@ exports.getUserIdAfterVerification = async ( checkToken ) => {
         console.error(error)       
     }
 }
+
+exports.uploadRecruitJob = async ( companyData ) => {
+    try {
+        await companysLogic.uploadRecruitJob( companyData );
+    } catch (error) {
+        throw error;
+    }
+};
