@@ -29,7 +29,7 @@ exports.signUpVerify = async( signUpToken ) => {
     try {
         const decode    = await companysLogic.verifySignUpToken( signUpToken );
         let queryResult = await db.query ( query.checkCompanySignUpToken, [decode.email] );
-        queryResult     = queryResult.rows[0].access_token;
+        queryResult     = queryResult.rows[0].sign_token;
 
         if ( signUpToken === queryResult )
         {
@@ -54,14 +54,14 @@ exports.login = async( companyId, password ) => {
         if ( queryResult === undefined   ) throw new Error('user not found')
         
         if ( queryResult.role !== NORMAL ) throw new Error('user not found')
-
         
         // 비밀번호 검증
         if ( queryResult.password === password ) {
 
             // token 생성 동시 시작 
-            const [ accessToken, refreshToken ] = await Promise.all ( [ companysLogic.makeAccessToken(userId), companysLogic.makeRefreshToken(userId) ] );
+            const [ accessToken, refreshToken ] = await Promise.all ( [ companysLogic.makeAccessToken(companyId), companysLogic.makeRefreshToken(companyId) ] );
             const updateDate                    = new Date();
+            console.log('6:', accessToken, '/////', refreshToken);
 
             // db에 token 및 현재 시간 update
             await db.query( query.companyLoginSuccess, [ accessToken, refreshToken, updateDate, companyId ] );
@@ -205,3 +205,29 @@ exports.uploadRecruitJob = async ( companyData ) => {
         throw error;
     }
 };
+
+
+// exports.uploadRecruitJob = async (companyData) => {
+//   try {
+//     // company_id로 id (PK) 조회
+//     const companyId = await companysLogic.getId({ company_id: companyData.company_id });
+//     if (!companyId) {
+//       throw new Error('Company not found for this company_id');
+//     }
+
+//     // companyData에 company_id (PK id) 추가
+//     const jobData = {
+//       company_id: companyId, // PK id
+//       title: companyData.title,
+//       description: companyData.description,
+//       category: companyData.category,
+//       deadline: companyData.deadline,
+//       is_active: companyData.is_active || true, // 기본값 true
+//     };
+
+//     // 로직 레이어 호출
+//     await companysLogic.uploadRecruitJob(jobData);
+//   } catch (error) {
+//     throw error;
+//   }
+// };
