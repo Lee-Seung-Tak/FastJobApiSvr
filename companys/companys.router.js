@@ -54,7 +54,7 @@ const companyData = multer({ storage: storage });
  *               - email
  *               - phone
  *               - address
- *               - userId
+ *               - companyId
  *               - password
  *               - business
  *             properties:
@@ -117,7 +117,7 @@ router.post('/signup', companyData.any(), companysController.signUp);
  *           schema:
  *             type: object
  *             required:
- *               - userId
+ *               - companyId
  *               - password
  *             properties:
  *               userId:
@@ -409,94 +409,94 @@ router.post('/recover-id', companysController.sendVerificationEmailToUser)
  */
 router.get('/recover-id/verify',companysController.getUserIdAfterVerification)
 
-/**
- * @swagger
- * /companys/recruit-jobs:
- *   post:
- *     summary: 채용 공고 등록
- *     tags: [Companys]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             required:
- *               - title
- *               - description
- *               - category
- *               - deadline
- *             properties:
- *               title:
- *                 type: string
- *                 description: 채용 공고 제목
- *                 example: Recruit Software Engineer
- *               description:
- *                 type: string
- *                 description: 채용 공고 상세 설명
- *                 example: We are hiring a skilled engineer...
- *               category:
- *                 type: string
- *                 description: 채용 공고 분야
- *                 example: 1
- *               deadline:
- *                 type: string
- *                 format: date
- *                 description: 지원 마감일 (YYYY-MM-DD)
- *                 example: 2025-12-31
- *               image:
- *                 type: string
- *                 format: binary
- *                 description: 공고 이미지 파일 (JPG, PNG, 최대 5MB, optional)
- *     responses:
- *       201:
- *         description: 채용 공고 등록 성공
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 companyId:
- *                   type: string
- *                   description: 채용 공고 등록 기업의 ID
- *                   example: company123
- *                 title:
- *                   type: string
- *                   example: Recruit Software Engineer
- *       400:
- *         description: 잘못된 요청 (필수 필드 누락, 잘못된 형식)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: title, description, category, deadline은 필수입니다.
- *       401:
- *         description: 인증 실패 (유효하지 않은 토큰)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 유효하지 않거나 만료된 토큰입니다.
- *       500:
- *         description: 서버 오류
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 서버 오류가 발생했습니다.
- */
-router.post('/recruit-jobs', companyData.any(), companysController.uploadRecruitJob);
+// /**
+//  * @swagger
+//  * /companys/recruit-jobs:
+//  *   post:
+//  *     summary: 채용 공고 등록
+//  *     tags: [Companys]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         multipart/form-data:
+//  *           schema:
+//  *             type: object
+//  *             required:
+//  *               - title
+//  *               - description
+//  *               - category
+//  *               - deadline
+//  *             properties:
+//  *               title:
+//  *                 type: string
+//  *                 description: 채용 공고 제목
+//  *                 example: Recruit Software Engineer
+//  *               description:
+//  *                 type: string
+//  *                 description: 채용 공고 상세 설명
+//  *                 example: We are hiring a skilled engineer...
+//  *               category:
+//  *                 type: string
+//  *                 description: 채용 공고 분야
+//  *                 example: 1
+//  *               deadline:
+//  *                 type: string
+//  *                 format: date
+//  *                 description: 지원 마감일 (YYYY-MM-DD)
+//  *                 example: 2025-12-31
+//  *               image:
+//  *                 type: string
+//  *                 format: binary
+//  *                 description: 공고 이미지 파일 (JPG, PNG, 최대 5MB, optional)
+//  *     responses:
+//  *       201:
+//  *         description: 채용 공고 등록 성공
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 companyId:
+//  *                   type: string
+//  *                   description: 채용 공고 등록 기업의 ID
+//  *                   example: company123
+//  *                 title:
+//  *                   type: string
+//  *                   example: Recruit Software Engineer
+//  *       400:
+//  *         description: 잘못된 요청 (필수 필드 누락, 잘못된 형식)
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 message:
+//  *                   type: string
+//  *                   example: title, description, category, deadline은 필수입니다.
+//  *       401:
+//  *         description: 인증 실패 (유효하지 않은 토큰)
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 message:
+//  *                   type: string
+//  *                   example: 유효하지 않거나 만료된 토큰입니다.
+//  *       500:
+//  *         description: 서버 오류
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 message:
+//  *                   type: string
+//  *                   example: 서버 오류가 발생했습니다.
+//  */
+// router.post('/recruit-jobs', companyData.any(), companysController.uploadRecruitJob);
 
 // /**
 //  * @swagger
