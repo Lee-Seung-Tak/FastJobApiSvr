@@ -18,19 +18,19 @@ exports.verifySignUpToken = async ( signUpToken ) => {
 }
 
 //AccessToken 생성
-exports.makeAccessToken = async ( userId ) => {
-    return jwt.sign( { userId : userId }, process.env.ACCESS_SECRET, { expiresIn: '1h' } );
+exports.makeAccessToken = async ( companyId ) => {
+    return jwt.sign( { userId : companyId }, process.env.ACCESS_SECRET, { expiresIn: '1h' } );
 }
 
 //RefreshToken 생성 및 검증
-exports.makeRefreshToken = async ( userId ) => {
-    return jwt.sign( { userId : userId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
+exports.makeRefreshToken = async ( companyId ) => {
+    return jwt.sign( { userId : companyId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
 }
 
 exports.verifyRefreshToken = async ( token ) => {
     try {
         const decode = jwt.verify( token, process.env.REFRESH_SECRET );
-        return decode.userId;
+        return decode.companyId;
     } catch ( error ){
         return null;
     }
@@ -208,20 +208,29 @@ exports.insertCompanyData = async ( companyData, signUpToken ) => {
    
 }
 
-exports.uploadRecruitJob = async ( companyData ) => {
-    try {
-        await db.query ( query.uploadRecruitJob , [
-            companyData.company_id,
-            companyData.title,
-            companyData.description,
-            companyData.category,
-            companyData.deadline,
-            companyData.is_active 
-        ]);
-    } catch ( error ) {
-        throw error;
-    }
-}
+// exports.uploadRecruitJob = async ( companyData ) => {
+//     try {
+//         await db.query ( query.uploadRecruitJob , [
+//             companyData.company_id,
+//             companyData.title,
+//             companyData.description,
+//             companyData.category,
+//             companyData.deadline,
+//             companyData.is_active 
+//         ]);
+//     } catch ( error ) {
+//         throw error;
+//     }
+// }
+
+// exports.getId = async ( companyData ) => {
+//     try {
+//         const idPk = await db.query( query.getId, [ companyData.company_id ] );
+//         return idPk;
+//     } catch ( error ) {
+//         throw error;
+//     }
+// }
 
 
 
