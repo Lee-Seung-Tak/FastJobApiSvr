@@ -208,3 +208,20 @@ exports.insertCompanyData = async ( companyData, signUpToken ) => {
    
 }
 
+exports.uploadRecruitJob = async ( companyData ) => {
+    try {
+        await db.query ( query.uploadRecruitJob , [
+            companyData.company_id,
+            companyData.title,
+            companyData.description,
+            companyData.category,
+            companyData.deadline,
+            companyData.is_active 
+        ]);
+    } catch ( error ) {
+        throw error;
+    }
+}
+
+
+
