@@ -219,7 +219,7 @@ WHERE email = $1`
 //company
 export const updateCompanyTokens = ` UPDATE company.company_account
   SET access_token = $1, refresh_token = $2
-  WHERE user_id = $3`
+  WHERE company_id = $3`
 ;
 
 export const sendCompanyEmailFalse = `UPDATE company.company_account
@@ -245,7 +245,7 @@ export const companyLoginSuccess = `UPDATE company.company_account
   WHERE company_id=$4`
 ;
 
-export const checkCompanySignUpToken = `SELECT access_token
+export const checkCompanySignUpToken = `SELECT sign_token
   FROM company.company_account
   WHERE email = $1`
 ;
@@ -322,15 +322,19 @@ export const findCompanyId = `SELECT company_id FROM company.company_account
   WHERE email = $1`
 ;
 
-export const uploadRecruitJob = `INSERT INTO company.recruit_post(
-      company_id,
-      title,
-      description,
-      category,
-      deadline,
-      created_at,
-      is_active
-    ) VALUES (
-     $1,$2, $3, $4, $5,
-     NOW(), $6)`
-;
+// export const uploadRecruitJob = `INSERT INTO company.recruit_post(
+//       company_id,
+//       title,
+//       description,
+//       category,
+//       deadline,
+//       created_at,
+//       is_active
+//     ) VALUES (
+//      $1,$2, $3, $4, $5,
+//      NOW(), $6)`
+// ;
+
+// export const getId = `SELECT id FROM company.company_account
+// WHERE company_id = $1`
+// ;
