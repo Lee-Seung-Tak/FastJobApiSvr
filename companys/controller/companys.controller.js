@@ -144,33 +144,33 @@ exports.getUserIdAfterVerification = async ( req, res ) => {
     }
 }
 
-// exports.uploadRecruitJob = async ( req, res ) => {
-//   try {
-//     const { title, description, category, deadline } = req.body;
+exports.uploadRecruitJob = async ( req, res ) => {
+  try {
+    const { title, description, category, deadline } = req.body;
+
+    if ( !title || !description || !category || !deadline ) {
+      return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
+    }
+
+    if ( !/^\d{4}-\d{2}-\d{2}$/.test(deadline) ) {
+      return res.status(400).json({ message: 'deadline은 YYYY-MM-DD 형식이어야 합니다.' });
+    }
+
+    const categoryNum = Number(category);
+    if ( isNaN(categoryNum) || categoryNum < 1 || categoryNum > 100 ) {
+    return res.status(400).json({ message: '유효하지 않은 category 값입니다.' });
+    }
+
+    // 채용 공고 생성
+    await companysService.uploadRecruitJob( req.body );
+
+    return res.status(201).json({ message: '채용 공고 등록 완료' });
+  } catch (error) {
+    console.error('Upload recruit job error:', error);
     
-//     if ( !title || !description || !category || !deadline ) {
-//       return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
-//     }
-
-//     if ( !/^\d{4}-\d{2}-\d{2}$/.test(deadline) ) {
-//       return res.status(400).json({ message: 'deadline은 YYYY-MM-DD 형식이어야 합니다.' });
-//     }
-
-//     const categoryNum = Number(category);
-//     if ( isNaN(categoryNum) || categoryNum < 1 || categoryNum > 100 ) {
-//     return res.status(400).json({ message: '유효하지 않은 category 값입니다.' });
-//     }
-
-//     // 채용 공고 생성
-//     await companysService.uploadRecruitJob( req.body );
-
-//     return res.status(201).json({ message: '채용 공고 등록 완료' });
-//   } catch (error) {
-//     console.error('Upload recruit job error:', error);
-    
-//     return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
-//   }
-// };
+    return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+};
 
 // exports.updateRecruitJob
 
