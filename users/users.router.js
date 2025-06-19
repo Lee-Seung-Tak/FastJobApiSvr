@@ -266,4 +266,5 @@ router.patch('/user/application-docs', userData.any(), usersController.patchUser
 // 사용자 이력서 및 자기소개서, 경력 기술서, 포트폴리오 url 업데이트
 //router.update('/user')
 
+router.post('/apply-to-post', usersController.updateUserApplicationPost);
 module.exports = router;
