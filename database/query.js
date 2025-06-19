@@ -322,19 +322,19 @@ export const findCompanyId = `SELECT company_id FROM company.company_account
   WHERE email = $1`
 ;
 
-// export const uploadRecruitJob = `INSERT INTO company.recruit_post(
-//       company_id,
-//       title,
-//       description,
-//       category,
-//       deadline,
-//       created_at,
-//       is_active
-//     ) VALUES (
-//      $1,$2, $3, $4, $5,
-//      NOW(), $6)`
-// ;
+export const uploadRecruitJob = `INSERT INTO company.recruit_post (
+      company_id,
+      title,
+      description,
+      category,
+      deadline,
+      created_at,
+      is_active
+    ) VALUES (
+     $1,$2, $3, $4, $5,
+     NOW(), $6)`
+;
 
-// export const getId = `SELECT id FROM company.company_account
-// WHERE company_id = $1`
-// ;
+export const getId = `SELECT id FROM company.company_account
+WHERE company_id = $1`
+;
