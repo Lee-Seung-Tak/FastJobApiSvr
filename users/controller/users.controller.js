@@ -71,10 +71,10 @@ exports.myJobApplications = async ( req, res ) => {
 exports.updateUserApplicationPost = async ( req, res ) => {
   try {
 
-    const postId          = req.body.postId;
+    const postPk          = req.body.postPk;
     const userId          = req.userId;
     
-    await usersService.updateUserApplicationPost( userId, postId );
+    await usersService.updateUserApplicationPost( userId, postPk );
     
     return res.status( 200 ).json({ message : "Update Success" });
   } catch (err) {
