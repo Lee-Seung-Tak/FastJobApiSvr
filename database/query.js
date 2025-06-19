@@ -232,3 +232,16 @@ WHERE email = $1;`
 export const updatePasswordTokenIsNull = `UPDATE users.user_account
 SET id_find_token = NULL
 WHERE email = $1;`
+
+export const updateUserApplications = `
+UPDATE company.application AS b
+SET
+  resume      = a.resume,
+  self_intro  = a.self_intro,
+  career_desc = a.career_desc,
+  status      = 2                    
+FROM users.user_account AS a
+WHERE
+      a.id = $1::int
+  AND b.id = $2::int;
+`;
