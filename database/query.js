@@ -238,7 +238,7 @@ INSERT INTO company.application (
   user_id, post_id, resume, self_intro, career_desc, status
 )
 SELECT
-  $1::int, $2::int, a.resume, a.self_intro, a.career_desc, 2
+  $1::int, $2::int, a.resume, a.self_intro, a.career_desc, 0
 FROM users.user_account a
 WHERE a.id = $1::int;
 ;`
