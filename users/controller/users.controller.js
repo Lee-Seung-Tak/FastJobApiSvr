@@ -1,5 +1,5 @@
 const usersService = require('@users_service');
-
+const usersLogic   = require('@users_logic');
 exports.patchUser = async ( req, res ) => {
 
   try { 
@@ -65,5 +65,18 @@ exports.myJobApplications = async ( req, res ) => {
     return res.status( 200 ).json( result );
   } catch (err) {
     return res.status(400).json({ message: "Bad Request" });
+  }
+};
+
+exports.updateUserApplicationPost = async ( req, res ) => {
+  try {
+
+    const postId          = req.body.postId;
+    const userId          = req.userId;
+    const result          = await usersService.updateUserApplicationPost( userId, postId );
+    return res.status( 200 ).json({ message : "Update Success" });
+  } catch (err) {
+    console.log("err:", err)
+    return res.status( 400 ).json({ message: "Bad Request" });
   }
 };
