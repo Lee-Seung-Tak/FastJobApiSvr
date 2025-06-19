@@ -118,3 +118,11 @@ exports.myJobApplications = async ( userId ) => {
   return getMyJobApplications.length ? getMyJobApplications : null;
 };
 
+exports.updateUserApplicationPost = async ( userId, postId ) => {
+  try {
+  const userPk                = ( await db.query( query.getUserPk, [userId] ) ).rows[0].id;
+  const updateJobApplications = await db.query( query.updateUserApplications, [userPk, postId] );
+  } catch ( error ) {
+    console.log( error )
+  }
+};
