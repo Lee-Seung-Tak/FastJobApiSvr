@@ -73,7 +73,9 @@ exports.updateUserApplicationPost = async ( req, res ) => {
 
     const postId          = req.body.postId;
     const userId          = req.userId;
-    const result          = await usersService.updateUserApplicationPost( userId, postId );
+    
+    await usersService.updateUserApplicationPost( userId, postId );
+    
     return res.status( 200 ).json({ message : "Update Success" });
   } catch (err) {
     console.log("err:", err)
