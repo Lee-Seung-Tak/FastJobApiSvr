@@ -208,29 +208,30 @@ exports.insertCompanyData = async ( companyData, signUpToken ) => {
    
 }
 
-// exports.uploadRecruitJob = async ( companyData ) => {
-//     try {
-//         await db.query ( query.uploadRecruitJob , [
-//             companyData.company_id,
-//             companyData.title,
-//             companyData.description,
-//             companyData.category,
-//             companyData.deadline,
-//             companyData.is_active 
-//         ]);
-//     } catch ( error ) {
-//         throw error;
-//     }
-// }
+exports.uploadRecruitJob = async ( companyData ) => {
+    try {
+        const idPk = await exports.getId(companyData);
 
-// exports.getId = async ( companyData ) => {
-//     try {
-//         const idPk = await db.query( query.getId, [ companyData.company_id ] );
-//         return idPk;
-//     } catch ( error ) {
-//         throw error;
-//     }
-// }
+        await db.query ( query.uploadRecruitJob , [
+            idPk,
+            companyData.title,
+            companyData.description,
+            companyData.category,
+            companyData.deadline,
+            companyData.is_active 
+        ]);
+    } catch ( error ) {
+        throw error;
+    }
+}
 
-
+exports.getId = async ( companyData ) => {
+    try {
+        const getIdResult = await db.query( query.getId, [ companyData.companyId ] );
+        const idPk = getIdResult.rows[0].id;
+        return idPk;
+    } catch ( error ) {
+        throw error;
+    }
+}
 
