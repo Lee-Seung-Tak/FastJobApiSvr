@@ -205,29 +205,3 @@ exports.uploadRecruitJob = async ( companyData ) => {
         throw error;
     }
 };
-
-
-// exports.uploadRecruitJob = async (companyData) => {
-//   try {
-//     // company_id로 id (PK) 조회
-//     const companyId = await companysLogic.getId({ company_id: companyData.company_id });
-//     if (!companyId) {
-//       throw new Error('Company not found for this company_id');
-//     }
-
-//     // companyData에 company_id (PK id) 추가
-//     const jobData = {
-//       company_id: companyId, // PK id
-//       title: companyData.title,
-//       description: companyData.description,
-//       category: companyData.category,
-//       deadline: companyData.deadline,
-//       is_active: companyData.is_active || true, // 기본값 true
-//     };
-
-//     // 로직 레이어 호출
-//     await companysLogic.uploadRecruitJob(jobData);
-//   } catch (error) {
-//     throw error;
-//   }
-// };
