@@ -135,3 +135,17 @@ exports.submitApplication = async ( userId, postPk ) => {
     throw err;
   }
 };
+
+exports.deleteApplication = async ( userId, postId ) => {
+  try {
+    const userPk                   = ( await db.query( query.getUserPk, [userId] ) ).rows[0].id;
+    const deleteJobApplication     = await db.query( query.deleteJobApplication, [userPk, postId]);
+    if ( deleteJobApplication.rowCount === 0 ) {
+      throw new Error('No application record found to delete.');
+    }
+    await db.query( query.deleteApplicationById, [postId]);
+  } catch ( error ){
+    console.log( error );
+    throw error;
+  }
+};
