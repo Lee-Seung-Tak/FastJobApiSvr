@@ -118,7 +118,7 @@ exports.myJobApplications = async ( userId ) => {
   return getMyJobApplications.length ? getMyJobApplications : null;
 };
 
-exports.updateUserApplicationPost = async ( userId, postPk ) => {
+exports.submitApplication = async ( userId, postPk ) => {
   try {
     const userPk = ( await db.query( query.getUserPk, [userId] ) ).rows[0].id;
     const duplicateResult = await db.query( query.duplicateApplication, [userPk, postPk] )
