@@ -71,11 +71,25 @@ exports.myJobApplications = async ( req, res ) => {
 exports.submitApplication = async ( req, res ) => {
   try {
 
-    const postPk          = req.body.postPk;
-    const userId          = req.userId;
+    const postPk = req.body.postPk;
+    const userId = req.userId;
     
     await usersService.submitApplication( userId, postPk );
     
+    return res.status( 200 ).json({ message : "Update Success" });
+  } catch (err) {
+    console.log("err:", err)
+    return res.status( 400 ).json({ message: "Bad Request" });
+  }
+};
+
+exports.deleteApplication = async ( req, res ) => {
+  try {
+    const postId = req.body.postId;
+    const userId = req.userId;
+
+    await usersService.deleteApplication( userId, postId );
+
     return res.status( 200 ).json({ message : "Update Success" });
   } catch (err) {
     console.log("err:", err)
