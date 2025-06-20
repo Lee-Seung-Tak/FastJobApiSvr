@@ -233,7 +233,7 @@ export const updatePasswordTokenIsNull = `UPDATE users.user_account
 SET id_find_token = NULL
 WHERE email = $1;`
 
-export const updateUserApplications = `
+export const insertUserApplications = `
 INSERT INTO company.application (
   user_id, post_id, resume, self_intro, career_desc, status
 )
