@@ -322,6 +322,7 @@ export const findCompanyId = `SELECT company_id FROM company.company_account
   WHERE email = $1`
 ;
 
+//채용공고 등록
 export const uploadRecruitJob = `INSERT INTO company.recruit_post (
       company_id,
       title,
@@ -338,3 +339,24 @@ export const uploadRecruitJob = `INSERT INTO company.recruit_post (
 export const getId = `SELECT id FROM company.company_account
 WHERE company_id = $1`
 ;
+
+//채용공고 삭제
+export const findRecruitJob = `SELECT * FROM company.recruit_post
+WHERE id = $1`
+;
+
+export const deleteRecruitJob = `DELETE FROM company.recruit_post
+WHERE id = $1`
+;
+  
+// export const updateRecruitJob = `
+//   UPDATE company.recruit_post
+//   SET
+//     title = $2,
+//     description = $3,
+//     category = $4,
+//     deadline = $5,
+//     created_at = NOW(),
+//     is_active = $6
+//   WHERE id = $1;
+// `;
