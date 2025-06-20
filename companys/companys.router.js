@@ -74,7 +74,7 @@ const companyData = multer({ storage: storage });
  *                 type: string
  *                 description: 회사 주소
  *                 example: 서울특별시 강남구 테헤란로 123
- *               userId:
+ *               companyId:
  *                 type: string
  *                 description: 로그인용 회사 ID
  *                 example: fastjob_hr
