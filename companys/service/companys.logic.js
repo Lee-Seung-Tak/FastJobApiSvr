@@ -208,6 +208,7 @@ exports.insertCompanyData = async ( companyData, signUpToken ) => {
    
 }
 
+//채용공고 등록
 exports.uploadRecruitJob = async ( companyData ) => {
     try {
         const idPk = await exports.getId(companyData);
@@ -225,6 +226,7 @@ exports.uploadRecruitJob = async ( companyData ) => {
     }
 }
 
+//companyId로 id(PK) 가져오기
 exports.getId = async ( companyData ) => {
     try {
         const getIdResult = await db.query( query.getId, [ companyData.companyId ] );
@@ -234,4 +236,24 @@ exports.getId = async ( companyData ) => {
         throw error;
     }
 }
+
+// //채용공고 수정
+// exports.updateRecruitJob = async ( id, data ) => {
+//     try {
+//     // 수정할 데이터만 필터링
+//     const updateData = {};
+//     if (data.title) updateData.title = data.title;
+//     if (data.description) updateData.description = data.description;
+//     if (data.category) updateData.category = data.category;
+//     if (data.deadline) updateData.deadline = data.deadline;
+
+//     // 데이터베이스 업데이트
+//     const updatedJob = await db.query ( query.updateRecruitJob, [id, data]);
+
+//     return updatedJob;
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+
 
