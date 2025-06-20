@@ -414,7 +414,7 @@ router.get('/recover-id/verify',companysController.getUserIdAfterVerification)
  * /companys/recruit-jobs:
  *   post:
  *     summary: 채용 공고 등록
- *     tags: [Companys]
+ *     tags: [Companys] 
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -512,8 +512,8 @@ router.post('/recruit-jobs', companyData.any(), companysController.uploadRecruit
 //  *         required: true
 //  *         schema:
 //  *         type: string
-//  *         description: 수정할 채용 공고의 기업 ID
-//  *         example: company123
+//  *         description: 수정할 채용 공고의 고유 ID
+//  *         example: 2
 //  *     requestBody:
 //  *       required: true
 //  *       content:
@@ -529,7 +529,7 @@ router.post('/recruit-jobs', companyData.any(), companysController.uploadRecruit
 //  *                 type: string
 //  *                 description: 수정할 설명 (optional)
 //  *                 example: Updated job description...
-// *               category:
+//  *               category:
 //  *                 type: string
 //  *                 description: 채용 공고 분야 수정 (optional)
 //  *                 example: 2
@@ -577,48 +577,48 @@ router.post('/recruit-jobs', companyData.any(), companysController.uploadRecruit
 //  */
 // router.patch('/recruit-jobs/:id', companysController.updateRecruitJob);
 
-// /**
-//  * @swagger
-//  * /companys/recruit-jobs/{id}:
-//  *   delete:
-//  *     summary: 채용 공고 삭제
-//  *     tags: [Companys]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     parameters:
-//  *       - in: path
-//  *         name: id
-//  *         required: true
-//  *         schema:
-//  *           type: string
-//  *         description: 삭제할 채용 공고의 기업 ID
-//  *         example: company123
-//  *     responses:
-//  *       204:
-//  *         description: 채용 공고 삭제 성공 (콘텐츠 없음)
-//  *       401:
-//  *         description: 인증 실패
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 message:
-//  *                   type: string
-//  *                   example: 유효하지 않거나 만료된 토큰입니다.
-//  *       404:
-//  *         description: 채용 공고를 찾을 수 없음
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 message:
-//  *                   type: string
-//  *                   example: 채용 공고를 찾을 수 없습니다.
-//  *       500:
-//  *         description: 서버 오류
-//  */
-// router.delete('/recruit-jobs/:id', companysController.deleteRecruitJob);
+/**
+ * @swagger
+ * /companys/recruit-jobs/{id}:
+ *   delete:
+ *     summary: 채용 공고 삭제
+ *     tags: [Companys]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 삭제할 채용 공고의 고유 id
+ *         example: 1
+ *     responses:
+ *       204:
+ *         description: 채용 공고 삭제 성공 (콘텐츠 없음)
+ *       401:
+ *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 유효하지 않거나 만료된 토큰입니다.
+ *       404:
+ *         description: 채용 공고를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 채용 공고를 찾을 수 없습니다.
+ *       500:
+ *         description: 서버 오류
+ */
+router.delete('/recruit-jobs/:id', companysController.deleteRecruitJob);
 
 module.exports = router;
