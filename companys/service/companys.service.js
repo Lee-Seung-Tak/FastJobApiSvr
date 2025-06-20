@@ -61,7 +61,6 @@ exports.login = async( companyId, password ) => {
             // token 생성 동시 시작 
             const [ accessToken, refreshToken ] = await Promise.all ( [ companysLogic.makeAccessToken(companyId), companysLogic.makeRefreshToken(companyId) ] );
             const updateDate                    = new Date();
-            console.log('6:', accessToken, '/////', refreshToken);
 
             // db에 token 및 현재 시간 update
             await db.query( query.companyLoginSuccess, [ accessToken, refreshToken, updateDate, companyId ] );
@@ -198,6 +197,7 @@ exports.getUserIdAfterVerification = async ( checkToken ) => {
     }
 }
 
+//채용공고 등록
 exports.uploadRecruitJob = async ( companyData ) => {
     try {
         await companysLogic.uploadRecruitJob( companyData );
@@ -205,3 +205,40 @@ exports.uploadRecruitJob = async ( companyData ) => {
         throw error;
     }
 };
+
+
+//채용공고 삭제
+exports.deleteRecruitJob = async ( id ) => {
+  try {
+    const existingJob = await db.query( query.findRecruitJob, [ id ] );
+    if ( !existingJob ) {
+      throw new Error('채용 공고를 찾을 수 없습니다.');
+    }
+    const result = await db.query( query.deleteRecruitJob, [ id ] );
+    return result.affectedRows > 0;
+  } catch ( error ) {
+    throw error;
+  }
+};
+
+// exports.updateRecruitJob = async ( id, companyData) => {
+//   try {
+//     // 데이터 정제
+//     const cleanedcompanyData = {
+//       title: companyData.title?.trim(),
+//       description: companyData.description?.trim(),
+//       category: companyData.category?.trim(),
+//       deadline: companyData.deadline
+//     };
+
+//     const updatedJob = await companysLogic.updateRecruitJob(id, cleanedcompanyData);
+//     if (!updatedJob) {
+//       throw new Error('채용 공고를 찾을 수 없습니다.');
+//     }
+
+//     return updatedJob;
+//   } catch (error) {
+//     throw error;
+//   }
+
+// }
