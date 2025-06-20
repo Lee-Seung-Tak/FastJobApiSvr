@@ -74,7 +74,7 @@ exports.submitApplication = async ( req, res ) => {
     const postPk          = req.body.postPk;
     const userId          = req.userId;
     
-    await usersService.updateUserApplicationPost( userId, postPk );
+    await usersService.submitApplication( userId, postPk );
     
     return res.status( 200 ).json({ message : "Update Success" });
   } catch (err) {
