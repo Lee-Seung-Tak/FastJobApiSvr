@@ -71,10 +71,10 @@ exports.myJobApplications = async ( req, res ) => {
 exports.submitApplication = async ( req, res ) => {
   try {
 
-    const postPk = req.body.postPk;
-    const userId = req.userId;
+    const jobPostingId = req.body.jobPostingId;
+    const userId       = req.userId;
     
-    await usersService.submitApplication( userId, postPk );
+    await usersService.submitApplication( userId, jobPostingId );
     
     return res.status( 200 ).json({ message : "Update Success" });
   } catch (err) {
@@ -85,10 +85,10 @@ exports.submitApplication = async ( req, res ) => {
 
 exports.deleteApplication = async ( req, res ) => {
   try {
-    const postId = req.body.postId;
-    const userId = req.userId;
+    const jobPostingId = req.body.jobPostingId;
+    const userId       = req.userId;
 
-    await usersService.deleteApplication( userId, postId );
+    await usersService.deleteApplication( userId, jobPostingId );
 
     return res.status( 200 ).json({ message : "Update Success" });
   } catch (err) {
