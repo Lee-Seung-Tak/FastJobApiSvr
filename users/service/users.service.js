@@ -120,15 +120,18 @@ exports.myJobApplications = async ( userId ) => {
 
 exports.submitApplication = async ( userId, postPk ) => {
   try {
-    const userPk = ( await db.query( query.getUserPk, [userId] ) ).rows[0].id;
-    const duplicateResult = await db.query( query.duplicateApplication, [userPk, postPk] )
+    const userPk            = ( await db.query( query.getUserPk, [userId] ) ).rows[0].id;
+    const duplicateResult   = await db.query( query.duplicateApplication, [userPk, postPk] )
     
     if (duplicateResult.rows.length > 0) {
       throw new Error ("You have already applied for this job")
     }
-    await db.query( query.updateUserApplications, [userPk, postPk] );
-
+    const queryResult       = await db.query( query.updateUserApplications, [userPk, postPk] );
+    const deletedId         = queryResult.rows[0].id;
+    await db.query( query.insertJobApplication, [ userPk, deletedId ] );
+  
   } catch ( error ) {
-    console.log( error )
+    console.log( error );
+    throw err;
   }
 };
