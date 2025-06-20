@@ -21,7 +21,7 @@ class SignUpDTO {
           !companyData.password ||
           !companyData.business
         ) {
-          throw new Error('check company data (name, email, phone, companyId, password, business)');
+          throw new Error('check company data (name, email, phone, address, companyId, password, business)');
         }
 
         return new SignUpDTO( companyData );
