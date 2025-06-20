@@ -257,3 +257,14 @@ INSERT INTO users.job_application (
 VALUES ($1, $2, 0)
 RETURNING id;
 ;`
+
+export const deleteApplicationById = `
+DELETE FROM company.application
+WHERE id = $1;
+`;
+
+export const deleteJobApplication = `
+DELETE FROM users.job_application
+WHERE user_id = $1
+  AND application_id = $2;
+;`
