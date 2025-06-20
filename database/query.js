@@ -240,7 +240,8 @@ INSERT INTO company.application (
 SELECT
   $1::int, $2::int, a.resume, a.self_intro, a.career_desc, 0
 FROM users.user_account a
-WHERE a.id = $1::int;
+WHERE a.id = $1::int
+RETURNING id;
 ;`
 
 export const duplicateApplication = `
@@ -248,4 +249,11 @@ SELECT 1
 FROM company.application
 WHERE user_id = $1 AND post_id = $2
 LIMIT 1
-`
+;`
+export const insertJobApplication = `
+INSERT INTO users.job_application (
+  user_id, application_id, status
+)
+VALUES ($1, $2, 0)
+RETURNING id;
+;`
