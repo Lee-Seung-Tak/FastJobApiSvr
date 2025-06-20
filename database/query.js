@@ -260,11 +260,13 @@ RETURNING id;
 
 export const deleteApplicationById = `
 DELETE FROM company.application
-WHERE id = $1;
+WHERE id = $1
+  AND status = 0;
 `;
 
 export const deleteJobApplication = `
 DELETE FROM users.job_application
 WHERE user_id = $1
-  AND application_id = $2;
-;`
+  AND application_id = $2
+  AND status = 0;
+`;
