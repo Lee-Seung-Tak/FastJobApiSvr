@@ -267,4 +267,6 @@ router.patch('/user/application-docs', userData.any(), usersController.patchUser
 //router.update('/user')
 
 router.post('/apply-to-post', usersController.submitApplication);
+
+router.delete('/delete-application', usersController.deleteApplication);
 module.exports = router;
