@@ -68,7 +68,7 @@ exports.myJobApplications = async ( req, res ) => {
   }
 };
 
-exports.updateUserApplicationPost = async ( req, res ) => {
+exports.submitApplication = async ( req, res ) => {
   try {
 
     const postPk          = req.body.postPk;
