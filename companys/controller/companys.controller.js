@@ -11,6 +11,7 @@ exports.signUp = async ( req, res ) => {
         const companyData = signUpDTO.isValid ( req.body );
         await companysService.signUp( companyData );
 
+
         return res.status(201).json( {"message" : "Once you have completed your email authentication, your account will be activated."} );
 
     } catch ( error ) {
@@ -144,16 +145,13 @@ exports.getUserIdAfterVerification = async ( req, res ) => {
     }
 }
 
+//채용공고 등록
 exports.uploadRecruitJob = async ( req, res ) => {
   try {
     const { title, description, category, deadline } = req.body;
 
     if ( !title || !description || !category || !deadline ) {
       return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
-    }
-
-    if ( !/^\d{4}-\d{2}-\d{2}$/.test(deadline) ) {
-      return res.status(400).json({ message: 'deadline은 YYYY-MM-DD 형식이어야 합니다.' });
     }
 
     const categoryNum = Number(category);
@@ -172,6 +170,46 @@ exports.uploadRecruitJob = async ( req, res ) => {
   }
 };
 
-// exports.updateRecruitJob
+//채용공고 삭제
+exports.deleteRecruitJob = async ( req, res ) => {
+    try {
+      const { id } = req.params;
 
-// exports.deleteRecruitJob
+      await companysService.deleteRecruitJob( id );
+
+      return res.status(200).json({
+        message: '채용 공고가 성공적으로 삭제되었습니다.'
+      });
+    } catch (error) {
+      if ( error.message === 'Unauthorized' ) {
+        return res.status(401).json({ message: '유효하지 않거나 만료된 토큰입니다.' });
+      }
+      if ( error.message === '채용 공고를 찾을 수 없습니다.' ) {
+        return res.status(404).json({ message: error.message });
+      }
+      console.error( '채용 공고 삭제 오류:', error );
+      return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    }
+  }
+
+// //채용공고 수정
+// exports.updateRecruitJob = async ( req, res ) => {
+//     try {
+//       const { id } = req.params;
+//       const { title, description, category, deadline } = req.body;
+
+//       if ( !title || !description || !category || !deadline ) {
+//       return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
+//       }
+
+//        const updatedJob = await companysService.updateRecruitJob (id, { title, description, category, deadline });
+//        return res.status(200).json({message: '채용 공고가 성공적으로 수정되었습니다.'
+//       });
+//     } catch (error) {
+//       if (error.message === 'Unauthorized') {
+//         return res.status(401).json({ message: '유효하지 않거나 만료된 토큰입니다.' });
+//       }
+//       console.error('채용 공고 수정 오류:', error);
+//       return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+//     }
+//   }
