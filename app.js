@@ -19,6 +19,7 @@ const skillsRouter   = require('@skills_router');
 const companysRouter = require('@companys_router');
 const cors         = require("cors");
 
+
 // Swagger설정 사용
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -42,7 +43,7 @@ app.use( ( req, res, next ) => {
         req.path === '/companys/signup-verify'            || req.path === '/companys/reset-password'   ||  
         req.path === '/companys/reset-password/verify'    || req.path === '/companys/new-password'     ||
         req.path === '/companys/recover-id'               || req.path === '/companys/recover-id/verify'||
-        req.path === '/companys/recruit-jobs'            || req.path === '/companys/recruit-jobs/:id'     
+        req.path === '/companys/recruit-jobs'             || /^\/companys\/recruit-jobs\/\d+$/.test(req.path)     
 
     ) return next();
 
