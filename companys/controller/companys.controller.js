@@ -154,6 +154,21 @@ exports.uploadRecruitJob = async ( req, res ) => {
       return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
     }
 
+    // lst add - cy feedback
+    `
+        const categoryNum = Number(category);
+            if ( isNaN(categoryNum) || categoryNum < 1 || categoryNum > 100 ) {
+            return res.status(400).json({ message: '유효하지 않은 category 값입니다.' });
+        }
+        이 부분은 채용 공고에서 카테고리를 위해서 추가하신 의도로 보입니다.
+
+        db명세를 보시면 category는 분야(reference.dev_category참조)가 확인이 되는데, 이는 우리가 db에 사전에 정의하지
+        않은 값은 넣을 수 없다는 것 입니다.
+
+        이해하시기 편하게 예시를 들어드리자면, 웹에서는 미리 카테고리 전체에 대하여 서버로 부터 전달 받고, 사용자가 거기에 적용된
+        category만 선택할 수 있게 되는 것이기 때문에 아래의 category 검증 로직은 삭제하셔도 무방합니다.
+   
+    `
     const categoryNum = Number(category);
     if ( isNaN(categoryNum) || categoryNum < 1 || categoryNum > 100 ) {
     return res.status(400).json({ message: '유효하지 않은 category 값입니다.' });
@@ -180,6 +195,16 @@ exports.deleteRecruitJob = async ( req, res ) => {
       return res.status(200).json({
         message: '채용 공고가 성공적으로 삭제되었습니다.'
       });
+
+    // lst add - cy feedback
+    `
+      에러를 세분화한것은 좋은 시도입니다.
+       if ( error.message === 'Unauthorized' ) -> 여기는 토큰 검증에서 처리해야할 에러입니다.
+       API call을 한 사용자의 권한이 없는 경우 상기 에러가 리턴 되어야 함으로, 미들웨어단에서 처리되면 될 것 같습니다.
+
+       + 에러 메세지는 영어로 작성하는 것이 권고사항입니다.
+    `
+
     } catch (error) {
       if ( error.message === 'Unauthorized' ) {
         return res.status(401).json({ message: '유효하지 않거나 만료된 토큰입니다.' });

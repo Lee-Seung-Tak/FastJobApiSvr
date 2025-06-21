@@ -51,10 +51,13 @@ exports.login = async( companyId, password ) => {
         queryResult     = queryResult.rows[0];
 
         // 없다면 Error
-        if ( queryResult === undefined   ) throw new Error('user not found')
+        // if ( queryResult === undefined   ) throw new Error('user not found')
         
-        if ( queryResult.role !== NORMAL ) throw new Error('user not found')
+        // if ( queryResult.role !== NORMAL ) throw new Error('user not found')
         
+        // lst add - cy feedback 
+        if (!queryResult || queryResult.role !== NORMAL) throw new Error('user not found');
+
         // 비밀번호 검증
         if ( queryResult.password === password ) {
 
@@ -79,6 +82,8 @@ exports.tokenRefresh = async( token ) => {
     try {
         const companyId = await companysLogic.verifyRefreshToken( token );
         if( companyId ) return await companysLogic.tokensRefresh( companyId );
+        // lst add - cy feedback companyId가 null인 경우에 대한 처리도 되어야 합니다.
+        // 사용자에게 token을 리턴하지 못하는 경우에 대한 처리도 해줘야합니다.
     } catch ( error ) {
         console.log("error : ", error.message)
         throw new Error(error);
@@ -89,7 +94,7 @@ exports.tokenRefresh = async( token ) => {
 exports.resetPwd = async ( companyEmail ) => {
     try {
         const CompanyStatus         = (await db.query( query.IsUserValid, [ companyEmail ] )).rowCount;
-        const resetPasswordToken = await companysLogic.makeResetPwdToken( companyEmail );
+        const resetPasswordToken    = await companysLogic.makeResetPwdToken( companyEmail );
 
         await db.query( query.updateResetCompanyPwdToken, [ resetPasswordToken, companyEmail ] );
         if ( CompanyStatus == 1 ) await companysLogic.sendMailResetPassword( companyEmail, resetPasswordToken );
@@ -157,7 +162,7 @@ exports.updateNewPwd = async ( changePasswordToken, newPassword ) => {
 
 exports.sendVerificationEmailToUser = async ( companyEmail ) => {
     try {    
-        const companyStatus         = (await db.query( query.IsCompanyValid, [ companyEmail ] )).rowCount;
+        const companyStatus      = (await db.query( query.IsCompanyValid, [ companyEmail ] )).rowCount;
         const getIdToken         = await companysLogic.makeIdVerificationToken( companyEmail );
         await db.query( query.updateCompanyIdToken, [ getIdToken, companyEmail ] );
 
