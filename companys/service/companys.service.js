@@ -1,8 +1,8 @@
 const db            = require('@db');
 const companysLogic = require('@companys_logic');
 const query         = require('@query');
-const fs           = require('fs')
-const path         = require('path');
+const fs            = require('fs')
+const path          = require('path');
 const PENDING       = 1;
 const NORMAL        = 2;
 const EMAIL_FAILE   = 3;
@@ -51,9 +51,7 @@ exports.login = async( companyId, password ) => {
         queryResult     = queryResult.rows[0];
 
         // 없다면 Error
-        if ( queryResult === undefined   ) throw new Error('user not found')
-        
-        if ( queryResult.role !== NORMAL ) throw new Error('user not found')
+        if (!queryResult || queryResult.role !== NORMAL) throw new Error('user not found');
         
         // 비밀번호 검증
         if ( queryResult.password === password ) {
@@ -89,7 +87,7 @@ exports.tokenRefresh = async( token ) => {
 exports.resetPwd = async ( companyEmail ) => {
     try {
         const CompanyStatus         = (await db.query( query.IsUserValid, [ companyEmail ] )).rowCount;
-        const resetPasswordToken = await companysLogic.makeResetPwdToken( companyEmail );
+        const resetPasswordToken    = await companysLogic.makeResetPwdToken( companyEmail );
 
         await db.query( query.updateResetCompanyPwdToken, [ resetPasswordToken, companyEmail ] );
         if ( CompanyStatus == 1 ) await companysLogic.sendMailResetPassword( companyEmail, resetPasswordToken );
@@ -157,7 +155,7 @@ exports.updateNewPwd = async ( changePasswordToken, newPassword ) => {
 
 exports.sendVerificationEmailToUser = async ( companyEmail ) => {
     try {    
-        const companyStatus         = (await db.query( query.IsCompanyValid, [ companyEmail ] )).rowCount;
+        const companyStatus      = (await db.query( query.IsCompanyValid, [ companyEmail ] )).rowCount;
         const getIdToken         = await companysLogic.makeIdVerificationToken( companyEmail );
         await db.query( query.updateCompanyIdToken, [ getIdToken, companyEmail ] );
 
@@ -201,7 +199,7 @@ exports.getUserIdAfterVerification = async ( checkToken ) => {
 exports.uploadRecruitJob = async ( companyData ) => {
     try {
         await companysLogic.uploadRecruitJob( companyData );
-    } catch (error) {
+    } catch ( error ) {
         throw error;
     }
 };
@@ -210,35 +208,32 @@ exports.uploadRecruitJob = async ( companyData ) => {
 //채용공고 삭제
 exports.deleteRecruitJob = async ( id ) => {
   try {
+
     const existingJob = await db.query( query.findRecruitJob, [ id ] );
+
     if ( !existingJob ) {
-      throw new Error('채용 공고를 찾을 수 없습니다.');
+      throw new Error( 'Job posting not found.' );
     }
+
     const result = await db.query( query.deleteRecruitJob, [ id ] );
     return result.affectedRows > 0;
+
   } catch ( error ) {
     throw error;
   }
 };
 
-// exports.updateRecruitJob = async ( id, companyData) => {
-//   try {
-//     // 데이터 정제
-//     const cleanedcompanyData = {
-//       title: companyData.title?.trim(),
-//       description: companyData.description?.trim(),
-//       category: companyData.category?.trim(),
-//       deadline: companyData.deadline
-//     };
+exports.updateRecruitJob = async ( id, companyData) => {
+  try {
+    const updatedJob = await companysLogic.updateRecruitJob( id, companyData );
+    if ( !updatedJob ) {
+      throw new Error( 'Job posting not found.' );
+    }
 
-//     const updatedJob = await companysLogic.updateRecruitJob(id, cleanedcompanyData);
-//     if (!updatedJob) {
-//       throw new Error('채용 공고를 찾을 수 없습니다.');
-//     }
+    return updatedJob;
 
-//     return updatedJob;
-//   } catch (error) {
-//     throw error;
-//   }
+  } catch ( error ) {
+    throw error;
+  }
 
-// }
+}
