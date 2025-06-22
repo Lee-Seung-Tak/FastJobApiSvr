@@ -130,9 +130,9 @@ exports.sendMailForSignUp = async ( email , signUpToken ) => {
 
 //ID 찾기를 위한 이메일 전송
 exports.sendMailCheckId = async ( email , getIdToken ) => {
-    const filePath    = path.join(__dirname, '/web/getUserByEmail.html');
-    let mailBody      = fs.readFileSync(filePath, 'utf8');
-    mailBody          = mailBody.replace('{TOKEN}', await getIdToken);
+    const filePath      = path.join(__dirname, '/web/getUserByEmail.html');
+    let mailBody        = fs.readFileSync(filePath, 'utf8');
+    mailBody            = mailBody.replace('{TOKEN}', await getIdToken);
 
     const mailOptions = {
         from   : process.env.SYS_EMAIL,  
@@ -211,7 +211,7 @@ exports.insertCompanyData = async ( companyData, signUpToken ) => {
 //채용공고 등록
 exports.uploadRecruitJob = async ( companyData ) => {
     try {
-        const idPk = await exports.getId(companyData);
+        const idPk = await exports.getId( companyData );
 
         await db.query ( query.uploadRecruitJob , [
             idPk,
@@ -237,23 +237,51 @@ exports.getId = async ( companyData ) => {
     }
 }
 
-// //채용공고 수정
-// exports.updateRecruitJob = async ( id, data ) => {
-//     try {
-//     // 수정할 데이터만 필터링
-//     const updateData = {};
-//     if (data.title) updateData.title = data.title;
-//     if (data.description) updateData.description = data.description;
-//     if (data.category) updateData.category = data.category;
-//     if (data.deadline) updateData.deadline = data.deadline;
+exports.updateRecruitJob = async ( id, companyData ) => {
+  try {
+    let fields = [];
+    let values = [];
+    let idx = 1;
 
-//     // 데이터베이스 업데이트
-//     const updatedJob = await db.query ( query.updateRecruitJob, [id, data]);
+    if ( companyData.title !== undefined ) {
+      fields.push( `title = $${++idx}` );
+      values.push( companyData.title );
+    }
 
-//     return updatedJob;
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+    if ( companyData.description !== undefined ) {
+      fields.push( `description = $${++idx}` );
+      values.push( companyData.description );
+    }
 
+    if ( companyData.category !== undefined ) {
+      fields.push( `category = $${++idx}` );
+      values.push( companyData.category );
+    }
 
+    if ( companyData.deadline !== undefined ) {
+      fields.push( `deadline = $${++idx}` );
+      values.push( companyData.deadline );
+    }
+
+    if ( companyData.is_active !== undefined ) {
+      fields.push( `is_active = $${++idx}` );
+      values.push( companyData.is_active );
+    }
+
+    if ( fields.length === 0 ) {
+      throw new Error( "No fields to update." );
+    }
+
+    fields.push(`updated_at = NOW()`);
+
+    const updateQuery = query.updateRecruitJob( fields );
+
+    values.unshift( id ); // id는 항상 $1로 사용
+
+    const updatedJob = await db.query( updateQuery, values );
+    return updatedJob;
+
+  } catch ( error ) {
+    throw error;
+  }
+};
