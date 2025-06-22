@@ -135,12 +135,12 @@ exports.getUserIdAfterVerification = async ( req, res ) => {
     try{
         const token = req.query.token;
         if ( !token ) {
-            return res.status(400).send('Token is missing.');
+            return res.status(400).send( 'Token is missing.' );
         }
-        const html = await companysService.getUserIdAfterVerification(token);
+        const html = await companysService.getUserIdAfterVerification( token );
         return res.status(200).send(html);
     } catch ( error ) {
-        console.error('Error retrieving user ID:', error);
+        console.error( 'Error retrieving user ID:', error );
         throw error;
     }
 }
@@ -154,19 +154,14 @@ exports.uploadRecruitJob = async ( req, res ) => {
       return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
     }
 
-    const categoryNum = Number(category);
-    if ( isNaN(categoryNum) || categoryNum < 1 || categoryNum > 100 ) {
-    return res.status(400).json({ message: '유효하지 않은 category 값입니다.' });
-    }
-
     // 채용 공고 생성
     await companysService.uploadRecruitJob( req.body );
+    return res.status(201).json({ message: 'Job post created successfully' });
 
-    return res.status(201).json({ message: '채용 공고 등록 완료' });
-  } catch (error) {
+  } catch ( error ) {
     console.error('Upload recruit job error:', error);
     
-    return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 };
 
@@ -181,35 +176,38 @@ exports.deleteRecruitJob = async ( req, res ) => {
         message: '채용 공고가 성공적으로 삭제되었습니다.'
       });
     } catch (error) {
+
       if ( error.message === 'Unauthorized' ) {
-        return res.status(401).json({ message: '유효하지 않거나 만료된 토큰입니다.' });
+        return res.status(401).json({ message: 'The token is invalid or has expired.' });
       }
-      if ( error.message === '채용 공고를 찾을 수 없습니다.' ) {
+
+      if ( error.message === 'Job posting not found.' ) {
         return res.status(404).json({ message: error.message });
+
       }
-      console.error( '채용 공고 삭제 오류:', error );
+      console.error( 'Failed to delete job posting :', error );
       return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
     }
   }
 
-// //채용공고 수정
-// exports.updateRecruitJob = async ( req, res ) => {
-//     try {
-//       const { id } = req.params;
-//       const { title, description, category, deadline } = req.body;
+//채용공고 수정
+exports.updateRecruitJob = async ( req, res ) => {
+    try {
+      const { id } = req.params;
+      const { title, description, category, deadline } = req.body;
 
-//       if ( !title || !description || !category || !deadline ) {
-//       return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
-//       }
+      await companysService.updateRecruitJob (id, req.body );
+      return res.status(200).json({message: '채용 공고가 성공적으로 수정되었습니다.'
+      });
+    } catch (error) {
 
-//        const updatedJob = await companysService.updateRecruitJob (id, { title, description, category, deadline });
-//        return res.status(200).json({message: '채용 공고가 성공적으로 수정되었습니다.'
-//       });
-//     } catch (error) {
-//       if (error.message === 'Unauthorized') {
-//         return res.status(401).json({ message: '유효하지 않거나 만료된 토큰입니다.' });
-//       }
-//       console.error('채용 공고 수정 오류:', error);
-//       return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
-//     }
-//   }
+      if (error.message === 'Unauthorized') {
+
+        return res.status(401).json({ message: 'The token is invalid or has expired.' });
+
+      }
+      console.error('Failed to update job posting :', error);
+
+      return res.status(500).json({ message: 'Internal server error.' });
+    }
+  }
