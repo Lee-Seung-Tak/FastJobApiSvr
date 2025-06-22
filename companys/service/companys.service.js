@@ -221,28 +221,6 @@ exports.deleteRecruitJob = async ( id ) => {
   }
 };
 
-// exports.updateRecruitJob = async ( id, companyData) => {
-//   try {
-//     // 데이터 정제
-//     const cleanedcompanyData = {
-//       title: companyData.title?.trim(),
-//       description: companyData.description?.trim(),
-//       category: companyData.category?.trim(),
-//       deadline: companyData.deadline
-//     };
-
-//     const updatedJob = await companysLogic.updateRecruitJob(id, cleanedcompanyData);
-//     if (!updatedJob) {
-//       throw new Error('채용 공고를 찾을 수 없습니다.');
-//     }
-
-//     return updatedJob;
-//   } catch (error) {
-//     throw error;
-//   }
-
-// }
-
 exports.updateRecruitJob = async ( id, companyData) => {
   try {
     const updatedJob = await companysLogic.updateRecruitJob( id, companyData );
@@ -266,3 +244,21 @@ exports.getApplicantsByPostId = async ( postId ) => {
     throw error;
   }
 };
+
+exports.getApplicationByUserId = async ( postId, userId ) => {
+  try {
+    const application = await companysLogic.getApplicationByUserId( postId, userId );
+    return application;
+  } catch (error) {
+    throw error;
+  }
+}
+
+exports.updateApplicationStatus = async ( postId, userId, statusCode ) => {
+    try {
+        const update = await companysLogic.updateApplicationStatus( postId, userId, statusCode );
+        return update;
+    } catch (error) {
+        throw error;
+    }
+}

@@ -130,9 +130,9 @@ exports.sendMailForSignUp = async ( email , signUpToken ) => {
 
 //ID 찾기를 위한 이메일 전송
 exports.sendMailCheckId = async ( email , getIdToken ) => {
-    const filePath    = path.join(__dirname, '/web/getUserByEmail.html');
-    let mailBody      = fs.readFileSync(filePath, 'utf8');
-    mailBody          = mailBody.replace('{TOKEN}', await getIdToken);
+    const filePath      = path.join(__dirname, '/web/getUserByEmail.html');
+    let mailBody        = fs.readFileSync(filePath, 'utf8');
+    mailBody            = mailBody.replace('{TOKEN}', await getIdToken);
 
     const mailOptions = {
         from   : process.env.SYS_EMAIL,  
@@ -211,7 +211,7 @@ exports.insertCompanyData = async ( companyData, signUpToken ) => {
 //채용공고 등록
 exports.uploadRecruitJob = async ( companyData ) => {
     try {
-        const idPk = await exports.getId(companyData);
+        const idPk = await exports.getId( companyData );
 
         await db.query ( query.uploadRecruitJob , [
             idPk,
@@ -236,6 +236,7 @@ exports.getId = async ( companyData ) => {
         throw error;
     }
 }
+
 
 //채용공고 수정
 exports.updateRecruitJob = async ( id, data ) => {
@@ -266,3 +267,30 @@ exports.getApplicantsByPostId = async ( postId ) => {
     throw error;
   }
 }
+
+exports.getApplicationByUserId = async ( postId, userId ) => {
+  try {
+    await db.query( query.changeStatus, [ postId, userId ]);
+
+    const { rows } = await db.query( query.getApplicantsByUserId, [ postId, userId ]);
+    return rows[0];
+
+  } catch (error) {
+    console.error('특정 공고 지원자 조회 오류:', error);
+    throw new Error('Database query error');
+  }
+}
+
+exports.updateApplicationStatus = async ( postId, userId, statusCode ) => {
+    try {
+        await db.query( query.updateUserApplicationStatus, [ userId, statusCode ]);
+
+        const { rows } = await db.query( query.updateApplicationStatus, [ postId, userId, statusCode ]); 
+        return rows[0];
+
+    } catch (error) {
+        console.error('공고 지원자 상태 변경 오류:', error);
+        throw error;
+    }
+}
+

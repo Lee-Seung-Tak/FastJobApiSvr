@@ -674,4 +674,86 @@ router.delete('/recruit-jobs/:id', companysController.deleteRecruitJob);
  */
 router.get('/applications/:postId', companysController.getApplicantsByPostId);
 
+/**
+ * @swagger
+ * /companys/applications/{postId}/by-user/{userId}:
+ *   get:
+ *     summary: 특정 공고에서 특정 지원자의 이력서 조회
+ *     tags: [Companys]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 조회할 공고(post)의 ID
+ *         example: 3
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 조회할 사용자의 ID
+ *         example: 12
+ *     responses:
+ *       200:
+ *         description: 지원서 조회 성공
+ *       401:
+ *         description: 인증 실패
+ *       404:
+ *         description: 지원자 또는 채용 공고를 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */
+router.get('/applications/:postId/by-user/:userId', companysController.getApplicationByUserId);
+
+/**
+ * @swagger
+ * /companys/applications/{postId}/by-user/{userId}/status:
+ *   patch:
+ *     summary: 지원자 상태 변경
+ *     description: postId와 userId에 해당하는 지원자의 상태(status)를 변경합니다.
+ *     tags: [Companys]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 공고 ID
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 지원자(user) ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [SUBMITTED, IN_REVIEW, ACCEPTED, FAILED]
+ *                 example: ACCEPTED
+ *     responses:
+ *       200:
+ *         description: 상태 변경 성공
+ *       400:
+ *         description: 잘못된 요청
+ *       404:
+ *         description: 지원서를 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */
+router.patch('/applications/:postId/by-user/:userId/status', companysController.updateApplicationStatus);
+
 module.exports = router;
