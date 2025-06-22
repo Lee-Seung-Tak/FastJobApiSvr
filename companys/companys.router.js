@@ -498,84 +498,81 @@ router.get('/recover-id/verify',companysController.getUserIdAfterVerification)
  */
 router.post('/recruit-jobs', companyData.any(), companysController.uploadRecruitJob);
 
-// /**
-//  * @swagger
-//  * /companys/recruit-jobs/{id}:
-//  *   patch:
-//  *     summary: 채용 공고 수정
-//  *     tags: [Companys]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     parameters:
-//  *       - in: path
-//  *         name: id
-//  *         required: true
-//  *         schema:
-//  *         type: string
-//  *         description: 수정할 채용 공고의 고유 ID
-//  *         example: 2
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             type: object
-//  *             properties:
-//  *               title:
-//  *                 type: string
-//  *                 description: 수정할 제목 (optional)
-//  *                 example: Recruit Senior Software Engineer
-//  *               description:
-//  *                 type: string
-//  *                 description: 수정할 설명 (optional)
-//  *                 example: Updated job description...
-//  *               category:
-//  *                 type: string
-//  *                 description: 채용 공고 분야 수정 (optional)
-//  *                 example: 2
-//  *               deadline:
-//  *                 type: string
-//  *                 format: date
-//  *                 description: 수정할 마감일 (optional, YYYY-MM-DD)
-//  *                 example: 2026-01-15
-//  *     responses:
-//  *       200:
-//  *         description: 채용 공고 수정 성공
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 jobId:
-//  *                   type: string
-//  *                   example: company123
-//  *                 title:
-//  *                   type: string
-//  *                   example: Recruit Senior Software Engineer
-//  *       400:
-//  *         description: 잘못된 요청 (유효하지 않은 데이터)
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 message:
-//  *                   type: string
-//  *                   example: 유효한 데이터를 제공해야 합니다.
-//  *       401:
-//  *         description: 인증 실패
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 message:
-//  *                   type: string
-//  *                   example: 유효하지 않거나 만료된 토큰입니다.
-//  *       500:
-//  *         description: 서버 오류
-//  */
-// router.patch('/recruit-jobs/:id', companysController.updateRecruitJob);
+/**
+ * @swagger
+ * /companys/recruit-jobs/{id}:
+ *   patch:
+ *     summary: 채용 공고 수정
+ *     tags: [Companys]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *          type: string
+ *         description: 수정할 채용 공고의 고유 ID
+ *         example: 2
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: 수정할 제목 (optional)
+ *                 example: Recruit Senior Software Engineer
+ *               description:
+ *                 type: string
+ *                 description: 수정할 설명 (optional)
+ *                 example: Updated job description...
+ *               category:
+ *                 type: string
+ *                 description: 채용 공고 분야 수정 (optional)
+ *                 example: 2
+ *               deadline:
+ *                 type: string
+ *                 format: date
+ *                 description: 수정할 마감일 (optional, YYYY-MM-DD)
+ *                 example: 2026-01-15
+ *     responses:
+ *       200:
+ *         description: 채용 공고 수정 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 title:
+ *                   type: string
+ *                   example: Recruit Senior Software Engineer
+ *       400:
+ *         description: 잘못된 요청 (유효하지 않은 데이터)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 유효한 데이터를 제공해야 합니다.
+ *       401:
+ *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 유효하지 않거나 만료된 토큰입니다.
+ *       500:
+ *         description: 서버 오류
+ */
+router.patch('/recruit-jobs/:id', companysController.updateRecruitJob);
 
 /**
  * @swagger
