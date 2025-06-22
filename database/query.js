@@ -349,14 +349,22 @@ export const deleteRecruitJob = `DELETE FROM company.recruit_post
 WHERE id = $1`
 ;
   
-// export const updateRecruitJob = `
-//   UPDATE company.recruit_post
-//   SET
-//     title = $2,
-//     description = $3,
-//     category = $4,
-//     deadline = $5,
-//     created_at = NOW(),
-//     is_active = $6
-//   WHERE id = $1;
-// `;
+export const updateRecruitJob = `
+  UPDATE company.recruit_post
+  SET
+    title = $2,
+    description = $3,
+    category = $4,
+    deadline = $5,
+    created_at = NOW(),
+    is_active = $6
+  WHERE id = $1;
+`;
+
+export const getApplicantsByPostId = `SELECT * 
+  FROM company.application
+  Where post_id = $1 
+  ORDER BY applied_at DESC
+`;
+
+

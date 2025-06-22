@@ -618,4 +618,60 @@ router.patch('/recruit-jobs/:id', companysController.updateRecruitJob);
  */
 router.delete('/recruit-jobs/:id', companysController.deleteRecruitJob);
 
+/**
+ * @swagger
+ * /companys/applications/{postId}:
+ *   get:
+ *     summary: 특정 공고(post_id)의 지원자 목록 조회
+ *     tags: [Companys]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:                
+ *       - in: path
+ *         name: post_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 조회할 공고(post)의 ID
+ *     responses:
+ *       200:
+ *         description: 지원자 목록 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     example: app123
+ *                   post_id:               
+ *                     type: string
+ *                     example: 14
+ *                   applicant_name:
+ *                     type: string
+ *                     example: 홍길동
+ *                   status:
+ *                     type: string
+ *                     example: pending
+ *                   applied_at:
+ *                     type: string
+ *                     format: date-time
+ *                     example: 2025-07-01T10:00:00Z
+ *       401:
+ *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 유효하지 않거나 만료된 토큰입니다.
+ *       500:
+ *         description: 서버 오류
+ */
+router.get('/applications/:postId', companysController.getApplicantsByPostId);
+
 module.exports = router;

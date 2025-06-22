@@ -51,11 +51,6 @@ exports.login = async( companyId, password ) => {
         queryResult     = queryResult.rows[0];
 
         // 없다면 Error
-        // if ( queryResult === undefined   ) throw new Error('user not found')
-        
-        // if ( queryResult.role !== NORMAL ) throw new Error('user not found')
-        
-        // lst add - cy feedback 
         if (!queryResult || queryResult.role !== NORMAL) throw new Error('user not found');
 
         // 비밀번호 검증
@@ -247,3 +242,27 @@ exports.deleteRecruitJob = async ( id ) => {
 //   }
 
 // }
+
+exports.updateRecruitJob = async ( id, companyData) => {
+  try {
+    const updatedJob = await companysLogic.updateRecruitJob( id, companyData );
+    if ( !updatedJob ) {
+      throw new Error( 'Job posting not found.' );
+    }
+
+    return updatedJob;
+
+  } catch ( error ) {
+    throw error;
+  }
+}
+
+exports.getApplicantsByPostId = async ( postId ) => {
+  try {
+    const result = await companysLogic.getApplicantsByPostId( postId );
+    return result;
+    
+  } catch (error) {
+    throw error;
+  }
+};

@@ -135,12 +135,12 @@ exports.getUserIdAfterVerification = async ( req, res ) => {
     try{
         const token = req.query.token;
         if ( !token ) {
-            return res.status(400).send('Token is missing.');
+            return res.status(400).send( 'Token is missing.' );
         }
-        const html = await companysService.getUserIdAfterVerification(token);
+        const html = await companysService.getUserIdAfterVerification( token );
         return res.status(200).send(html);
     } catch ( error ) {
-        console.error('Error retrieving user ID:', error);
+        console.error( 'Error retrieving user ID:', error );
         throw error;
     }
 }
@@ -154,34 +154,14 @@ exports.uploadRecruitJob = async ( req, res ) => {
       return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
     }
 
-    // lst add - cy feedback
-    `
-        const categoryNum = Number(category);
-            if ( isNaN(categoryNum) || categoryNum < 1 || categoryNum > 100 ) {
-            return res.status(400).json({ message: '유효하지 않은 category 값입니다.' });
-        }
-        이 부분은 채용 공고에서 카테고리를 위해서 추가하신 의도로 보입니다.
-
-        db명세를 보시면 category는 분야(reference.dev_category참조)가 확인이 되는데, 이는 우리가 db에 사전에 정의하지
-        않은 값은 넣을 수 없다는 것 입니다.
-
-        이해하시기 편하게 예시를 들어드리자면, 웹에서는 미리 카테고리 전체에 대하여 서버로 부터 전달 받고, 사용자가 거기에 적용된
-        category만 선택할 수 있게 되는 것이기 때문에 아래의 category 검증 로직은 삭제하셔도 무방합니다.
-   
-    `
-    const categoryNum = Number(category);
-    if ( isNaN(categoryNum) || categoryNum < 1 || categoryNum > 100 ) {
-    return res.status(400).json({ message: '유효하지 않은 category 값입니다.' });
-    }
-
     // 채용 공고 생성
     await companysService.uploadRecruitJob( req.body );
+    return res.status(201).json({ message: 'Job post created successfully' });
 
-    return res.status(201).json({ message: '채용 공고 등록 완료' });
-  } catch (error) {
+  } catch ( error ) {
     console.error('Upload recruit job error:', error);
     
-    return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 };
 
@@ -196,45 +176,50 @@ exports.deleteRecruitJob = async ( req, res ) => {
         message: '채용 공고가 성공적으로 삭제되었습니다.'
       });
 
-    // lst add - cy feedback
-    `
-      에러를 세분화한것은 좋은 시도입니다.
-       if ( error.message === 'Unauthorized' ) -> 여기는 토큰 검증에서 처리해야할 에러입니다.
-       API call을 한 사용자의 권한이 없는 경우 상기 에러가 리턴 되어야 함으로, 미들웨어단에서 처리되면 될 것 같습니다.
-
-       + 에러 메세지는 영어로 작성하는 것이 권고사항입니다.
-    `
-
     } catch (error) {
-      if ( error.message === 'Unauthorized' ) {
-        return res.status(401).json({ message: '유효하지 않거나 만료된 토큰입니다.' });
-      }
-      if ( error.message === '채용 공고를 찾을 수 없습니다.' ) {
+
+      if ( error.message === 'Job posting not found.' ) {
         return res.status(404).json({ message: error.message });
+
       }
-      console.error( '채용 공고 삭제 오류:', error );
+      console.error( 'Failed to delete job posting :', error );
       return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
     }
   }
 
-// //채용공고 수정
-// exports.updateRecruitJob = async ( req, res ) => {
-//     try {
-//       const { id } = req.params;
-//       const { title, description, category, deadline } = req.body;
+//채용공고 수정
+exports.updateRecruitJob = async ( req, res ) => {
+    try {
+      const { id } = req.params;
 
-//       if ( !title || !description || !category || !deadline ) {
-//       return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
-//       }
+      await companysService.updateRecruitJob (id, req.body );
+      return res.status(200).json({message: '채용 공고가 성공적으로 수정되었습니다.'
+      });
+    } catch (error) {
 
-//        const updatedJob = await companysService.updateRecruitJob (id, { title, description, category, deadline });
-//        return res.status(200).json({message: '채용 공고가 성공적으로 수정되었습니다.'
-//       });
-//     } catch (error) {
-//       if (error.message === 'Unauthorized') {
-//         return res.status(401).json({ message: '유효하지 않거나 만료된 토큰입니다.' });
-//       }
-//       console.error('채용 공고 수정 오류:', error);
-//       return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
-//     }
-//   }
+      if (error.message === 'Unauthorized') {
+
+        return res.status(401).json({ message: 'The token is invalid or has expired.' });
+
+      }
+      console.error('Failed to update job posting :', error);
+
+      return res.status(500).json({ message: 'Internal server error.' });
+    }
+  }
+
+exports.getApplicantsByPostId = async ( req, res ) => {
+    try {
+      const { postId } = req.params;
+      const applicants = await companysService.getApplicantsByPostId( postId );
+      
+      return res.status(200).json({
+        message: '지원자 목록 조회 성공',
+        data: applicants
+      });
+    } catch (error) {
+      console.error('Failed to retrieve applicant list :', error);
+      return res.status(500).json({ message: 'Internal server error.' });
+    }
+  }
+  
