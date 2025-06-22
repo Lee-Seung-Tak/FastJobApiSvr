@@ -43,7 +43,7 @@ app.use( ( req, res, next ) => {
         req.path === '/companys/signup-verify'            || req.path === '/companys/reset-password'   ||  
         req.path === '/companys/reset-password/verify'    || req.path === '/companys/new-password'     ||
         req.path === '/companys/recover-id'               || req.path === '/companys/recover-id/verify'||
-        req.path === '/companys/recruit-jobs'             || /^\/companys\/recruit-jobs\/\d+$/.test(req.path)     
+        req.path === '/companys/recruit-jobs'             
 
     ) return next();
 
@@ -64,4 +64,3 @@ if (cluster.isMaster) {
         console.log(`[LOG] - FastJobApiSvr Start at Port: ${port}\n`);
     });
 }
-
