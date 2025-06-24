@@ -266,7 +266,75 @@ router.patch('/user/application-docs', userData.any(), usersController.patchUser
 // 사용자 이력서 및 자기소개서, 경력 기술서, 포트폴리오 url 업데이트
 //router.update('/user')
 
+/**
+ * @swagger
+ * /users/apply-to-post:
+ *   post:
+ *     summary: 사용자가 채용 공고에 지원
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               jobPostingId:
+ *                 type: string
+ *                 description: 지원할 채용 공고의 ID
+ *                 example: "1"
+ *     responses:
+ *       200:
+ *         description: 지원 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Application submitted successfully"
+ *       400:
+ *         description: 잘못된 요청
+ *       500:
+ *         description: 서버 오류
+ */
 router.post('/apply-to-post', usersController.submitApplication);
 
+/**
+ * @swagger
+ * /users/delete-application:
+ *   delete:
+ *     summary: 사용자가 채용 공고 지원을 취소
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               jobPostingId:
+ *                 type: string
+ *                 description: 취소할 채용 공고의 ID
+ *                 example: 123
+ *     responses:
+ *       200:
+ *         description: 지원 취소 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "deleted successfully"
+ *       400:
+ *         description: 잘못된 요청
+ *       404:
+ *         description: 지원 내역을 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
+ */
 router.delete('/delete-application', usersController.deleteApplication);
 module.exports = router;
