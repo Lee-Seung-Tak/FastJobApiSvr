@@ -294,30 +294,3 @@ exports.updateApplicationStatus = async ( postId, userId, statusCode ) => {
     }
 }
 
-    if ( companyData.deadline !== undefined ) {
-      fields.push( `deadline = $${++idx}` );
-      values.push( companyData.deadline );
-    }
-
-    if ( companyData.is_active !== undefined ) {
-      fields.push( `is_active = $${++idx}` );
-      values.push( companyData.is_active );
-    }
-
-    if ( fields.length === 0 ) {
-      throw new Error( "No fields to update." );
-    }
-
-    fields.push(`updated_at = NOW()`);
-
-    const updateQuery = query.updateRecruitJob( fields );
-
-    values.unshift( id ); // id는 항상 $1로 사용
-
-    const updatedJob = await db.query( updateQuery, values );
-    return updatedJob;
-
-  } catch ( error ) {
-    throw error;
-  }
-};
