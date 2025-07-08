@@ -175,12 +175,16 @@ exports.deleteRecruitJob = async ( req, res ) => {
       return res.status(200).json({
         message: '채용 공고가 성공적으로 삭제되었습니다.'
       });
+
     } catch (error) {
 
+<<<<<<< HEAD
       if ( error.message === 'Unauthorized' ) {
         return res.status(401).json({ message: 'The token is invalid or has expired.' });
       }
 
+=======
+>>>>>>> rescue
       if ( error.message === 'Job posting not found.' ) {
         return res.status(404).json({ message: error.message });
 
@@ -194,7 +198,10 @@ exports.deleteRecruitJob = async ( req, res ) => {
 exports.updateRecruitJob = async ( req, res ) => {
     try {
       const { id } = req.params;
+<<<<<<< HEAD
       const { title, description, category, deadline } = req.body;
+=======
+>>>>>>> rescue
 
       await companysService.updateRecruitJob (id, req.body );
       return res.status(200).json({message: '채용 공고가 성공적으로 수정되었습니다.'
@@ -210,4 +217,75 @@ exports.updateRecruitJob = async ( req, res ) => {
 
       return res.status(500).json({ message: 'Internal server error.' });
     }
+<<<<<<< HEAD
   }
+=======
+  }
+
+exports.getApplicantsByPostId = async ( req, res ) => {
+    try {
+      const { postId } = req.params;
+      const applicants = await companysService.getApplicantsByPostId( postId );
+
+      return res.status(200).json({
+        message: '지원자 목록 조회 성공',
+        data: applicants
+      });
+    } catch (error) {
+      console.error('Failed to retrieve applicant list :', error);
+      return res.status(500).json({ message: 'Internal server error.' });
+    }
+  }
+  
+exports.getApplicationByUserId = async ( req, res ) => {
+    try {
+      const { postId, userId } = req.params;
+
+      const application =  await companysService.getApplicationByUserId( postId, userId );
+      if ( !application ) {
+        return res.status(404).json({ message: 'Applicant not found.' });
+      }
+      return res.status(200).json(application);
+    } catch (error) {
+      if (error.message === 'Job posting not found.') {
+        return res.status(404).json({ message: error.message });
+      }
+      console.error('Failed to retrieve applicant list :', error);
+      return res.status(500).json({ message: 'Internal server error.' });
+    }
+  }
+
+const applicationStatus = {
+  SUBMITTEDubmitted: 1,
+  IN_REVIEW: 2,
+  ACCEPTED: 3,
+  FAILED: 4
+};
+
+exports.updateApplicationStatus = async ( req, res ) => {
+  try {
+    const { postId, userId } = req.params;
+    const { status } = req.body; 
+
+    const statusCode = applicationStatus[ status.toUpperCase() ];
+    
+    if ( !statusCode ) {
+      return res.status(400).json({ message: 'Status value is required.' });
+    }
+
+    const updated = await companysService.updateApplicationStatus( postId, userId, statusCode );
+
+    if ( !updated ) {
+      return res.status(404).json({ message: 'Application not found.' });
+    }
+
+    return res.status(200).json({
+      message: '지원자 상태 변경 성공',
+      data: updated               
+    });
+  } catch ( error ) {
+    console.error( 'Applicant status update error:', error );
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+>>>>>>> rescue

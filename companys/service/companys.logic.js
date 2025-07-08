@@ -237,26 +237,62 @@ exports.getId = async ( companyData ) => {
     }
 }
 
-exports.updateRecruitJob = async ( id, companyData ) => {
+
+//채용공고 수정
+exports.updateRecruitJob = async ( id, data ) => {
+    try {
+    // 수정할 데이터만 필터링
+    const updateData = {};
+    if (data.title) updateData.title = data.title;
+    if (data.description) updateData.description = data.description;
+    if (data.category) updateData.category = data.category;
+    if (data.deadline) updateData.deadline = data.deadline;
+
+    // 데이터베이스 업데이트
+    const updatedJob = await db.query ( query.updateRecruitJob, [id, data] );
+
+    return updatedJob;
+  } catch (error) {
+    throw error;
+  }
+}
+
+exports.getApplicantsByPostId = async ( postId ) => {
   try {
-    let fields = [];
-    let values = [];
-    let idx = 1;
+    const { rows } = await db.query( query.getApplicantsByPostId, [ postId ] );
+    return rows;
 
-    if ( companyData.title !== undefined ) {
-      fields.push( `title = $${++idx}` );
-      values.push( companyData.title );
-    }
+  } catch ( error ) {
+    console.error('지원자 목록 조회 오류:', error);
+    throw error;
+  }
+}
 
-    if ( companyData.description !== undefined ) {
-      fields.push( `description = $${++idx}` );
-      values.push( companyData.description );
-    }
+exports.getApplicationByUserId = async ( postId, userId ) => {
+  try {
+    await db.query( query.changeStatus, [ postId, userId ]);
 
-    if ( companyData.category !== undefined ) {
-      fields.push( `category = $${++idx}` );
-      values.push( companyData.category );
+    const { rows } = await db.query( query.getApplicantsByUserId, [ postId, userId ]);
+    return rows[0];
+
+  } catch (error) {
+    console.error('특정 공고 지원자 조회 오류:', error);
+    throw new Error('Database query error');
+  }
+}
+
+exports.updateApplicationStatus = async ( postId, userId, statusCode ) => {
+    try {
+        await db.query( query.updateUserApplicationStatus, [ userId, statusCode ]);
+
+        const { rows } = await db.query( query.updateApplicationStatus, [ postId, userId, statusCode ]); 
+        return rows[0];
+
+    } catch (error) {
+        console.error('공고 지원자 상태 변경 오류:', error);
+        throw error;
     }
+}
 
     if ( companyData.deadline !== undefined ) {
       fields.push( `deadline = $${++idx}` );

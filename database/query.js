@@ -348,8 +348,40 @@ export const findRecruitJob = `SELECT * FROM company.recruit_post
 export const deleteRecruitJob = `DELETE FROM company.recruit_post
   WHERE id = $1`
 ;
-
-export const updateRecruitJob = ( fields ) => `UPDATE company.recruit_post
-  SET ${fields.join(', ')}
+  
+export const updateRecruitJob = `UPDATE company.recruit_post
+  SET
+    title = $2,
+    description = $3,
+    category = $4,
+    deadline = $5,
+    created_at = NOW(),
+    is_active = $6
   WHERE id = $1`
+;
+
+export const getApplicantsByPostId = `SELECT * FROM company.application
+  Where post_id = $1 
+  ORDER BY applied_at DESC`
+;
+
+export const getApplicantsByUserId = `SELECT resume, self_intro, career_desc FROM company.application 
+  WHERE post_id = $1 AND user_id = $2`
+;
+
+export const changeStatus = `UPDATE company.application
+  SET status = 2
+  WHERE post_id = $1 AND user_id = $2`
+;
+
+export const updateApplicationStatus = `UPDATE company.application
+  SET status = $3
+  WHERE post_id = $1 AND user_id = $2
+  RETURNING id`
+;
+
+export const updateUserApplicationStatus = `UPDATE users.job_application
+  SET status = $2
+  WHERE user_id = $1
+  RETURNING id`
 ;

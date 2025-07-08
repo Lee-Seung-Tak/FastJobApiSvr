@@ -51,7 +51,9 @@ exports.login = async( companyId, password ) => {
         queryResult     = queryResult.rows[0];
 
         // 없다면 Error
-        if (!queryResult || queryResult.role !== NORMAL) throw new Error('user not found');
+        if ( queryResult === undefined   ) throw new Error('user not found')
+        
+        if ( queryResult.role !== NORMAL ) throw new Error('user not found')
         
         // 비밀번호 검증
         if ( queryResult.password === password ) {
@@ -77,6 +79,8 @@ exports.tokenRefresh = async( token ) => {
     try {
         const companyId = await companysLogic.verifyRefreshToken( token );
         if( companyId ) return await companysLogic.tokensRefresh( companyId );
+        // lst add - cy feedback companyId가 null인 경우에 대한 처리도 되어야 합니다.
+        // 사용자에게 token을 리턴하지 못하는 경우에 대한 처리도 해줘야합니다.
     } catch ( error ) {
         console.log("error : ", error.message)
         throw new Error(error);
@@ -223,17 +227,24 @@ exports.deleteRecruitJob = async ( id ) => {
   }
 };
 
-exports.updateRecruitJob = async ( id, companyData) => {
-  try {
-    const updatedJob = await companysLogic.updateRecruitJob( id, companyData );
-    if ( !updatedJob ) {
-      throw new Error( 'Job posting not found.' );
-    }
+// exports.updateRecruitJob = async ( id, companyData) => {
+//   try {
+//     // 데이터 정제
+//     const cleanedcompanyData = {
+//       title: companyData.title?.trim(),
+//       description: companyData.description?.trim(),
+//       category: companyData.category?.trim(),
+//       deadline: companyData.deadline
+//     };
 
-    return updatedJob;
+//     const updatedJob = await companysLogic.updateRecruitJob(id, cleanedcompanyData);
+//     if (!updatedJob) {
+//       throw new Error('채용 공고를 찾을 수 없습니다.');
+//     }
 
-  } catch ( error ) {
-    throw error;
-  }
+//     return updatedJob;
+//   } catch (error) {
+//     throw error;
+//   }
 
-}
+// }
