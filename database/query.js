@@ -337,16 +337,16 @@ export const uploadRecruitJob = `INSERT INTO company.recruit_post (
 ;
 
 export const getId = `SELECT id FROM company.company_account
-  WHERE company_id = $1`
+WHERE company_id = $1`
 ;
 
 //채용공고 삭제
 export const findRecruitJob = `SELECT * FROM company.recruit_post
-  WHERE id = $1`
+WHERE id = $1`
 ;
 
 export const deleteRecruitJob = `DELETE FROM company.recruit_post
-  WHERE id = $1`
+WHERE id = $1`
 ;
   
 export const updateRecruitJob = `UPDATE company.recruit_post
