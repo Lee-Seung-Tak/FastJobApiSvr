@@ -1,8 +1,8 @@
 const db            = require('@db');
 const companysLogic = require('@companys_logic');
 const query         = require('@query');
-const fs            = require('fs')
-const path          = require('path');
+const fs           = require('fs')
+const path         = require('path');
 const PENDING       = 1;
 const NORMAL        = 2;
 const EMAIL_FAILE   = 3;
@@ -51,10 +51,8 @@ exports.login = async( companyId, password ) => {
         queryResult     = queryResult.rows[0];
 
         // 없다면 Error
-        if ( queryResult === undefined   ) throw new Error('user not found')
-        
-        if ( queryResult.role !== NORMAL ) throw new Error('user not found')
-        
+        if (!queryResult || queryResult.role !== NORMAL) throw new Error('user not found');
+
         // 비밀번호 검증
         if ( queryResult.password === password ) {
 
@@ -203,7 +201,7 @@ exports.getUserIdAfterVerification = async ( checkToken ) => {
 exports.uploadRecruitJob = async ( companyData ) => {
     try {
         await companysLogic.uploadRecruitJob( companyData );
-    } catch ( error ) {
+    } catch (error) {
         throw error;
     }
 };
@@ -212,39 +210,55 @@ exports.uploadRecruitJob = async ( companyData ) => {
 //채용공고 삭제
 exports.deleteRecruitJob = async ( id ) => {
   try {
-
     const existingJob = await db.query( query.findRecruitJob, [ id ] );
-
     if ( !existingJob ) {
-      throw new Error( 'Job posting not found.' );
+      throw new Error('채용 공고를 찾을 수 없습니다.');
     }
-
     const result = await db.query( query.deleteRecruitJob, [ id ] );
     return result.affectedRows > 0;
-
   } catch ( error ) {
     throw error;
   }
 };
 
-// exports.updateRecruitJob = async ( id, companyData) => {
-//   try {
-//     // 데이터 정제
-//     const cleanedcompanyData = {
-//       title: companyData.title?.trim(),
-//       description: companyData.description?.trim(),
-//       category: companyData.category?.trim(),
-//       deadline: companyData.deadline
-//     };
+exports.updateRecruitJob = async ( id, companyData) => {
+  try {
+    const updatedJob = await companysLogic.updateRecruitJob( id, companyData );
+    if ( !updatedJob ) {
+      throw new Error( 'Job posting not found.' );
+    }
 
-//     const updatedJob = await companysLogic.updateRecruitJob(id, cleanedcompanyData);
-//     if (!updatedJob) {
-//       throw new Error('채용 공고를 찾을 수 없습니다.');
-//     }
+    return updatedJob;
 
-//     return updatedJob;
-//   } catch (error) {
-//     throw error;
-//   }
+  } catch ( error ) {
+    throw error;
+  }
+}
 
-// }
+exports.getApplicantsByPostId = async ( postId ) => {
+  try {
+    const result = await companysLogic.getApplicantsByPostId( postId );
+    return result;
+    
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.getApplicationByUserId = async ( postId, userId ) => {
+  try {
+    const application = await companysLogic.getApplicationByUserId( postId, userId );
+    return application;
+  } catch (error) {
+    throw error;
+  }
+}
+
+exports.updateApplicationStatus = async ( postId, userId, statusCode ) => {
+    try {
+        const update = await companysLogic.updateApplicationStatus( postId, userId, statusCode );
+        return update;
+    } catch (error) {
+        throw error;
+    }
+}
