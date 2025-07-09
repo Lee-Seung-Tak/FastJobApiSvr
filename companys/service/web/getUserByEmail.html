@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>FastJobAPI 이메일 인증</title>
   <style>
     body {
@@ -53,14 +53,14 @@
 </head>
 <body>
   <div class="email-container">
-    <hr>
-    <h1>비밀번호 변경을 위한 본인인증 링크</h1>
-    <hr>
+    <hr />
+    <h1>회원 아이디 확인 링크</h1>
+    <hr />
     <p>
-      본인인증을 위해서,<br>
-      <strong>15분 이내에</strong> 아래의 인증하기 버튼을 클릭하여 인증해주시길 바랍니다.
+      아이디 확인을 위해서,<br />
+      <strong>5분 이내에</strong> 아래의 인증하기 버튼을 클릭하여 인증해주시길 바랍니다.
     </p>
-    <a href="http://localhost:4000/auth/reset-password/verify?token={TOKEN}" class="button">인증하기</a>
+    <a href="http://localhost:4000/companys/recover-id/verify?token={TOKEN}" class="button">인증하기</a>
   </div>
 </body>
 </html>

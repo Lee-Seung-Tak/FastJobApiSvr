@@ -20,8 +20,14 @@ exports.makeSignUpToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.SIGNUP_SECRET, { expiresIn: '5m' } );
 }
 
+//비밀번호 초기화 토큰 생성
 exports.makeResetPasswordToken = async ( email ) => {
     return jwt.sign( { email : email }, process.env.RESETPASSWORD_SECRET, { expiresIn: '15m' } );
+}
+
+//비밀번호 재설정 토큰 생성
+exports.makePasswordChangeToken = async ( email ) => {
+    return jwt.sign( { email : email }, process.env.CHANGEPASSWORD_SECRET, { expiresIn: '15m' } );
 }
 
 exports.makeIdVerificationToken = async ( email ) => {
@@ -41,11 +47,23 @@ exports.verifyRefreshToken = async ( token ) => {
     }
 }
 
-exports.verifyResetPasswordToken = async ( RESETPASSWORD_SECRET ) => {
+//비밀번호 초기화 토큰 검증
+exports.verifyResetPasswordToken = async ( token ) => {
     try {
-        const decode = jwt.verify( RESETPASSWORD_SECRET, process.env.RESETPASSWORD_SECRET );
+        const decode = jwt.verify( token, process.env.RESETPASSWORD_SECRET );
         return decode.email;
-    } catch (error ){
+    } catch (error){
+        console.log(error)
+        return null;
+    }
+}
+
+//비밀번호 재설정 토큰 검증
+exports.verifyChangePasswordToken = async ( token ) => {
+    try {
+        const decode = jwt.verify( token, process.env.RESETPASSWORD_SECRET );
+        return decode.email;
+    } catch (error){
         console.log(error)
         return null;
     }
@@ -62,7 +80,7 @@ exports.verifyIdRecoveryToken = async ( GETID_SECRET ) => {
 }
 
 exports.tokensRefresh = async ( userId ) => {
-    
+
     const [ accessToken, refreshToken ] = await Promise.all ( [ this.makeAccessToken(userId), this.makeRefreshToken(userId) ] );
     await db.query( query.updateUserTokens, [ accessToken, refreshToken, userId ] );
     return {
@@ -74,7 +92,7 @@ exports.tokensRefresh = async ( userId ) => {
 // 이메일 발송 함수 
 const transPorter = nodemailer.createTransport({
     service:"gmail",
-    host: "smtp.gmail.email",
+    host: "smtp.gmail.com", //"smtp.gmail.email" -> "smtp.gmail.com" 수정
     port: 587,
     secure: false, 
     auth: {
@@ -82,30 +100,6 @@ const transPorter = nodemailer.createTransport({
       pass: process.env.SYS_EMAIL_KEY,
     },
   });
-
-exports.sendMailResetPassword = async ( email , signUpToken ) => {
-    const filePath    = path.join(__dirname, '/web/resetPassword.html');
-    let mailBody      = fs.readFileSync(filePath, 'utf8');
-    mailBody          = mailBody.replace('{TOKEN}', await signUpToken);
-
-    const mailOptions = {
-        from   : process.env.SYS_EMAIL,  
-        to     : email,                         
-        subject: '[비밀번호 초기화 메일]',                       
-        html   : mailBody                           
-    };
-
-    try {
-        const info = await transPorter.sendMail(mailOptions);
-        console.log('Email sent: ' + info.response);
-
-    } catch (error) {
-        console.error  ( 'Error sending email:', error );
-        await db.query ( query.sendEmailFalse, [email] );
-        throw new Error( 'Failed to send email' );  // 이메일 발송 실패 시 에러 발생
-    }
-}
-
 
 exports.sendMailForSignUp = async ( email , signUpToken ) => {
     const filePath    = path.join(__dirname, '/web/index.html');
@@ -129,6 +123,41 @@ exports.sendMailForSignUp = async ( email , signUpToken ) => {
         throw new Error( 'Failed to send email' );  // 이메일 발송 실패 시 에러 발생
     }
 };
+
+//비밀번호 초기화를 위한 본인인증 이메일 전송
+exports.sendMailResetPassword = async ( email , resetPasswordToken ) => {
+    const filePath    = path.join(__dirname, '/web/resetPassword.html');
+    let mailBody      = fs.readFileSync(filePath, 'utf8');
+    mailBody          = mailBody.replace('{TOKEN}', resetPasswordToken);
+
+    const mailOptions = {
+        from   : process.env.SYS_EMAIL,  
+        to     : email,                         
+        subject: '[비밀번호 변경을 위한 본인인증 메일]',                       
+        html   : mailBody                           
+    };
+
+    try {
+        const info = await transPorter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+
+    } catch (error) {
+        console.error  ( 'Error sending email:', error );
+        await db.query ( query.sendEmailFalse, [email] );
+        throw new Error( 'Failed to send email' );  // 이메일 발송 실패 시 에러 발생
+    }
+}
+
+//비밀번호 업데이트
+exports.updatePassword = async (email, newPassword) => {
+    try {
+        await db.query(query.updatePassword,[newPassword, email]);
+        return true;
+    } catch (error) {
+        console.error('Error updating password:', error);
+        return false;
+    }
+}
 
 exports.sendAnalyzeDoneEmail = async ( email ) => {
     const filePath    = path.join(__dirname, '/web/analyze.html');

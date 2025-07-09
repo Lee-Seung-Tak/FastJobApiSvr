@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>FastJobAPI 이메일 인증</title>
+  <title>FastJobAPI 아이디 확인 실패</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -30,20 +30,6 @@
       color: #555;
       line-height: 1.6;
     }
-    a.button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 12px 24px;
-      font-size: 14px;
-      color: #fff;
-      background-color: #007bff;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: background-color 0.2s ease;
-    }
-    a.button:hover {
-      background-color: #0056b3;
-    }
     hr {
       border: none;
       border-top: 1px solid #eee;
@@ -54,13 +40,12 @@
 <body>
   <div class="email-container">
     <hr>
-    <h1>비밀번호 변경을 위한 본인인증 링크</h1>
+    <h1>FastJobAPI</h1>
     <hr>
     <p>
-      본인인증을 위해서,<br>
-      <strong>15분 이내에</strong> 아래의 인증하기 버튼을 클릭하여 인증해주시길 바랍니다.
+      <strong>아이디 확인 링크가 만료되었거나 유효하지 않습니다.</strong><br />
+      다시 요청하여 인증을 진행해주세요.
     </p>
-    <a href="http://localhost:4000/auth/reset-password/verify?token={TOKEN}" class="button">인증하기</a>
   </div>
 </body>
 </html>
