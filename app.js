@@ -4,7 +4,7 @@ const express    = require('express');
 const app        = express();
 const port       = 4000
 
-const middleWare = require('@middleware')
+const middleWare = require('@middleware');
 const cluster    = require('cluster');
 const os         = require('os');
 const CPU        = 2;
@@ -18,6 +18,7 @@ const usersRouter    = require('@users_router');
 const skillsRouter   = require('@skills_router');
 const companysRouter = require('@companys_router');
 const cors         = require("cors");
+
 
 // Swagger설정 사용
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -33,13 +34,16 @@ app.use(cors({
 app.use( ( req, res, next ) => {
     if ( 
         // auth 관련 
-        req.path === '/auth/login'                        || req.path === '/auth/signup'            || 
-        req.path === '/auth/token-refresh'                || req.path === '/auth/reset-password'    ||
-        req.path === '/auth/reset-password/verify'        || req.path === '/auth/new-password'      ||
-        req.path === '/auth/recover-id'                   || req.path === '/auth/recover-id/verify' ||
+        req.path === '/auth/login'                        || req.path === '/auth/signup'               || 
+        req.path === '/auth/token-refresh'                || req.path === '/auth/reset-password'       ||
+        req.path === '/auth/reset-password/verify'        || req.path === '/auth/new-password'         ||
+        req.path === '/auth/recover-id'                   || req.path === '/auth/recover-id/verify'    ||
         // company 관련
-        req.path === '/companys/login'                    || req.path === '/companys/signup'        || 
-        req.path === '/companys/signup-verify' 
+        req.path === '/companys/login'                    || req.path === '/companys/signup'           || 
+        req.path === '/companys/signup-verify'            || req.path === '/companys/reset-password'   ||  
+        req.path === '/companys/reset-password/verify'    || req.path === '/companys/new-password'     ||
+        req.path === '/companys/recover-id'               || req.path === '/companys/recover-id/verify'||
+        req.path === '/companys/recruit-jobs'             
 
     ) return next();
 
@@ -60,4 +64,3 @@ if (cluster.isMaster) {
         console.log(`[LOG] - FastJobApiSvr Start at Port: ${port}\n`);
     });
 }
-
