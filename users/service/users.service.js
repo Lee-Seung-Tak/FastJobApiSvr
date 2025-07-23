@@ -135,17 +135,34 @@ exports.myJobApplications = async ( userId ) => {
   return getMyJobApplications.length ? getMyJobApplications : null;
 };
 
-exports.submitApplication = async ( userId, postPk ) => {
+exports.submitApplication = async ( userId, jobPostingId ) => {
   try {
-    const userPk = ( await db.query( query.getUserPk, [userId] ) ).rows[0].id;
-    const duplicateResult = await db.query( query.duplicateApplication, [userPk, postPk] )
+    const userPk            = ( await db.query( query.getUserPk, [userId] ) ).rows[0].id;
+    const duplicateResult   = await db.query( query.duplicateApplication, [userPk, jobPostingId] )
     
     if (duplicateResult.rows.length > 0) {
       throw new Error ("You have already applied for this job")
     }
-    await db.query( query.updateUserApplications, [userPk, postPk] );
-
+    const queryResult       = await db.query( query.insertUserApplications, [userPk, jobPostingId] );
+    const deletedId         = queryResult.rows[0].id;
+    await db.query( query.insertJobApplication, [ userPk, deletedId ] );
+  
   } catch ( error ) {
-    console.log( error )
+    console.log( error );
+    throw err;
+  }
+};
+
+exports.deleteApplication = async ( userId, jobPostingId ) => {
+  try {
+    const userPk                   = ( await db.query( query.getUserPk, [userId] ) ).rows[0].id;
+    const deleteJobApplication     = await db.query( query.deleteJobApplication, [userPk, jobPostingId]);
+    if ( deleteJobApplication.rowCount === 0 ) {
+      throw new Error('No application record found to delete.');
+    }
+    await db.query( query.deleteApplicationById, [jobPostingId]);
+  } catch ( error ) {
+    console.log( error );
+    throw error;
   }
 };

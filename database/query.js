@@ -323,14 +323,15 @@ export const findCompanyId = `SELECT company_id FROM company.company_account
 ;
 
 
-export const updateUserApplications = `
+export const insertUserApplications = `
 INSERT INTO company.application (
   user_id, post_id, resume, self_intro, career_desc, status
 )
 SELECT
   $1::int, $2::int, a.resume, a.self_intro, a.career_desc, 0
 FROM users.user_account a
-WHERE a.id = $1::int;
+WHERE a.id = $1::int
+RETURNING id;
 ;`
 
 export const duplicateApplication = `
@@ -338,6 +339,7 @@ SELECT 1
 FROM company.application
 WHERE user_id = $1 AND post_id = $2
 LIMIT 1
+<<<<<<< HEAD
 `
 //채용공고 등록
 export const uploadRecruitJob = `INSERT INTO company.recruit_post (
@@ -402,3 +404,26 @@ export const updateUserApplicationStatus = `UPDATE users.job_application
   WHERE user_id = $1
   RETURNING id`
 ;
+=======
+;`
+export const insertJobApplication = `
+INSERT INTO users.job_application (
+  user_id, application_id, status
+)
+VALUES ($1, $2, 0)
+RETURNING id;
+;`
+
+export const deleteApplicationById = `
+DELETE FROM company.application
+WHERE id = $1
+  AND status = 0;
+`;
+
+export const deleteJobApplication = `
+DELETE FROM users.job_application
+WHERE user_id = $1
+  AND application_id = $2
+  AND status = 0;
+`;
+>>>>>>> feature/users
