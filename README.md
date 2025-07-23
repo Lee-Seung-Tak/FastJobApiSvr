@@ -14,3 +14,9 @@
 ## Naming Convention
 
 - **Camel Case**
+
+## Database
+- **ERD**
+![ERD](docs/erd.png)
+- **database**
+DB설계도 : database 설계도-v3 참고
