@@ -274,3 +274,13 @@ exports.updateApplicationStatus = async ( req, res ) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+exports.listJobPostings = async (req, res) => {
+    try {
+      const postings = await companysService.listJobPostings();
+      return res.status(200).json({ postings });
+    } catch (err) {
+      console.error('[ERROR] listJobPostings:', err);
+      return res.status(500).json({ message: 'Failed to retrieve applicant postings.' });
+    }
+  };
