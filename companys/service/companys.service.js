@@ -262,3 +262,8 @@ exports.updateApplicationStatus = async ( postId, userId, statusCode ) => {
         throw error;
     }
 }
+
+exports.listJobPostings = async () => {
+  const result = await db.query(query.getAllPostings);
+  return result.rows;
+};
