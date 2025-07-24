@@ -152,7 +152,7 @@ export const getAllSkills = `
   ORDER BY id;
 `;
 export const getAllPostings = `
-  SELECT id
+  SELECT *
   FROM company.recruit_post
   ORDER BY id;
 `;
