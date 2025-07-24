@@ -756,4 +756,24 @@ router.get('/applications/:postId/by-user/:userId', companysController.getApplic
  */
 router.patch('/applications/:postId/by-user/:userId/status', companysController.updateApplicationStatus);
 
+
+
+/**
+ * @swagger
+ * /companys/job-postings:
+ *   get:
+ *     summary: 공고 목록 조회
+ *     description: 회사의 모든 모집 공고 리스트를 조회합니다.
+ *     tags: [Companys]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 공고 목록 조회 성공
+ *       401:
+ *         description: 인증 실패
+ *       500:
+ *         description: 서버 오류
+ */
+router.get('/job-postings', companysController.listJobPostings);
 module.exports = router;
