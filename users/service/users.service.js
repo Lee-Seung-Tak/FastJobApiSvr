@@ -166,3 +166,8 @@ exports.deleteApplication = async ( userId, jobPostingId ) => {
     throw error;
   }
 };
+
+exports.listJobPostings = async () => {
+  const result = await db.query(query.getAllPostings);
+  return result.rows;
+};

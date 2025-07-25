@@ -337,4 +337,86 @@ router.post('/apply-to-post', usersController.submitApplication);
  *         description: 서버 오류
  */
 router.delete('/delete-application', usersController.deleteApplication);
+
+/**
+ * @swagger
+ * /users/job-postings:
+ *   get:
+ *     summary: 공고 목록 조회
+ *     description: 회사가 등록한 모든 채용 공고 리스트를 반환합니다.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 공고 목록 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 postings:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: 공고 고유 ID
+ *                         example: 101
+ *                       company_id:
+ *                         type: integer
+ *                         description: 회사 고유 ID
+ *                         example: 5
+ *                       title:
+ *                         type: string
+ *                         description: 공고 제목
+ *                         example: "Senior Backend Developer"
+ *                       description:
+ *                         type: string
+ *                         description: 공고 상세 설명
+ *                         example: "Spring Boot 기반 마이크로서비스 설계 및 개발 담당"
+ *                       category:
+ *                         type: integer
+ *                         description: 카테고리 ID
+ *                         example: 2
+ *                       created_at:
+ *                         type: string
+ *                         format: date-time
+ *                         description: 공고 등록 일시
+ *                         example: "2025-06-15T10:30:00Z"
+ *                       deadline:
+ *                         type: string
+ *                         format: date-time
+ *                         nullable: true
+ *                         description: 지원 마감 일시
+ *                         example: "2025-08-01T23:59:59Z"
+ *                       is_active:
+ *                         type: boolean
+ *                         description: 공고 활성화 여부
+ *                         example: true
+ *             example:
+ *               postings:
+ *                 - id: 101
+ *                   company_id: 5
+ *                   title: "Senior Backend Developer"
+ *                   description: "Spring Boot 기반 마이크로서비스 설계 및 개발 담당"
+ *                   category: 2
+ *                   created_at: "2025-06-15T10:30:00Z"
+ *                   deadline: "2025-08-01T23:59:59Z"
+ *                   is_active: true
+ *                 - id: 102
+ *                   company_id: 7
+ *                   title: "Frontend Engineer"
+ *                   description: "React와 TypeScript를 활용한 사용자 인터페이스 개발"
+ *                   category: 1
+ *                   created_at: "2025-06-20T14:00:00Z"
+ *                   deadline: "2025-07-31T23:59:59Z"
+ *                   is_active: true
+ *       401:
+ *         description: 인증 실패
+ *       500:
+ *         description: 서버 오류
+ */
+router.get('/job-postings', usersController.listJobPostings);
 module.exports = router;
