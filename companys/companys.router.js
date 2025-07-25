@@ -120,7 +120,7 @@ router.post('/signup', companyData.any(), companysController.signUp);
  *               - companyId
  *               - password
  *             properties:
- *               userId:
+ *               companyId:
  *                 type: string
  *                 example: test1
  *               password:
@@ -756,14 +756,12 @@ router.get('/applications/:postId/by-user/:userId', companysController.getApplic
  */
 router.patch('/applications/:postId/by-user/:userId/status', companysController.updateApplicationStatus);
 
-
-
 /**
  * @swagger
  * /companys/job-postings:
  *   get:
- *     summary: 공고 목록 조회
- *     description: 회사가 등록한 모든 채용 공고 리스트를 반환합니다.
+ *     summary: 회사별 모집 공고 조회
+ *     description: 인증된 회사가 등록한 모든 채용 공고 리스트를 반환합니다.
  *     tags: [Companys]
  *     security:
  *       - bearerAuth: []
@@ -813,7 +811,7 @@ router.patch('/applications/:postId/by-user/:userId/status', companysController.
  *                         example: "2025-08-01T23:59:59Z"
  *                       is_active:
  *                         type: boolean
- *                         description: 공고 활성화 여부
+ *                         description: 공고 공개 여부
  *                         example: true
  *             example:
  *               postings:
@@ -826,7 +824,7 @@ router.patch('/applications/:postId/by-user/:userId/status', companysController.
  *                   deadline: "2025-08-01T23:59:59Z"
  *                   is_active: true
  *                 - id: 102
- *                   company_id: 7
+ *                   company_id: 5
  *                   title: "Frontend Engineer"
  *                   description: "React와 TypeScript를 활용한 사용자 인터페이스 개발"
  *                   category: 1
@@ -838,5 +836,6 @@ router.patch('/applications/:postId/by-user/:userId/status', companysController.
  *       500:
  *         description: 서버 오류
  */
-router.get('/job-postings', companysController.listJobPostings);
+router.get('/job-postings', companysController.getCompanyJobPostings);
+
 module.exports = router;
