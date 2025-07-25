@@ -168,6 +168,6 @@ exports.deleteApplication = async ( userId, jobPostingId ) => {
 };
 
 exports.listJobPostings = async () => {
-  const result = await db.query(query.getAllPostings);
+  const result = await db.query(query.getActiveRecruitPosts);
   return result.rows;
 };
