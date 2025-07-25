@@ -211,7 +211,7 @@ exports.insertCompanyData = async ( companyData, signUpToken ) => {
 //채용공고 등록
 exports.uploadRecruitJob = async ( companyData ) => {
     try {
-        console.log(companyData)
+        
         const idPk = await exports.getId( companyData.companyId );
                 
         await db.query ( query.uploadRecruitJob , [
