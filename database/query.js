@@ -339,7 +339,71 @@ SELECT 1
 FROM company.application
 WHERE user_id = $1 AND post_id = $2
 LIMIT 1
-;`
+`
+//채용공고 등록
+export const uploadRecruitJob = `INSERT INTO company.recruit_post (
+      company_id,
+      title,
+      description,
+      category,
+      deadline,
+      created_at,
+      is_active
+    ) VALUES (
+     $1,$2, $3, $4, $5,
+     NOW(), $6)`
+;
+
+export const getId = `SELECT id FROM company.company_account
+WHERE company_id = $1`
+;
+
+//채용공고 삭제
+export const findRecruitJob = `SELECT * FROM company.recruit_post
+WHERE id = $1`
+;
+
+export const deleteRecruitJob = `DELETE FROM company.recruit_post
+WHERE id = $1`
+;
+  
+export const updateRecruitJob = `UPDATE company.recruit_post
+  SET
+    title = $2,
+    description = $3,
+    category = $4,
+    deadline = $5,
+    created_at = NOW(),
+    is_active = $6
+  WHERE id = $1`
+;
+
+export const getApplicantsByPostId = `SELECT * FROM company.application
+  Where post_id = $1 
+  ORDER BY applied_at DESC`
+;
+
+export const getApplicantsByUserId = `SELECT resume, self_intro, career_desc FROM company.application 
+  WHERE post_id = $1 AND user_id = $2`
+;
+
+export const changeStatus = `UPDATE company.application
+  SET status = 2
+  WHERE post_id = $1 AND user_id = $2`
+;
+
+export const updateApplicationStatus = `UPDATE company.application
+  SET status = $3
+  WHERE post_id = $1 AND user_id = $2
+  RETURNING id`
+;
+
+export const updateUserApplicationStatus = `UPDATE users.job_application
+  SET status = $2
+  WHERE user_id = $1
+  RETURNING id`
+;
+
 export const insertJobApplication = `
 INSERT INTO users.job_application (
   user_id, application_id, status
@@ -359,4 +423,20 @@ DELETE FROM users.job_application
 WHERE user_id = $1
   AND application_id = $2
   AND status = 0;
+`;
+
+export const getPostingsByCompany = `
+SELECT *
+  FROM company.recruit_post
+WHERE company_id = $1
+ORDER BY id;
+`;
+
+export const getCompanyPk = `SELECT id FROM company.company_account WHERE company_id = $1`;
+
+export const getActiveRecruitPosts = `
+  SELECT *
+    FROM company.recruit_post
+   WHERE is_active = TRUE
+   ORDER BY id;
 `;

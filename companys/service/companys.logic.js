@@ -19,12 +19,12 @@ exports.verifySignUpToken = async ( signUpToken ) => {
 
 //AccessToken 생성
 exports.makeAccessToken = async ( companyId ) => {
-    return jwt.sign( { userId : companyId }, process.env.ACCESS_SECRET, { expiresIn: '1h' } );
+    return jwt.sign( { companyId : companyId }, process.env.ACCESS_SECRET, { expiresIn: '1h' } );
 }
 
 //RefreshToken 생성 및 검증
 exports.makeRefreshToken = async ( companyId ) => {
-    return jwt.sign( { userId : companyId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
+    return jwt.sign( { companyId : companyId }, process.env.REFRESH_SECRET, { expiresIn: '7d' } );
 }
 
 exports.verifyRefreshToken = async ( token ) => {
@@ -211,8 +211,9 @@ exports.insertCompanyData = async ( companyData, signUpToken ) => {
 //채용공고 등록
 exports.uploadRecruitJob = async ( companyData ) => {
     try {
-        const idPk = await exports.getId( companyData );
-
+        
+        const idPk = await exports.getId( companyData.companyId );
+                
         await db.query ( query.uploadRecruitJob , [
             idPk,
             companyData.title,
@@ -227,9 +228,10 @@ exports.uploadRecruitJob = async ( companyData ) => {
 }
 
 //companyId로 id(PK) 가져오기
-exports.getId = async ( companyData ) => {
+exports.getId = async ( companyId ) => {
     try {
-        const getIdResult = await db.query( query.getId, [ companyData.companyId ] );
+        
+        const getIdResult = await db.query( query.getId, [ companyId ] );
         const idPk = getIdResult.rows[0].id;
         return idPk;
     } catch ( error ) {

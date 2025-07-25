@@ -262,3 +262,9 @@ exports.updateApplicationStatus = async ( postId, userId, statusCode ) => {
         throw error;
     }
 }
+
+exports.getCompanyJobPostings = async (companyId) => {
+  const companyPK = ( await db.query( query.getCompanyPk, [ companyId ] ) ).rows[0].id;
+  const result = await db.query(query.getPostingsByCompany, [companyPK]); 
+  return result.rows;
+};

@@ -148,13 +148,16 @@ exports.getUserIdAfterVerification = async ( req, res ) => {
 //채용공고 등록
 exports.uploadRecruitJob = async ( req, res ) => {
   try {
-    const { title, description, category, deadline } = req.body;
-
+    
+    const { title, description, category, deadline, } = req.body;
+    
     if ( !title || !description || !category || !deadline ) {
       return res.status(400).json({ message: 'title, description, category, deadline은 필수입니다.' });
     }
 
     // 채용 공고 생성
+    req.body.companyId = req.companyId;
+    
     await companysService.uploadRecruitJob( req.body );
     return res.status(201).json({ message: 'Job post created successfully' });
 
@@ -273,4 +276,19 @@ exports.updateApplicationStatus = async ( req, res ) => {
     console.error( 'Applicant status update error:', error );
     return res.status(500).json({ message: 'Internal server error' });
   }
+};
+
+exports.getCompanyJobPostings = async ( req, res ) => {
+  try {
+    const companyId = req.companyId;
+    const postings = await companysService.getCompanyJobPostings(companyId);
+    return res.status(200).json({
+      message: 'Job postings loaded successfully',
+      data: postings
+    });
+  } catch ( error ) {
+    return res.status(500).json({
+      message: 'A server error occurred while fetching job listings.'
+    });
+  } 
 };
