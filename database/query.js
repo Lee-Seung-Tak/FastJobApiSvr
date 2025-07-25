@@ -433,3 +433,10 @@ ORDER BY id;
 `;
 
 export const getCompanyPk = `SELECT id FROM company.company_account WHERE company_id = $1`;
+
+export const getActiveRecruitPosts = `
+  SELECT *
+    FROM company.recruit_post
+   WHERE is_active = TRUE
+   ORDER BY id;
+`;
