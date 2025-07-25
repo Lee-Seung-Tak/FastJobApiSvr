@@ -424,3 +424,12 @@ WHERE user_id = $1
   AND application_id = $2
   AND status = 0;
 `;
+
+export const getPostingsByCompany = `
+SELECT *
+  FROM company.recruit_post
+WHERE company_id = $1
+ORDER BY id;
+`;
+
+export const getCompanyPk = `SELECT id FROM company.company_account WHERE company_id = $1`;
