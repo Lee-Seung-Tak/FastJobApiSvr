@@ -278,12 +278,17 @@ exports.updateApplicationStatus = async ( req, res ) => {
   }
 };
 
-exports.listJobPostings = async (req, res) => {
-    try {
-      const postings = await companysService.listJobPostings();
-      return res.status(200).json({ postings });
-    } catch (err) {
-      console.error('[ERROR] listJobPostings:', err);
-      return res.status(500).json({ message: 'Failed to retrieve applicant postings.' });
-    }
-  };
+exports.getCompanyJobPostings = async ( req, res ) => {
+  try {
+    const companyId = req.companyId;
+    const postings = await companysService.getCompanyJobPostings(companyId);
+    return res.status(200).json({
+      message: 'Job postings loaded successfully',
+      data: postings
+    });
+  } catch ( error ) {
+    return res.status(500).json({
+      message: 'A server error occurred while fetching job listings.'
+    });
+  } 
+};
