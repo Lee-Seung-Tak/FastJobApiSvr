@@ -2,6 +2,9 @@
   "dependencies": {
     "@drdgvhbh/postgres-error-codes": "^0.0.6",
     "@google/genai": "^0.13.0",
+    "@langchain/community": "^0.3.49",
+    "@langchain/core": "^0.3.66",
+    "@langchain/openai": "^0.6.3",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
