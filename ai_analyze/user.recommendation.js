@@ -4,64 +4,74 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { RunnableMap, RunnableLambda } from "@langchain/core/runnables";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
-
-
 import { Document } from "@langchain/core/documents";
 import * as dotenv from "dotenv";
 
 dotenv.config({ path: '../.env' });
 
 const run = async () => {
-  // 1. 임베딩 모델 초기화
-  const embeddings = new OpenAIEmbeddings();
-  
-  // 2. 답변을 생성할 OpenAI 모델 초기화
-  const model = new ChatOpenAI({
-    modelName: "gpt-4.1-nano", // 또는 "gpt-3.5-turbo"
-    temperature: 0,
-  });
+    const embeddings = new OpenAIEmbeddings();
+    const model = new ChatOpenAI({
+        modelName: "gpt-4o-mini",
+        temperature: 0,
+    });
 
-  // 3. 문서를 임베딩하고 메모리 내에 벡터 저장소 생성
-  const docs = [
-    new Document({ pageContent: "나는 자바스크립트를 좋아합니다." }),
-    new Document({ pageContent: "나는 TypeScript도 좋아합니다." }),
-    new Document({ pageContent: "LangChain은 LLM 애플리케이션 개발을 돕습니다." }),
-    new Document({ pageContent: "나는 컴퓨터 프로그래밍에 관심이 많습니다." }),
-  ];
-  
-  const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
-  console.log("문서 임베딩 및 메모리 저장 완료.");
+    const docs = [
+        new Document({ 
+            pageContent: "나는 nodejs를 능숙하게 다루지는 못하지만 보통 실력은 됩니다. 그리고 협동을 잘 못합니다.", 
+            metadata: { name: "영수" } 
+        }),
+        new Document({ 
+            pageContent: "나는 TypeScript도 좋아합니다. 그리고 협동을 잘합니다.", 
+            metadata: { name: "화영" } 
+        }),
+        new Document({ 
+            pageContent: "나는 nodejs를 매우 능숙하게 다룹니다.", 
+            metadata: { name: "철일" } 
+        }),
+        new Document({ 
+            pageContent: "나는 컴퓨터 프로그래밍에 관심이 많습니다.", 
+            metadata: { name: "삼오" } 
+        }),
+    ];
 
-  // 4. 질문에 해당하는 문서를 찾는 리트리버 설정
-  const retriever = vectorStore.asRetriever();
+    const vectorStore = await MemoryVectorStore.fromDocuments(docs, embeddings);
+    console.log("문서 임베딩 및 메모리 저장 완료.");
 
-  // 5. 프롬프트 템플릿 생성: 찾은 문맥(context)과 질문(question)을 포함
-  const prompt = ChatPromptTemplate.fromTemplate(`
-    아래에 제공된 문맥(context)을 사용하여 질문에 답변하세요.
-    만약 문맥에 답변이 없다면, "제공된 정보로는 답변할 수 없습니다."라고 말하세요.
+    const retriever = vectorStore.asRetriever();
 
-    {context}
+    const prompt = ChatPromptTemplate.fromTemplate(`
+        아래에 제공된 문맥(context)을 사용하여 사용자가 원하는 사람의 이름을 답변하고, 그 이유를 설명하세요.
+        만약 문맥(context)에서 유사한 사용자가 없다면, 질문: {question}과 가장 유사한 사람을 추천하세요.
 
-    질문: {question}
+        {context}
+
+        질문: {question}
+
+        답변은 아래와 같은 형식으로 하세요.
+
+        이름 : 
+        이유 :
     `);
-
-  // 6. RAG 체인 구성
-  const ragChain = RunnableMap.from({
-      context: new RunnableLambda({
-          func: (input) => retriever.invoke(input.question).then((docs) => docs.map(doc => doc.pageContent).join("\n\n")),
-      }),
-      question: (input) => input.question,
+    const formatDocs = (docs) => docs.map((doc) => `이름: ${doc.metadata.name}\n내용: ${doc.pageContent}`).join("\n\n");
+    const ragChain = RunnableMap.from({
+        context: async (input) => {
+        const retrievedDocs = await retriever.invoke(input.question);
+        return formatDocs(retrievedDocs);
+    },
+        question: (input) => input.question,
     })
-    .pipe(prompt)
-    .pipe(model)
-    .pipe(new StringOutputParser());
+    .pipe(prompt).
+    pipe(model).
+    pipe(new StringOutputParser());
 
-  // 7. RAG 체인 실행
-  const question = "LangChain은 무엇을 돕나요?";
-  console.log(`\n질문: ${question}`);
-  
-  const result = await ragChain.invoke({ question });
-  console.log(`\n답변: ${result}`);
+
+
+    const question = "성실하고, 인내심 있으며 협동성이 있고, nodejs를 능숙하게 다룰 수 있는 사람.";
+    console.log(`\n질문: ${question}`);
+
+    const result = await ragChain.invoke({ question });
+    console.log(`\n답변\n${result}`);
 };
 
 run();
