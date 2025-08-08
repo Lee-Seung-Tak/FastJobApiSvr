@@ -241,23 +241,26 @@ exports.getId = async ( companyId ) => {
 
 
 //채용공고 수정
-exports.updateRecruitJob = async ( id, data ) => {
-    try {
-    // 수정할 데이터만 필터링
-    const updateData = {};
-    if (data.title) updateData.title = data.title;
-    if (data.description) updateData.description = data.description;
-    if (data.category) updateData.category = data.category;
-    if (data.deadline) updateData.deadline = data.deadline;
+exports.updateRecruitJob = async (id, data) => {
+  try {
+    // 구조 분해 + 기본값 처리
+    const {
+      title = null,
+      description = null,
+      category = null,
+      deadline = null,
+      is_active = true, // 기본값 true
+    } = data;
 
-    // 데이터베이스 업데이트
-    const updatedJob = await db.query ( query.updateRecruitJob, [id, data] );
+    // 쿼리에 맞게 순서대로 파라미터 구성
+    const params = [id, title, description, category, deadline, is_active];
 
+    const updatedJob = await db.query(query.updateRecruitJob, params);
     return updatedJob;
   } catch (error) {
     throw error;
   }
-}
+};
 
 exports.getApplicantsByPostId = async ( postId ) => {
   try {
