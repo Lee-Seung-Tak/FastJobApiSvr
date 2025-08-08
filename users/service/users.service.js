@@ -69,6 +69,11 @@ exports.getUser = async ( userId ) => {
   return rows.length ? rows[0] : null;
 };
 
+exports.getUserSkillsByUserId = async (userId) => {
+  const { rows } = await db.query(query.getSkillsByUserId, [userId]);
+  return rows.length ? rows : [];
+};
+
 exports.patchUserProfileDocs = async ( { userId, files, texts } ) => {
 
   let docTasks = [];
