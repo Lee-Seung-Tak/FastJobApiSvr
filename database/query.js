@@ -99,7 +99,10 @@ export const getUserData = `
     category,
     resume,
     self_intro,
-    career_desc
+    career_desc,
+    name,
+    email,
+    phone
   FROM users.user_account
   WHERE user_id = $1
 `;
