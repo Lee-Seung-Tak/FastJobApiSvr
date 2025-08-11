@@ -31,7 +31,7 @@ exports.aiAnalyzeCarrerDesc = async ( userId, fileUrl ) => {
     pdfData              = pdfData.text.replace(/\n/g, '');
     const aiAnlaysReulst = await gemini.generateContent( pdfData );
 
-    await db.query(query.updateCarrerDesc, [ aiAnlaysReulst, userId ] )
+    await db.query(query.updateCareerDesc, [ aiAnlaysReulst, userId ] )
 }
 
 
