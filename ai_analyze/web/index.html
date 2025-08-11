@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>인재 추천</title>
+    <!-- 프리헤더(목록 미리보기 텍스트) -->
+    <meta name="x-preheader" content="{{ candidate_name }} 후보자 추천 사유 안내" />
+    <style>
+      /* 기본 리셋 */
+      html, body { margin:0; padding:0; height:100%; }
+      img { border:0; line-height:100%; vertical-align:middle; }
+      table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+      a { text-decoration:none; }
+
+      /* 타이포 */
+      body, table, td {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR",
+                     "Apple SD Gothic Neo", "Malgun Gothic", Arial, sans-serif;
+      }
+      body { background:#f4f6fb; color:#0f172a; -webkit-text-size-adjust:100%; }
+
+      /* 다크모드 힌트 */
+      @media (prefers-color-scheme: dark) {
+        body { background:#0b0c10; color:#e5e7eb; }
+        .card { background:#151923 !important; border-color:#2b3240 !important; }
+        .muted { color:#9aa4b2 !important; }
+        .reason { background:#0f1218 !important; border-color:#2b3240 !important; }
+      }
+
+      /* 레이아웃 */
+      .wrap { width:100%; padding:28px 0; }
+      .container { width:100%; max-width:680px; margin:0 auto; }
+      .card {
+        background:#ffffff; border:1px solid #e6eaf2; border-radius:16px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        overflow:hidden;
+      }
+
+      /* 헤더 */
+      .header {
+        padding:0; background:linear-gradient(135deg,#4f46e5 0%, #22c1c3 50%, #84fab0 100%);
+        color:#ffffff; position:relative;
+      }
+      .header-inner { padding:28px; }
+      .brand-row { display:flex; align-items:center; gap:12px; }
+      .logo {
+        width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.2);
+        display:inline-block; line-height:36px; text-align:center; font-weight:700;
+      }
+      .brand { font-size:18px; font-weight:700; letter-spacing:.2px; }
+      .title { font-size:22px; font-weight:800; margin:10px 0 2px; }
+      .subtitle { font-size:14px; opacity:.9; }
+
+      /* 본문 */
+      .content { padding:28px; line-height:1.75; font-size:15px; }
+      .muted { color:#64748b; font-size:13px; }
+
+      /* 후보자 카드 */
+      .candidate {
+        border:1px solid #e6eaf2; border-radius:14px; padding:18px 18px 14px;
+        background:linear-gradient(180deg,#ffffff 0%, #f9fbff 100%);
+      }
+      .cand-row { display:flex; align-items:center; gap:14px; }
+      .avatar {
+        width:44px; height:44px; border-radius:50%;
+        background:#eef2ff; color:#3730a3; font-weight:800; text-align:center; line-height:44px;
+      }
+      .cand-name { font-size:16px; font-weight:800; }
+      .badge {
+        display:inline-block; padding:4px 10px; font-size:12px; font-weight:700;
+        border-radius:999px; background:#ebf5ff; color:#1d4ed8; border:1px solid #dbeafe;
+      }
+      .kv { margin:12px 0 6px; }
+      .kv dt { font-weight:700; margin:10px 0 6px; font-size:14px; color:#0f172a; }
+      .kv dd { margin:0 0 8px; }
+
+      .reason {
+        background:#f6f8fe; border:1px dashed #dbe4ff; border-radius:12px;
+        padding:16px; white-space:pre-wrap; word-break:break-word; color:#0f172a;
+      }
+
+      /* 버튼 행 */
+      .btn-row { padding:4px 0 0; }
+      .btn {
+        display:inline-block; padding:12px 18px; border-radius:12px;
+        background:#3b82f6; color:#ffffff; font-weight:700; font-size:14px;
+      }
+      .btn.secondary { background:#0ea5e9; }
+      .btn + .btn { margin-left:8px; }
+
+      /* 푸터 */
+      .footer { text-align:center; padding:18px; color:#94a3b8; font-size:12px; }
+
+      /* 모바일 */
+      @media only screen and (max-width: 520px) {
+        .content, .header-inner { padding:20px !important; }
+        .title { font-size:20px !important; }
+        .cand-row { gap:10px !important; }
+        .btn { width:100% !important; text-align:center !important; margin-top:8px; }
+        .btn + .btn { margin-left:0 !important; }
+      }
+    </style>
+    <!--[if mso]>
+      <style>
+        .cand-row, .brand-row { display:block !important; }
+      </style>
+    <![endif]-->
+  </head>
+  <body>
+    <!-- 프리헤더 숨김 -->
+    <div style="display:none; max-height:0; overflow:hidden; opacity:0;">
+      {{ candidate_name }} 후보자 추천 사유 안내
+    </div>
+
+    <table class="wrap" role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td>
+          <table class="container" role="presentation" width="100%" cellpadding="0" cellspacing="0" align="center">
+            <tr>
+              <td>
+                <table class="card" role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                  <!-- 헤더 -->
+                  <tr>
+                    <td class="header">
+                      <div class="header-inner">
+                        <div class="brand-row">
+                          <!-- 로고 자리가 없으면 회사 이니셜/아이콘 -->
+                          <span class="logo">🏢</span>
+                          <span class="brand">{{ company_name }}</span>
+                        </div>
+                        <div class="title">적합 인재 추천</div>
+                        <div class="subtitle">귀사에 꼭 맞는 후보자를 선정했습니다.</div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 본문 -->
+                  <tr>
+                    <td class="content">
+                      <p class="muted">안녕하세요, {{ company_name }} 담당자님.</p>
+                      <p>
+                        아래 후보자가 <strong>{{ company_name }}</strong>의 요구역량과 높은 적합도를 보여
+                        자신 있게 추천드립니다.
+                      </p>
+
+                      <!-- 후보자 카드 -->
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;">
+                        <tr>
+                          <td>
+                            <div class="candidate">
+                              <div class="cand-row">
+                                <div class="avatar">
+                                  <!-- 간단한 아바타: 후보자명 이니셜로 대체 가능 -->
+                                  <!-- 일부 클라이언트 호환을 위해 텍스트 그대로 노출 -->
+                                  ✔
+                                </div>
+                                <div>
+                                  <div class="cand-name">{{ candidate_name }}</div>
+                                  <div class="badge">추천 후보자</div>
+                                </div>
+                              </div>
+
+                              <dl class="kv">
+                                <dt>추천 사유</dt>
+                                <dd class="reason">{{ reason }}</dd>
+                              </dl>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <p class="muted" style="margin-top:14px;">
+                        * 본 메일은 채용 지원/추천 안내를 위해 자동 발송되었습니다. 필요 시 회신 부탁드립니다.
+                      </p>
+
+                      <!-- 버튼 영역: 아웃룩 호환용 VML 포함 -->
+                      <div class="btn-row" style="margin-top:8px;">
+                        <!--[if mso]>
+                          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="#" arcsize="16%" stroke="f" fillcolor="#3b82f6" style="height:44px;v-text-anchor:middle;width:180px;">
+                            <v:textbox inset="0,11px,0,0">
+                              <center style="color:#ffffff; font-family:Segoe UI, Arial,sans-serif; font-size:14px; font-weight:700;">상세 검토 요청</center>
+                            </v:textbox>
+                          </v:roundrect>
+                        <![endif]-->
+                        <!--[if !mso]><!-- -->
+                          <a class="btn" href="#" target="_blank" rel="noopener">상세 검토 요청</a>
+                        <!--<![endif]-->
+
+                        <!-- 두 번째 버튼 -->
+                        <!--[if mso]>&nbsp;<![endif]-->
+                        <!--[if mso]>
+                          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="#" arcsize="16%" stroke="f" fillcolor="#0ea5e9" style="height:44px;v-text-anchor:middle;width:160px;">
+                            <v:textbox inset="0,11px,0,0">
+                              <center style="color:#ffffff; font-family:Segoe UI, Arial,sans-serif; font-size:14px; font-weight:700;">미팅 잡기</center>
+                            </v:textbox>
+                          </v:roundrect>
+                        <![endif]-->
+                        <!--[if !mso]><!-- -->
+                          <a class="btn secondary" href="#" target="_blank" rel="noopener">미팅 잡기</a>
+                        <!--<![endif]-->
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- 푸터 -->
+                  <tr>
+                    <td class="footer">
+                      © {{ company_name }} • 본 메일은 자동 발송되었습니다.
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
